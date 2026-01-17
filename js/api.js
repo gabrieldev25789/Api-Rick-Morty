@@ -1,17 +1,24 @@
-const input = document.querySelector("#search-input")
-const button = document.querySelector("#search-button")
-const episodeInfos = document.querySelector("#infos")
+const inputEpisode = document.querySelector("#search-episode-input")
+const episodeBtn = document.querySelector("#episode-btn")
+const episodeInfos = document.querySelector("#episode-infos")
+
+const inputLocation = document.querySelector("#search-location-input")
+const locationBtn = document.querySelector("#location-btn")
+const locationInfos = document.querySelector("#location-infos")
 
 async function consomeApi() {
 
-  button.addEventListener("click", async () => {
-    if(input.value === ""){
+  episodeBtn.addEventListener("click", async () => {
+    if(inputEpisode.value === ""){
         episodeInfos.textContent = "Search for an apisode"    
     return
+    }  if(inputEpisode.value >= 52){
+        episodeInfos.textContent = "Not found episode"
+        return
     }
-    const inputValue = input.value
+    const inputEpisodeValue = inputEpisode.value
 
-    const url = `https://rickandmortyapi.com/api/episode/${inputValue}`
+    const url = `https://rickandmortyapi.com/api/episode/${inputEpisodeValue}`
 
     try {
       episodeInfos.innerHTML = ""  
@@ -19,7 +26,7 @@ async function consomeApi() {
       const data = await response.json()
       console.log(data)
 
-    input.value = ""
+    inputEpisode.value = ""
 
     const ulInfos = document.createElement("ul")
     ulInfos.id = "ul-infos"
@@ -64,3 +71,95 @@ async function consomeApi() {
 consomeApi()
 
 
+async function consomeApi2(){
+    locationBtn.addEventListener("click", async () =>{
+        locationInfos.innerHTML = ""
+        const locationValue = inputLocation.value
+
+        const url = `https://rickandmortyapi.com/api/location/${locationValue}`
+        
+        try{
+            const response = await fetch(url)
+            const data = await response.json()
+            const resident = data.residents
+    
+            const ulInfos = document.createElement("ul")
+            ulInfos.id = "ul-infos"
+
+            const nameLocation = document.createElement("li")
+            nameLocation.classList.add("list")
+            nameLocation.id = "name-location"
+            nameLocation.textContent = `Name: ${data.name}` 
+
+            const dimension = document.createElement("li")
+            dimension.classList.add("list")
+            dimension.id = "dimension"
+            dimension.textContent = `Dimension: ${data.dimension}`
+
+            const type = document.createElement("li")
+            type.classList.add("list")
+            type.id = "type"
+            type.textContent = `type: ${data.type}`
+
+            const id = document.createElement("li")
+            id.classList.add("list")
+            id.id = "id"
+            id.textContent = `ID: ${data.id}`
+
+            console.log(data)
+
+            ulInfos.appendChild(nameLocation)
+            ulInfos.appendChild(dimension)
+            ulInfos.appendChild(type)
+            ulInfos.appendChild(id)
+
+            locationInfos.appendChild(ulInfos)
+
+            
+        } catch{
+            console.error("erro")
+        }
+    })
+}
+
+consomeApi2()
+
+
+
+
+/*
+async function consomeApi2() {
+  locationBtn.addEventListener("click", async () => {
+    const locationValue = inputLocation.value;
+    const url = `https://rickandmortyapi.com/api/location/${locationValue}`;
+
+    locationInfos.innerHTML = ""; // limpa antes
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      const residents = data.residents;
+
+      for (const residentUrl of residents) {
+        const residentResponse = await fetch(residentUrl);
+        const residentData = await residentResponse.json();
+
+        locationInfos.insertAdjacentHTML(
+          "beforeend",
+          `
+          <div class="resident-card">
+            <h3>${residentData.name}</h3>
+            <img src="${residentData.image}" alt="${residentData.name}">
+          </div>
+          `
+        );
+      }
+
+    } catch (error) {
+      console.error("error", error);
+    }
+  });
+}
+
+consomeApi2();
+*/
