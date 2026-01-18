@@ -12,11 +12,26 @@
         <h1>WELCOME TO RICK AND MORTY API</h1>
     </div>
         <section>
-            <div id="search">
-                <input type="number" id="search-input" placeholder="search episode">
-                <button id="search-button">Search</button>
+            <div id="inputs-container">
+
+            <div id="search-episode">
+                <input type="number" class="input" id="search-episode-input" placeholder="search episode (Ex: 10)">
+                <button id="episode-btn" class="search-btn">Search</button>
             </div>
-            <div id="infos"></div>
+
+            <div id="search-location">
+                <input type="number" class="input" id="search-location-input" placeholder="search location">
+                <button id="location-btn" class="search-btn">Search</button>
+            </div>
+
+            </div>
+            <div id="infos">
+                <div id="episode-infos"></div>
+                <div id="location-infos"></div>
+            </div>
+
+            <div id="images"></div>
+               
         </section>
 </body>
 </html>
