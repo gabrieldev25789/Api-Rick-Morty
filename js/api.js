@@ -8,6 +8,8 @@ const locationInfos = document.querySelector("#location-infos")
 
 const imagesContainer = document.querySelector("#images")
 
+const text = document.querySelector("#h2")
+
 async function consomeApi() {
 
   episodeBtn.addEventListener("click", async () => {
@@ -23,16 +25,15 @@ async function consomeApi() {
     const url = `https://rickandmortyapi.com/api/episode/${inputEpisodeValue}`
 
     try {
-        
-    episodeInfos.innerHTML = "" 
-    imagesContainer.innerHTML = "" 
-
+    [episodeInfos, imagesContainer].forEach((el) => el.innerHTML = "")
+    
     const response = await fetch(url)
     const data = await response.json()
     console.log(data.characters)
     const characters = data.characters
     
     for ( const characterUrl of characters ){
+        text.classList.remove("hide")
         const characterResponse = await fetch(characterUrl);
         const characterData = await characterResponse.json();
         const imageCharacter = characterData.image
@@ -44,12 +45,36 @@ async function consomeApi() {
         img.classList.add("character-img")
         img.src = imageCharacter 
 
-        const nameCharacter = document.createElement("p")
-        nameCharacter.classList.add("name-character")
-        nameCharacter.textContent = characterData.name 
+        const ulCharacter = document.createElement("ul")
+        ulCharacter.classList.add("ul-character")
+
+        const nameCharacter = document.createElement("li")
+        nameCharacter.classList.add("info-character")
+        nameCharacter.id = "name-character"
+        nameCharacter.textContent = `Name: ${characterData.name}` 
+        
+        const originCharacter = document.createElement("li")
+        originCharacter.classList.add("info-character")
+        originCharacter.id = "origin-character"
+        originCharacter.textContent = `🌍 Origin: ${characterData.origin.name}` 
+        
+        const statusCharacter = document.createElement("li")
+        statusCharacter.classList.add("info-character")
+        statusCharacter.id = "status-character"
+        statusCharacter.textContent = `🧬 Status: ${characterData.status}` 
+
+        const genderCharacter = document.createElement("li")
+        genderCharacter.classList.add("info-character")
+        genderCharacter.id = "gender-character"
+        genderCharacter.textContent = `🚹 Gender: ${characterData.gender}` 
 
         divImageInfos.appendChild(img)
-        divImageInfos.appendChild(nameCharacter)
+        ulCharacter.appendChild(nameCharacter)
+        ulCharacter.appendChild(originCharacter)
+        ulCharacter.appendChild(statusCharacter)
+        ulCharacter.appendChild(genderCharacter)
+        divImageInfos.appendChild(ulCharacter)
+      
         imagesContainer.appendChild(divImageInfos)
     
         console.log(characterData)
