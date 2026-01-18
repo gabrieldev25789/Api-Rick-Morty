@@ -22,7 +22,24 @@ h1{
     padding: 1rem;
 }
 
-#search-input{
+#inputs-container{
+    display: flex;
+    background: linear-gradient(120deg, #2a3b47, #489ec9, #268b6b);
+}
+
+#search-episode,
+#search-location{
+    display: flex;
+    margin: 2rem auto;
+}
+
+#infos{
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 2px solid white;
+}
+
+.input{
   margin-left: 1rem;
   width: 100%;    
   max-width: 320px;
@@ -39,18 +56,19 @@ h1{
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-#search-input::placeholder{
+.input::placeholder{
     color: #ffffff;
 }
 
-#search-input:focus{
+.input:focus{
   border-color: #4f46e5;  
   box-shadow: 
     0 0 0 3px rgba(79, 70, 229, 0.25),
     0 10px 25px rgba(79, 70, 229, 0.15);
 }
 
-#search-button{
+.search-btn{
+    margin-left: 0.6rem;
     padding: 0.5rem;
     background: linear-gradient(135deg, #7ccc63, #50b830);
     color: #fff;
@@ -62,17 +80,84 @@ h1{
     transition: all 0.3s ease;
 }
 
-#search-button:hover{
+.search-btn:hover{
     transform: translateY(-3px);
     box-shadow: 0 15px 30px rgba(79, 70, 229, 0.5);
 }
 
-#search-button:active{
+.search-btn:active{
     transform: translateY(0);
     box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
 }
 
 .list{
     margin: 1.5rem;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
+}
+
+#h2{
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 1.3rem;
+    border-bottom: 2px solid white;
+    width: 70vh;
+    margin: 1rem auto;
+    padding-bottom: 0.5rem;
+}
+
+#images{
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.image-infos{
+    margin: 1rem auto;
+    padding-bottom: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: bold;
+    border-bottom: 2px solid rgb(255, 255, 255);
+}
+
+.character-img{
+    box-shadow: 3px 3px 3px  #4aa3af;
+    margin: 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.3s ease; /* suaviza */
+}
+
+.character-img:hover{
+    transform: scale(1.1);
+}
+
+.ul-character{
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+.info-character{
+    list-style: none;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    color: #fff;
+
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+
+    border: 1px solid rgba(255,255,255,0.25);
+    transition: all 0.25s ease;
+}
+
+.info-character:hover{
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+
+.hide{
+    display: none;
 }
