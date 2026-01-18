@@ -6,6 +6,8 @@ const inputLocation = document.querySelector("#search-location-input")
 const locationBtn = document.querySelector("#location-btn")
 const locationInfos = document.querySelector("#location-infos")
 
+const imagesContainer = document.querySelector("#images")
+
 async function consomeApi() {
 
   episodeBtn.addEventListener("click", async () => {
@@ -21,11 +23,38 @@ async function consomeApi() {
     const url = `https://rickandmortyapi.com/api/episode/${inputEpisodeValue}`
 
     try {
-      episodeInfos.innerHTML = ""  
-      const response = await fetch(url)
-      const data = await response.json()
-      console.log(data)
+        
+    episodeInfos.innerHTML = "" 
+    imagesContainer.innerHTML = "" 
 
+    const response = await fetch(url)
+    const data = await response.json()
+    console.log(data.characters)
+    const characters = data.characters
+    
+    for ( const characterUrl of characters ){
+        const characterResponse = await fetch(characterUrl);
+        const characterData = await characterResponse.json();
+        const imageCharacter = characterData.image
+
+        const divImageInfos = document.createElement("div")
+        divImageInfos.classList.add("image-infos")
+
+        const img = document.createElement("img")
+        img.classList.add("character-img")
+        img.src = imageCharacter 
+
+        const nameCharacter = document.createElement("p")
+        nameCharacter.classList.add("name-character")
+        nameCharacter.textContent = characterData.name 
+
+        divImageInfos.appendChild(img)
+        divImageInfos.appendChild(nameCharacter)
+        imagesContainer.appendChild(divImageInfos)
+    
+        console.log(characterData)
+    }
+     
     inputEpisode.value = ""
 
     const ulInfos = document.createElement("ul")
@@ -73,6 +102,10 @@ consomeApi()
 
 async function consomeApi2(){
     locationBtn.addEventListener("click", async () =>{
+        if(inputLocation.value >= 127){
+            locationInfos.textContent = "Location not found"
+            return 
+        }
         locationInfos.innerHTML = ""
         const locationValue = inputLocation.value
 
