@@ -13,11 +13,15 @@ const text = document.querySelector("#h2")
 async function consomeApi() {
 
   episodeBtn.addEventListener("click", async () => {
+        locationInfos.classList.add("hide")
+
     if(inputEpisode.value === ""){
         episodeInfos.textContent = "Search for an apisode"    
     return
     }  if(inputEpisode.value >= 52){
         episodeInfos.textContent = "Not found episode"
+        text.classList.add("hide")
+        imagesContainer.classList.add("hide")
         return
     }
     const inputEpisodeValue = inputEpisode.value
@@ -26,6 +30,7 @@ async function consomeApi() {
 
     try {
     [episodeInfos, imagesContainer].forEach((el) => el.innerHTML = "")
+
     
     const response = await fetch(url)
     const data = await response.json()
@@ -33,7 +38,7 @@ async function consomeApi() {
     const characters = data.characters
     
     for ( const characterUrl of characters ){
-        text.classList.remove("hide")
+        [episodeInfos, text, imagesContainer].forEach((el) => el.classList.remove("hide"))
         const characterResponse = await fetch(characterUrl);
         const characterData = await characterResponse.json();
         const imageCharacter = characterData.image
@@ -76,8 +81,6 @@ async function consomeApi() {
         divImageInfos.appendChild(ulCharacter)
       
         imagesContainer.appendChild(divImageInfos)
-    
-        console.log(characterData)
     }
      
     inputEpisode.value = ""
@@ -127,6 +130,7 @@ consomeApi()
 
 async function consomeApi2(){
     locationBtn.addEventListener("click", async () =>{
+        locationInfos.classList.remove("hide")
         if(inputLocation.value >= 127){
             locationInfos.textContent = "Location not found"
             return 
@@ -137,9 +141,27 @@ async function consomeApi2(){
         const url = `https://rickandmortyapi.com/api/location/${locationValue}`
         
         try{
+            [episodeInfos, text, imagesContainer].forEach((el) => el.classList.add("hide"))
+          
             const response = await fetch(url)
             const data = await response.json()
-            const resident = data.residents
+            const residents = data.residents
+
+            for (const residentsUrl of residents){
+              imagesContainer.classList.remove("hide")
+                const residentResponse = await fetch(residentsUrl)
+                const residentData =  await residentResponse.json()
+
+                const img = document.createElement("img")
+                img.classList.add("character-img")
+                img.src = residentData.image
+
+                imagesContainer.appendChild(img)
+                console.log(residentData)
+             
+              }
+
+           
     
             const ulInfos = document.createElement("ul")
             ulInfos.id = "ul-infos"
