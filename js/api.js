@@ -10,6 +10,8 @@ const imagesContainer = document.querySelector("#images")
 
 const text = document.querySelector("#h2")
 
+let imageInfos = []
+
 async function consomeApi() {
 
   episodeBtn.addEventListener("click", async () => {
@@ -36,8 +38,43 @@ async function consomeApi() {
     const data = await response.json()
     console.log(data.characters)
     const characters = data.characters
-    
-    for ( const characterUrl of characters ){
+     
+    inputEpisode.value = ""
+
+    const ulInfos = document.createElement("ul")
+    ulInfos.id = "ul-infos"
+
+    const nameEpisode = document.createElement("li")
+    nameEpisode.classList.add("list")
+    nameEpisode.id = "name-episode"
+    nameEpisode.textContent = `Name: ${data.name}` 
+
+    const dateRealese = document.createElement("li")
+    dateRealese.classList.add("list")
+    dateRealese.id = "date-realese"
+    dateRealese.textContent = `Date realese: ${data.air_date}`
+
+    const episodeSeason = document.createElement("li")
+    episodeSeason.classList.add("list")
+    episodeSeason.id = "episode-season"
+    episodeSeason.textContent = `Season/Episode: ${data.episode}`
+
+    const id = document.createElement("li")
+    id.classList.add("list")
+    id.id = "episode-season"
+    id.textContent = `ID: ${data.id}`
+
+    ulInfos.appendChild(nameEpisode)
+    ulInfos.appendChild(dateRealese)
+    ulInfos.appendChild(episodeSeason)
+    ulInfos.appendChild(id)
+
+    episodeInfos.appendChild(nameEpisode)
+    episodeInfos.appendChild(dateRealese)
+    episodeInfos.appendChild(episodeSeason)
+    episodeInfos.appendChild(id)
+
+     for ( const characterUrl of characters ){
         [episodeInfos, text, imagesContainer].forEach((el) => el.classList.remove("hide"))
         const characterResponse = await fetch(characterUrl);
         const characterData = await characterResponse.json();
@@ -45,6 +82,10 @@ async function consomeApi() {
 
         const divImageInfos = document.createElement("div")
         divImageInfos.classList.add("image-infos")
+
+        imageInfos.push(divImageInfos)
+
+        text.textContent = "Characters appearing in this episode:"
 
         const img = document.createElement("img")
         img.classList.add("character-img")
@@ -82,41 +123,6 @@ async function consomeApi() {
       
         imagesContainer.appendChild(divImageInfos)
     }
-     
-    inputEpisode.value = ""
-
-    const ulInfos = document.createElement("ul")
-    ulInfos.id = "ul-infos"
-
-    const nameEpisode = document.createElement("li")
-    nameEpisode.classList.add("list")
-    nameEpisode.id = "name-episode"
-    nameEpisode.textContent = `Name: ${data.name}` 
-
-    const dateRealese = document.createElement("li")
-    dateRealese.classList.add("list")
-    dateRealese.id = "date-realese"
-    dateRealese.textContent = `Date realese: ${data.air_date}`
-
-    const episodeSeason = document.createElement("li")
-    episodeSeason.classList.add("list")
-    episodeSeason.id = "episode-season"
-    episodeSeason.textContent = `Season/Episode: ${data.episode}`
-
-    const id = document.createElement("li")
-    id.classList.add("list")
-    id.id = "episode-season"
-    id.textContent = `ID: ${data.id}`
-
-    ulInfos.appendChild(nameEpisode)
-    ulInfos.appendChild(dateRealese)
-    ulInfos.appendChild(episodeSeason)
-    ulInfos.appendChild(id)
-
-    episodeInfos.appendChild(nameEpisode)
-    episodeInfos.appendChild(dateRealese)
-    episodeInfos.appendChild(episodeSeason)
-    episodeInfos.appendChild(id)
 
       console.log(episodeInfos)
     } catch (error) {
@@ -147,22 +153,6 @@ async function consomeApi2(){
             const data = await response.json()
             const residents = data.residents
 
-            for (const residentsUrl of residents){
-              imagesContainer.classList.remove("hide")
-                const residentResponse = await fetch(residentsUrl)
-                const residentData =  await residentResponse.json()
-
-                const img = document.createElement("img")
-                img.classList.add("character-img")
-                img.src = residentData.image
-
-                imagesContainer.appendChild(img)
-                console.log(residentData)
-             
-              }
-
-           
-    
             const ulInfos = document.createElement("ul")
             ulInfos.id = "ul-infos"
 
@@ -194,6 +184,26 @@ async function consomeApi2(){
             ulInfos.appendChild(id)
 
             locationInfos.appendChild(ulInfos)
+
+            for (const residentsUrl of residents){
+              imagesContainer.innerHTML = ""
+              imagesContainer.classList.remove("hide")
+              
+
+                const residentResponse = await fetch(residentsUrl)
+                const residentData =  await residentResponse.json()
+
+                text.classList.remove("hide")
+                text.textContent = "Characters who belong to this place:"
+
+                const img = document.createElement("img")
+                img.classList.add("character-img")
+                img.src = residentData.image
+
+                imagesContainer.classList.remove("hide")
+                imagesContainer.appendChild(img)
+                console.log(residentData)
+              }
 
             
         } catch{
