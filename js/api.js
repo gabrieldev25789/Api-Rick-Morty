@@ -133,21 +133,57 @@ async function consomeApi() {
 
 consomeApi()
 
+function createUl(){
+    const ulInfos = document.createElement("ul")
+    ulInfos.id = "ul-infos"
+
+    return ulInfos
+}
+
+function createLi(){
+      const nameLocation = document.createElement("li")
+      nameLocation.classList.add("list")
+      nameLocation.id = "name-location"
+
+      const dimension = document.createElement("li")
+      dimension.classList.add("list")
+      dimension.id = "dimension"
+
+      const type = document.createElement("li")
+      type.classList.add("list")
+      type.id = "type"
+
+      
+      const id = document.createElement("li")
+      id.classList.add("list")
+      id.id = "id"
+
+      return [nameLocation, dimension, type, id]
+}
+
+function validInput(){
+   const ulInfos = createUl()
+
+  if(inputLocation.value >= 127){
+      locationInfos.textContent = "Location not found"
+      ulInfos.innerHTML = ""
+      return 
+    }
+}
 
 async function consomeApi2(){
     locationBtn.addEventListener("click", async () =>{
-        locationInfos.classList.remove("hide")
-        if(inputLocation.value >= 127){
-            locationInfos.textContent = "Location not found"
-            return 
-        }
+    const ulInfos = createUl()
+
         locationInfos.innerHTML = ""
+        locationInfos.classList.remove("hide")
         const locationValue = inputLocation.value
+        validInput()
 
         const url = `https://rickandmortyapi.com/api/location/${locationValue}`
         
         try{
-            [episodeInfos, text, imagesContainer].forEach((el) => el.classList.add("hide"))
+          [episodeInfos, text, imagesContainer].forEach((el) => el.classList.add("hide"))
           
             const response = await fetch(url)
             const data = await response.json()
@@ -155,35 +191,26 @@ async function consomeApi2(){
 
             inputLocation.value = ""
 
-            const ulInfos = document.createElement("ul")
-            ulInfos.id = "ul-infos"
+            const lists = createLi()
+            lists.forEach((li)=>{
+              ulInfos.appendChild(li)
 
-            const nameLocation = document.createElement("li")
-            nameLocation.classList.add("list")
-            nameLocation.id = "name-location"
-            nameLocation.textContent = `Name: ${data.name}` 
+              if(li.id === "name-location"){
+                li.textContent = `Name: ${data.name}`
+              } 
 
-            const dimension = document.createElement("li")
-            dimension.classList.add("list")
-            dimension.id = "dimension"
-            dimension.textContent = `Dimension: ${data.dimension}`
-
-            const type = document.createElement("li")
-            type.classList.add("list")
-            type.id = "type"
-            type.textContent = `type: ${data.type}`
-
-            const id = document.createElement("li")
-            id.classList.add("list")
-            id.id = "id"
-            id.textContent = `ID: ${data.id}`
-
-            console.log(data)
-
-            ulInfos.appendChild(nameLocation)
-            ulInfos.appendChild(dimension)
-            ulInfos.appendChild(type)
-            ulInfos.appendChild(id)
+              if(li.id === "dimension"){
+                li.textContent = `Dimension: ${data.dimension}`
+              } 
+              
+              if(li.id === "type"){
+                li.textContent = `type: ${data.type}`
+              } 
+              
+              if(li.id === "id"){
+                li.textContent = `ID: ${data.id}`
+              }
+            })
 
             locationInfos.appendChild(ulInfos)
 
