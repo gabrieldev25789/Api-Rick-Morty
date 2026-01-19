@@ -153,6 +153,8 @@ async function consomeApi2(){
             const data = await response.json()
             const residents = data.residents
 
+            inputLocation.value = ""
+
             const ulInfos = document.createElement("ul")
             ulInfos.id = "ul-infos"
 
@@ -185,25 +187,58 @@ async function consomeApi2(){
 
             locationInfos.appendChild(ulInfos)
 
+            imagesContainer.innerHTML = ""
+
             for (const residentsUrl of residents){
-              imagesContainer.innerHTML = ""
               imagesContainer.classList.remove("hide")
-              
 
-                const residentResponse = await fetch(residentsUrl)
-                const residentData =  await residentResponse.json()
+              const residentResponse = await fetch(residentsUrl)
+              const residentData =  await residentResponse.json()
 
-                text.classList.remove("hide")
-                text.textContent = "Characters who belong to this place:"
+              text.classList.remove("hide")
+              text.textContent = "Characters who belong to this place:"
 
-                const img = document.createElement("img")
-                img.classList.add("character-img")
-                img.src = residentData.image
+              const containerResidents = document.createElement("div")
+              containerResidents.classList.add("container-residents")
 
-                imagesContainer.classList.remove("hide")
-                imagesContainer.appendChild(img)
-                console.log(residentData)
-              }
+              const img = document.createElement("img")
+              img.classList.add("character-img")
+              img.src = residentData.image
+
+              const ulResidents = document.createElement("ul")
+              ulResidents.classList.add("ul-residents")
+
+              const residentName = document.createElement("li")
+              residentName.classList.add("info-character")
+              residentName.id = "resident-name"
+              residentName.textContent = `Name: ${residentData.name}`
+
+              const residentGender = document.createElement("li")
+              residentGender.classList.add("info-character")
+              residentGender.id = "resident-gender"
+              residentGender.textContent = `🚹 Gender: ${residentData.gender}`
+
+              const residentSpecie = document.createElement("li")
+              residentSpecie.classList.add("info-character")
+              residentSpecie.id = "resident-specie"
+              residentSpecie.textContent = `🧍‍♂️ Specie: ${residentData.species}`
+
+              const residentStatus = document.createElement("li")
+              residentStatus.classList.add("info-character")
+              residentStatus.id = "resident-status"
+              residentStatus.textContent = `🧬 Status: ${residentData.status}`
+
+              ulResidents.appendChild(residentName)
+              ulResidents.appendChild(residentGender)
+              ulResidents.appendChild(residentSpecie)
+              ulResidents.appendChild(residentStatus)
+
+              containerResidents.appendChild(img)
+              containerResidents.appendChild(ulResidents)
+             
+              imagesContainer.appendChild(containerResidents)
+              console.log(residentData.name, residentData, residentData.image)
+            }
 
             
         } catch{
