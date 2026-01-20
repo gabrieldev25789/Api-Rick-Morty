@@ -216,7 +216,7 @@ async function consomeApi2(){
         locationInfos.innerHTML = ""
         locationInfos.classList.remove("hide")
         const locationValue = inputLocation.value
-        validInput()
+        /*validInput()*/
 
         const url = `https://rickandmortyapi.com/api/location/${locationValue}`
         
@@ -238,6 +238,14 @@ async function consomeApi2(){
             locationInfos.appendChild(ulInfos)
 
             imagesContainer.innerHTML = ""
+
+            if (residents.length === 0) {
+            imagesContainer.classList.remove("hide")
+            text.classList.remove("hide")
+            text.textContent = "No character belong to this place."
+            console.log("Location sem residents")
+            return
+          }
 
             const residentsData = await Promise.all(
               residents.map(url =>
