@@ -140,24 +140,24 @@ function createUl(){
     return ulInfos
 }
 
-function createLi(){
-      const nameLocation = document.createElement("li")
-      nameLocation.classList.add("list")
-      nameLocation.id = "name-location"
+function createLiLocation(text, className, id) {
+  const li = document.createElement("li")
+  li.textContent = text
 
-      const dimension = document.createElement("li")
-      dimension.classList.add("list")
-      dimension.id = "dimension"
+  if (className) li.classList.add(className)
+  if (id) li.id = id
 
-      const type = document.createElement("li")
-      type.classList.add("list")
-      type.id = "type"
-  
-      const id = document.createElement("li")
-      id.classList.add("list")
-      id.id = "id"
+  return li
+}
 
-      return [nameLocation, dimension, type, id]
+function createLiResidents(text, clasName, id){
+    const li = document.createElement("li")
+    li.textContent = text 
+
+    if (clasName) li.classList.add(clasName)
+    if (id) li.id = id
+
+    return li 
 }
 
 function createContainerResidents(){
@@ -181,24 +181,22 @@ function createUlResidents(){
       return ulResidents
 }
 
-function createLiResidents(){
-        const residentName = document.createElement("li")
-        residentName.classList.add("info-character")
-        residentName.id = "resident-name"
+function createLocationLis(data) {
+  return [
+    createLiLocation(`Name: ${data.name}`, "list", "name-location"),
+    createLiLocation(`Dimension: ${data.dimension}`, "list", "dimension"),
+    createLiLocation(`Type: ${data.type}`, "list", "type"),
+    createLiLocation(`ID: ${data.id}`, "list", "id")
+  ]
+}
 
-        const residentGender = document.createElement("li")
-        residentGender.classList.add("info-character")
-        residentGender.id = "resident-gender"
-
-        const residentSpecie = document.createElement("li")
-        residentSpecie.classList.add("info-character")
-        residentSpecie.id = "resident-specie"
-              
-        const residentStatus = document.createElement("li")
-        residentStatus.classList.add("info-character")
-        residentStatus.id = "resident-status"
-
-      return [residentName, residentGender, residentSpecie, residentStatus]
+function createResidentLis(data){
+  return [
+    createLiResidents(`Name: ${data.name}`, "info-character", "resident-name"),
+    createLiResidents(`🚹 Gender: ${data.gender}`, "info-character", "resident-gender"),
+    createLiResidents(`🧍‍♂️ Specie: ${data.species}`, "info-character", "resident-specie"),
+    createLiResidents(`🧬 Status: ${data.status}`, "info-character", "resident-status")
+  ]
 }
 
 function validInput(){
@@ -231,19 +229,11 @@ async function consomeApi2(){
 
             inputLocation.value = ""
 
-            const lists = createLi()
+            const lists = createLocationLis(data)
+
             lists.forEach((li)=>{
               ulInfos.appendChild(li)
-
-              if(li.id === "name-location") li.textContent = `Name: ${data.name}`
-
-              if(li.id === "dimension") li.textContent = `Dimension: ${data.dimension}`
-              
-              if(li.id === "type") li.textContent = `type: ${data.type}`
-                            
-              if(li.id === "id") li.textContent = `ID: ${data.id}`
-            }
-          )
+            })
 
             locationInfos.appendChild(ulInfos)
 
@@ -265,18 +255,12 @@ async function consomeApi2(){
 
               const ulResidents = createUlResidents()
 
-              const listResidents = createLiResidents()
+              const listResidents = createResidentLis(residentData)
 
-    listResidents.forEach((li)=>{
-        ulResidents.appendChild(li)
-      if(li.id === "resident-name")li.textContent = `Name: ${residentData.name}`
-                
-      if(li.id === "resident-gender")li.textContent = `🚹 Gender: ${residentData.gender}`
-              
-      if(li.id === "resident-specie")li.textContent = `🧍‍♂️ Specie: ${residentData.species}`
-                
-      if(li.id === "resident-status")li.textContent = `🧬 Status: ${residentData.status}`
-    })
+              listResidents.forEach((li)=>{
+                ulResidents.appendChild(li)
+              })
+
               containerResidents.appendChild(img)
               containerResidents.appendChild(ulResidents)
              
