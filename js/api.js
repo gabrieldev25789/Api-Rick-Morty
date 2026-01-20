@@ -152,13 +152,53 @@ function createLi(){
       const type = document.createElement("li")
       type.classList.add("list")
       type.id = "type"
-
-      
+  
       const id = document.createElement("li")
       id.classList.add("list")
       id.id = "id"
 
       return [nameLocation, dimension, type, id]
+}
+
+function createContainerResidents(){
+      const containerResidents = document.createElement("div")
+      containerResidents.classList.add("container-residents")
+
+      return containerResidents
+  }
+
+function createImg(){
+      const img = document.createElement("img")
+      img.classList.add("character-img")
+
+      return img 
+}
+
+function createUlResidents(){
+      const ulResidents = document.createElement("ul")
+      ulResidents.classList.add("ul-residents")
+
+      return ulResidents
+}
+
+function createLiResidents(){
+        const residentName = document.createElement("li")
+        residentName.classList.add("info-character")
+        residentName.id = "resident-name"
+
+        const residentGender = document.createElement("li")
+        residentGender.classList.add("info-character")
+        residentGender.id = "resident-gender"
+
+        const residentSpecie = document.createElement("li")
+        residentSpecie.classList.add("info-character")
+        residentSpecie.id = "resident-specie"
+              
+        const residentStatus = document.createElement("li")
+        residentStatus.classList.add("info-character")
+        residentStatus.id = "resident-status"
+
+      return [residentName, residentGender, residentSpecie, residentStatus]
 }
 
 function validInput(){
@@ -195,22 +235,15 @@ async function consomeApi2(){
             lists.forEach((li)=>{
               ulInfos.appendChild(li)
 
-              if(li.id === "name-location"){
-                li.textContent = `Name: ${data.name}`
-              } 
+              if(li.id === "name-location") li.textContent = `Name: ${data.name}`
 
-              if(li.id === "dimension"){
-                li.textContent = `Dimension: ${data.dimension}`
-              } 
+              if(li.id === "dimension") li.textContent = `Dimension: ${data.dimension}`
               
-              if(li.id === "type"){
-                li.textContent = `type: ${data.type}`
-              } 
-              
-              if(li.id === "id"){
-                li.textContent = `ID: ${data.id}`
-              }
-            })
+              if(li.id === "type") li.textContent = `type: ${data.type}`
+                            
+              if(li.id === "id") li.textContent = `ID: ${data.id}`
+            }
+          )
 
             locationInfos.appendChild(ulInfos)
 
@@ -225,49 +258,31 @@ async function consomeApi2(){
               text.classList.remove("hide")
               text.textContent = "Characters who belong to this place:"
 
-              const containerResidents = document.createElement("div")
-              containerResidents.classList.add("container-residents")
+              const containerResidents = createContainerResidents()
 
-              const img = document.createElement("img")
-              img.classList.add("character-img")
+              const img = createImg()
               img.src = residentData.image
 
-              const ulResidents = document.createElement("ul")
-              ulResidents.classList.add("ul-residents")
+              const ulResidents = createUlResidents()
 
-              const residentName = document.createElement("li")
-              residentName.classList.add("info-character")
-              residentName.id = "resident-name"
-              residentName.textContent = `Name: ${residentData.name}`
+              const listResidents = createLiResidents()
 
-              const residentGender = document.createElement("li")
-              residentGender.classList.add("info-character")
-              residentGender.id = "resident-gender"
-              residentGender.textContent = `🚹 Gender: ${residentData.gender}`
-
-              const residentSpecie = document.createElement("li")
-              residentSpecie.classList.add("info-character")
-              residentSpecie.id = "resident-specie"
-              residentSpecie.textContent = `🧍‍♂️ Specie: ${residentData.species}`
-
-              const residentStatus = document.createElement("li")
-              residentStatus.classList.add("info-character")
-              residentStatus.id = "resident-status"
-              residentStatus.textContent = `🧬 Status: ${residentData.status}`
-
-              ulResidents.appendChild(residentName)
-              ulResidents.appendChild(residentGender)
-              ulResidents.appendChild(residentSpecie)
-              ulResidents.appendChild(residentStatus)
-
+    listResidents.forEach((li)=>{
+        ulResidents.appendChild(li)
+      if(li.id === "resident-name")li.textContent = `Name: ${residentData.name}`
+                
+      if(li.id === "resident-gender")li.textContent = `🚹 Gender: ${residentData.gender}`
+              
+      if(li.id === "resident-specie")li.textContent = `🧍‍♂️ Specie: ${residentData.species}`
+                
+      if(li.id === "resident-status")li.textContent = `🧬 Status: ${residentData.status}`
+    })
               containerResidents.appendChild(img)
               containerResidents.appendChild(ulResidents)
              
               imagesContainer.appendChild(containerResidents)
-              console.log(residentData.name, residentData, residentData.image)
             }
 
-            
         } catch{
             console.error("erro")
         }
