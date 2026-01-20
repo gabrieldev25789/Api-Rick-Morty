@@ -209,6 +209,13 @@ function validInput(){
     }
 }
 
+function createRickImage(){
+    const img = document.createElement("img")
+    img.id = "rick-img"
+
+    return img 
+}
+
 async function consomeApi2(){
     locationBtn.addEventListener("click", async () =>{
     const ulInfos = createUl()
@@ -238,12 +245,15 @@ async function consomeApi2(){
             locationInfos.appendChild(ulInfos)
 
             imagesContainer.innerHTML = ""
+            const rickImg = createRickImage()
 
             if (residents.length === 0) {
             imagesContainer.classList.remove("hide")
             text.classList.remove("hide")
             text.textContent = "No character belong to this place."
-            console.log("Location sem residents")
+            rickImg.src = `./img/rick-morty-img.jpg`
+
+            imagesContainer.appendChild(rickImg)
             return
           }
 
