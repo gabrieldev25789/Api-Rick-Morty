@@ -239,15 +239,15 @@ async function consomeApi2(){
 
             imagesContainer.innerHTML = ""
 
-            for (const residentsUrl of residents){
+            const residentsData = await Promise.all(
+              residents.map(url =>
+              fetch(url).then(response => response.json())))
+
               imagesContainer.classList.remove("hide")
-
-              const residentResponse = await fetch(residentsUrl)
-              const residentData =  await residentResponse.json()
-
               text.classList.remove("hide")
               text.textContent = "Characters who belong to this place:"
 
+              residentsData.forEach((residentData) => {
               const containerResidents = createContainerResidents()
 
               const img = createImg()
@@ -256,61 +256,16 @@ async function consomeApi2(){
               const ulResidents = createUlResidents()
 
               const listResidents = createResidentLis(residentData)
+              listResidents.forEach(li => ulResidents.appendChild(li))
 
-              listResidents.forEach((li)=>{
-                ulResidents.appendChild(li)
-              })
-
-              containerResidents.appendChild(img)
-              containerResidents.appendChild(ulResidents)
-             
+              containerResidents.append(img, ulResidents)
               imagesContainer.appendChild(containerResidents)
-            }
-
-        } catch{
-            console.error("erro")
+              })
+          } 
+            catch{
+              console.error("erro")
         }
     })
 }
 
 consomeApi2()
-
-
-
-
-/*
-async function consomeApi2() {
-  locationBtn.addEventListener("click", async () => {
-    const locationValue = inputLocation.value;
-    const url = `https://rickandmortyapi.com/api/location/${locationValue}`;
-
-    locationInfos.innerHTML = ""; // limpa antes
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      const residents = data.residents;
-
-      for (const residentUrl of residents) {
-        const residentResponse = await fetch(residentUrl);
-        const residentData = await residentResponse.json();
-
-        locationInfos.insertAdjacentHTML(
-          "beforeend",
-          `
-          <div class="resident-card">
-            <h3>${residentData.name}</h3>
-            <img src="${residentData.image}" alt="${residentData.name}">
-          </div>
-          `
-        );
-      }
-
-    } catch (error) {
-      console.error("error", error);
-    }
-  });
-}
-
-consomeApi2();
-*/
