@@ -103,35 +103,31 @@ async function consomeApi() {
       episodeInfos.appendChild(ulInfos)
     })
   
-     for ( const characterUrl of characters ){
-        [episodeInfos, text, imagesContainer].forEach((el) => el.classList.remove("hide"))
-        const characterResponse = await fetch(characterUrl);
-        const characterData = await characterResponse.json();
-        const imageCharacter = characterData.image
+      text.textContent = "Characters appearing in this episode:"
 
+      const charactersData = await Promise.all(
+      characters.map(async (url) => {
+        [episodeInfos, text, imagesContainer].forEach(el =>
+        el.classList.remove("hide")
+      )
+        const response = await fetch(url)
+        return response.json()
+        })
+      )
+
+        charactersData.forEach((characterData) => {
         const divImageInfos = createDivImgInfos()
-        imageInfos.push(divImageInfos)
-
-        text.textContent = "Characters appearing in this episode:"
 
         const img = createImg()
-        img.src = imageCharacter 
+        img.src = characterData.image
 
         const ulCharacter = createUlInfosCharacter()
-
         const listCharacters = createCharacterLis(characterData)
 
-        divImageInfos.appendChild(img)
-
-        listCharacters.forEach((li)=>{
-          console.log(li)
-          divImageInfos.appendChild(ulCharacter)
-          ulCharacter.appendChild(li)
-        })
-
+        ulCharacter.append(...listCharacters)
+        divImageInfos.append(img, ulCharacter)
         imagesContainer.appendChild(divImageInfos)
-      }
-
+      })
       console.log(episodeInfos)
     } catch (error) {
       console.error("Erro ao buscar episódio", error)
