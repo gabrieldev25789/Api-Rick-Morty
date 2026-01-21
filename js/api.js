@@ -13,7 +13,7 @@ const text = document.querySelector("#h2")
 let imageInfos = []
 
 // EPISODE API 
-function createLiCharacter(text, className, id) {
+function createLiEpisode(text, className, id) {
   const li = document.createElement("li")
   li.textContent = text
 
@@ -23,12 +23,45 @@ function createLiCharacter(text, className, id) {
   return li
 }
 
+function createEpisodeLis(data){
+  return [
+    createLiEpisode(`Name: ${data.name}`, "list", "name-episode"),
+    createLiEpisode(`Date release: ${data.air_date}`, "list", "date-release"),
+    createLiEpisode(`Season/Episode: ${data.episode}`, "list", "episode-season"),
+    createLiEpisode(`ID: ${data.id}`, "list", "id")
+  ]
+}
+
+function createDivImgInfos(){
+      const divImageInfos = document.createElement("div")
+      divImageInfos.classList.add("image-infos")
+
+      return divImageInfos
+}
+
+function createUlInfosCharacter(){
+      const ulCharacter = document.createElement("ul")
+      ulCharacter.classList.add("ul-character")
+
+      return ulCharacter
+}
+
+function createInfosCharacterLi(text, clasName, id){
+    const li = document.createElement("li")
+    li.textContent = text 
+
+    if (clasName) li.classList.add(clasName)
+    if (id) li.id = id 
+
+    return li
+}
+
 function createCharacterLis(data){
   return [
-    createLiCharacter(`Name: ${data.name}`, "list", "name-episode"),
-    createLiCharacter(`Date realese: ${data.air_date}`, "list", "date-release"),
-    createLiCharacter(`Season/Episode: ${data.episode}`, "list", "episode-season"),
-    createLiCharacter(`ID: ${data.id}`, "list", "id")
+    createInfosCharacterLi(`Name: ${data.name}`, "info-character", "name-character"),
+    createInfosCharacterLi(`🌍 Origin : ${data.origin.name}`, "info-character", "origin-character"),
+    createInfosCharacterLi(`🧬 Status: ${data.status}`, "info-character", "status-character"),
+    createInfosCharacterLi(`🚹 Gender: ${data.gender}`, "info-character", "gender-character")
   ]
 }
 
@@ -62,7 +95,7 @@ async function consomeApi() {
     inputEpisode.value = ""
 
     const ulInfos = createUl()
-    const lists = createCharacterLis(data)
+    const lists = createEpisodeLis(data)
     console.log(data)
     lists.forEach((li)=>{
       console.log(li)
@@ -76,49 +109,28 @@ async function consomeApi() {
         const characterData = await characterResponse.json();
         const imageCharacter = characterData.image
 
-        const divImageInfos = document.createElement("div")
-        divImageInfos.classList.add("image-infos")
-
+        const divImageInfos = createDivImgInfos()
         imageInfos.push(divImageInfos)
 
         text.textContent = "Characters appearing in this episode:"
 
-        const img = document.createElement("img")
-        img.classList.add("character-img")
+        const img = createImg()
         img.src = imageCharacter 
 
-        const ulCharacter = document.createElement("ul")
-        ulCharacter.classList.add("ul-character")
+        const ulCharacter = createUlInfosCharacter()
 
-        const nameCharacter = document.createElement("li")
-        nameCharacter.classList.add("info-character")
-        nameCharacter.id = "name-character"
-        nameCharacter.textContent = `Name: ${characterData.name}` 
-        
-        const originCharacter = document.createElement("li")
-        originCharacter.classList.add("info-character")
-        originCharacter.id = "origin-character"
-        originCharacter.textContent = `🌍 Origin: ${characterData.origin.name}` 
-        
-        const statusCharacter = document.createElement("li")
-        statusCharacter.classList.add("info-character")
-        statusCharacter.id = "status-character"
-        statusCharacter.textContent = `🧬 Status: ${characterData.status}` 
-
-        const genderCharacter = document.createElement("li")
-        genderCharacter.classList.add("info-character")
-        genderCharacter.id = "gender-character"
-        genderCharacter.textContent = `🚹 Gender: ${characterData.gender}` 
+        const listCharacters = createCharacterLis(characterData)
 
         divImageInfos.appendChild(img)
-        ulCharacter.appendChild(nameCharacter)
-        ulCharacter.appendChild(originCharacter)
-        ulCharacter.appendChild(statusCharacter)
-        ulCharacter.appendChild(genderCharacter)
-        divImageInfos.appendChild(ulCharacter)
-      
+
+        listCharacters.forEach((li)=>{
+          console.log(li)
+          divImageInfos.appendChild(ulCharacter)
+          ulCharacter.appendChild(li)
+        })
+
         imagesContainer.appendChild(divImageInfos)
-    }
+      }
 
       console.log(episodeInfos)
     } catch (error) {
