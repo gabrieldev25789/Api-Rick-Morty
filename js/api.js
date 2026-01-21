@@ -12,6 +12,26 @@ const text = document.querySelector("#h2")
 
 let imageInfos = []
 
+// EPISODE API 
+function createLiCharacter(text, className, id) {
+  const li = document.createElement("li")
+  li.textContent = text
+
+  if (className) li.classList.add(className)
+  if (id) li.id = id
+
+  return li
+}
+
+function createCharacterLis(data){
+  return [
+    createLiCharacter(`Name: ${data.name}`, "list", "name-episode"),
+    createLiCharacter(`Date realese: ${data.air_date}`, "list", "date-release"),
+    createLiCharacter(`Season/Episode: ${data.episode}`, "list", "episode-season"),
+    createLiCharacter(`ID: ${data.id}`, "list", "id")
+  ]
+}
+
 async function consomeApi() {
 
   episodeBtn.addEventListener("click", async () => {
@@ -41,39 +61,15 @@ async function consomeApi() {
      
     inputEpisode.value = ""
 
-    const ulInfos = document.createElement("ul")
-    ulInfos.id = "ul-infos"
-
-    const nameEpisode = document.createElement("li")
-    nameEpisode.classList.add("list")
-    nameEpisode.id = "name-episode"
-    nameEpisode.textContent = `Name: ${data.name}` 
-
-    const dateRealese = document.createElement("li")
-    dateRealese.classList.add("list")
-    dateRealese.id = "date-realese"
-    dateRealese.textContent = `Date realese: ${data.air_date}`
-
-    const episodeSeason = document.createElement("li")
-    episodeSeason.classList.add("list")
-    episodeSeason.id = "episode-season"
-    episodeSeason.textContent = `Season/Episode: ${data.episode}`
-
-    const id = document.createElement("li")
-    id.classList.add("list")
-    id.id = "episode-season"
-    id.textContent = `ID: ${data.id}`
-
-    ulInfos.appendChild(nameEpisode)
-    ulInfos.appendChild(dateRealese)
-    ulInfos.appendChild(episodeSeason)
-    ulInfos.appendChild(id)
-
-    episodeInfos.appendChild(nameEpisode)
-    episodeInfos.appendChild(dateRealese)
-    episodeInfos.appendChild(episodeSeason)
-    episodeInfos.appendChild(id)
-
+    const ulInfos = createUl()
+    const lists = createCharacterLis(data)
+    console.log(data)
+    lists.forEach((li)=>{
+      console.log(li)
+      ulInfos.appendChild(li)
+      episodeInfos.appendChild(ulInfos)
+    })
+  
      for ( const characterUrl of characters ){
         [episodeInfos, text, imagesContainer].forEach((el) => el.classList.remove("hide"))
         const characterResponse = await fetch(characterUrl);
@@ -133,6 +129,7 @@ async function consomeApi() {
 
 consomeApi()
 
+// LOCATION API 
 function createUl(){
     const ulInfos = document.createElement("ul")
     ulInfos.id = "ul-infos"
