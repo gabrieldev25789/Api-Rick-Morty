@@ -65,20 +65,40 @@ function createCharacterLis(data){
   ]
 }
 
+function validEpisodeInput() {
+  const rickImg = createRickImage()
+  const value = inputEpisode.value
+
+  if (!value) {
+    episodeInfos.textContent = "Search for an episode"
+    text.classList.add("hide")
+    rickImg.src = `./img/rick-morty-img2.jpg`
+    imagesContainer.appendChild(rickImg)
+    return false
+  }
+
+  if (value < 1 || value > 51) {
+    episodeInfos.textContent = "Not found episode"
+    text.classList.add("hide")
+    rickImg.src = `./img/rick-morty-img.jpg`
+    imagesContainer.appendChild(rickImg)
+    return false
+  }
+
+  return true
+}
+
+
 async function consomeApi() {
 
   episodeBtn.addEventListener("click", async () => {
-        locationInfos.classList.add("hide")
 
-    if(inputEpisode.value === ""){
-        episodeInfos.textContent = "Search for an apisode"    
-    return
-    }  if(inputEpisode.value >= 52){
-        episodeInfos.textContent = "Not found episode"
-        text.classList.add("hide")
-        imagesContainer.classList.add("hide")
-        return
-    }
+    locationInfos.classList.add("hide")
+    episodeInfos.innerHTML = ""
+    imagesContainer.innerHTML = ""
+
+    if(!validEpisodeInput()) return 
+ 
     const inputEpisodeValue = inputEpisode.value
 
     const url = `https://rickandmortyapi.com/api/episode/${inputEpisodeValue}`
@@ -86,7 +106,6 @@ async function consomeApi() {
     try {
     [episodeInfos, imagesContainer].forEach((el) => el.innerHTML = "")
 
-    
     const response = await fetch(url)
     const data = await response.json()
     console.log(data.characters)
@@ -97,6 +116,7 @@ async function consomeApi() {
     const ulInfos = createUl()
     const lists = createEpisodeLis(data)
     console.log(data)
+
     lists.forEach((li)=>{
       console.log(li)
       ulInfos.appendChild(li)
@@ -134,6 +154,7 @@ async function consomeApi() {
     } 
   })
 }
+
 
 consomeApi()
 
