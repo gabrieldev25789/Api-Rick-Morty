@@ -10,8 +10,6 @@ const imagesContainer = document.querySelector("#images")
 
 const text = document.querySelector("#h2")
 
-let imageInfos = []
-
 // EPISODE API 
 function createLiEpisode(text, className, id) {
   const li = document.createElement("li")
@@ -84,10 +82,30 @@ function validEpisodeInput() {
     imagesContainer.appendChild(rickImg)
     return false
   }
-
   return true
 }
 
+function validLocationInput() {
+  const rickImg = createRickImage()
+  const value = inputLocation.value
+
+  if (!value) {
+    locationInfos.textContent = "Search for an location"
+    text.classList.add("hide")
+    rickImg.src = `./img/rick-morty-img2.jpg`
+    imagesContainer.appendChild(rickImg)
+    return false
+  }
+
+  if (value < 1 || value > 126) {
+    locationInfos.textContent = "Not found location"
+    text.classList.add("hide")
+    rickImg.src = `./img/rick-morty-img.jpg`
+    imagesContainer.appendChild(rickImg)
+    return false
+  }
+  return true
+}
 
 async function consomeApi() {
 
@@ -115,10 +133,8 @@ async function consomeApi() {
 
     const ulInfos = createUl()
     const lists = createEpisodeLis(data)
-    console.log(data)
 
     lists.forEach((li)=>{
-      console.log(li)
       ulInfos.appendChild(li)
       episodeInfos.appendChild(ulInfos)
     })
@@ -134,7 +150,6 @@ async function consomeApi() {
         return response.json()
         })
       )
-
         charactersData.forEach((characterData) => {
         const divImageInfos = createDivImgInfos()
 
@@ -148,13 +163,11 @@ async function consomeApi() {
         divImageInfos.append(img, ulCharacter)
         imagesContainer.appendChild(divImageInfos)
       })
-      console.log(episodeInfos)
     } catch (error) {
       console.error("Erro ao buscar episódio", error)
     } 
   })
 }
-
 
 consomeApi()
 
@@ -225,16 +238,6 @@ function createResidentLis(data){
   ]
 }
 
-function validInput(){
-   const ulInfos = createUl()
-
-  if(inputLocation.value >= 127){
-      locationInfos.textContent = "Location not found"
-      ulInfos.innerHTML = ""
-      return 
-    }
-}
-
 function createRickImage(){
     const img = document.createElement("img")
     img.id = "rick-img"
@@ -242,14 +245,21 @@ function createRickImage(){
     return img 
 }
 
+function validResidents(residents, rickImg){
+    
+}
+
 async function consomeApi2(){
     locationBtn.addEventListener("click", async () =>{
     const ulInfos = createUl()
 
-        locationInfos.innerHTML = ""
         locationInfos.classList.remove("hide")
+        locationInfos.innerHTML = ""
+        imagesContainer.innerHTML = ""
+
         const locationValue = inputLocation.value
-        /*validInput()*/
+
+        if(!validLocationInput()) return 
 
         const url = `https://rickandmortyapi.com/api/location/${locationValue}`
         
@@ -272,8 +282,8 @@ async function consomeApi2(){
 
             imagesContainer.innerHTML = ""
             const rickImg = createRickImage()
-
-            if (residents.length === 0) {
+      
+          if (residents.length === 0) {
             imagesContainer.classList.remove("hide")
             text.classList.remove("hide")
             text.textContent = "No character belong to this place."
@@ -282,7 +292,6 @@ async function consomeApi2(){
             imagesContainer.appendChild(rickImg)
             return
           }
-
             const residentsData = await Promise.all(
               residents.map(url =>
               fetch(url).then(response => response.json())))
