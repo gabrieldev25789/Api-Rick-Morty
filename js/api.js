@@ -246,7 +246,15 @@ function createRickImage(){
 }
 
 function validResidents(residents, rickImg){
-    
+      if (residents.length === 0) {
+        imagesContainer.classList.remove("hide")
+        text.classList.remove("hide")
+        text.textContent = "No character belong to this place."
+        rickImg.src = `./img/rick-morty-img.jpg`
+
+        imagesContainer.appendChild(rickImg)
+        return
+      }
 }
 
 async function consomeApi2(){
@@ -283,15 +291,8 @@ async function consomeApi2(){
             imagesContainer.innerHTML = ""
             const rickImg = createRickImage()
       
-          if (residents.length === 0) {
-            imagesContainer.classList.remove("hide")
-            text.classList.remove("hide")
-            text.textContent = "No character belong to this place."
-            rickImg.src = `./img/rick-morty-img.jpg`
-
-            imagesContainer.appendChild(rickImg)
-            return
-          }
+            validResidents(residents, rickImg)
+          
             const residentsData = await Promise.all(
               residents.map(url =>
               fetch(url).then(response => response.json())))
