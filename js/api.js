@@ -266,11 +266,12 @@ function validResidents(residents, rickImg){
         imagesContainer.classList.remove("hide")
         text.classList.remove("hide")
         text.textContent = "No character belong to this place."
+        console.log(text)
         rickImg.src = `./img/rick-morty-img.jpg`
-
         imagesContainer.appendChild(rickImg)
-        return
+        return false
       }
+      return true 
 }
 
 async function consomeApi2(){
@@ -289,6 +290,7 @@ async function consomeApi2(){
         const url = `https://rickandmortyapi.com/api/location/${locationValue}`
         
         try{
+
           [episodeInfos, text, imagesContainer].forEach((el) => el.classList.add("hide"))
           
             const response = await fetch(url)
@@ -306,9 +308,9 @@ async function consomeApi2(){
             locationInfos.appendChild(ulInfos)
 
             imagesContainer.innerHTML = ""
+
             const rickImg = createRickImage()
-      
-            validResidents(residents, rickImg)
+            if(!validResidents(residents, rickImg)) return
           
             const residentsData = await Promise.all(
               residents.map(url =>
