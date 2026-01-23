@@ -1,10 +1,12 @@
 const inputEpisode = document.querySelector("#search-episode-input")
 const episodeBtn = document.querySelector("#episode-btn")
-const episodeInfos = document.querySelector("#episode-infos")
+const episodeInfos = document.querySelector("#episode-infos h2")
 
 const inputLocation = document.querySelector("#search-location-input")
 const locationBtn = document.querySelector("#location-btn")
-const locationInfos = document.querySelector("#location-infos")
+const locationInfos = document.querySelector("#location-infos h2")
+
+const infosContainer = document.querySelector("#infos")
 
 const imagesContainer = document.querySelector("#images")
 
@@ -69,18 +71,25 @@ function validEpisodeInput() {
 
   if (!value) {
     episodeInfos.textContent = "Search for an episode"
+    infosContainer.classList.add("no-found")
     text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img2.jpg`
     imagesContainer.appendChild(rickImg)
     return false
+  } else{
+    infosContainer.classList.remove("no-found")
   }
 
   if (value < 1 || value > 51) {
     episodeInfos.textContent = "Not found episode"
+    infosContainer.classList.add("no-found")
     text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img.jpg`
     imagesContainer.appendChild(rickImg)
     return false
+  }
+  else{
+    infosContainer.classList.remove("no-found")
   }
   return true
 }
@@ -91,19 +100,26 @@ function validLocationInput() {
 
   if (!value) {
     locationInfos.textContent = "Search for an location"
+    infosContainer.classList.add("no-found")
     text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img2.jpg`
     imagesContainer.appendChild(rickImg)
     return false
+  } else{
+    infosContainer.classList.remove("no-found")
   }
 
   if (value < 1 || value > 126) {
     locationInfos.textContent = "Not found location"
+    infosContainer.classList.add("no-found")
     text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img.jpg`
     imagesContainer.appendChild(rickImg)
     return false
+  } else{
+    infosContainer.classList.remove("no-found")
   }
+
   return true
 }
 
@@ -259,6 +275,7 @@ function validResidents(residents, rickImg){
 
 async function consomeApi2(){
     locationBtn.addEventListener("click", async () =>{
+    episodeInfos.innerHTML = ""
     const ulInfos = createUl()
 
         locationInfos.classList.remove("hide")
