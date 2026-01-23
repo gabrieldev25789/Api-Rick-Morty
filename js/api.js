@@ -128,8 +128,8 @@ async function consomeApi() {
   episodeBtn.addEventListener("click", async () => {
 
     locationInfos.classList.add("hide")
-    episodeInfos.innerHTML = ""
-    imagesContainer.innerHTML = ""
+
+    cleanContainers()
 
     if(!validEpisodeInput()) return 
  
@@ -274,25 +274,26 @@ function validResidents(residents, rickImg){
       return true 
 }
 
+function cleanContainers(){
+    episodeInfos.innerHTML = ""
+    locationInfos.innerHTML = ""
+    imagesContainer.innerHTML = ""
+}
+
 async function consomeApi2(){
     locationBtn.addEventListener("click", async () =>{
-    episodeInfos.innerHTML = ""
+    cleanContainers()
     const ulInfos = createUl()
 
-        locationInfos.classList.remove("hide")
-        locationInfos.innerHTML = ""
-        imagesContainer.innerHTML = ""
+      locationInfos.classList.remove("hide")
+       
+      const locationValue = inputLocation.value
 
-        const locationValue = inputLocation.value
+      if(!validLocationInput()) return 
 
-        if(!validLocationInput()) return 
-
-        const url = `https://rickandmortyapi.com/api/location/${locationValue}`
+      const url = `https://rickandmortyapi.com/api/location/${locationValue}`
         
-        try{
-
-          [episodeInfos, text, imagesContainer].forEach((el) => el.classList.add("hide"))
-          
+        try{          
             const response = await fetch(url)
             const data = await response.json()
             const residents = data.residents
