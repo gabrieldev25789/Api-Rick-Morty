@@ -28,15 +28,31 @@ h1{
 }
 
 #search-episode,
-#search-location{
+#search-location,
+#search-character{
     display: flex;
     margin: 2rem auto;
 }
 
+
 #infos{
+    font-size: 2.3rem;
     display: flex;
     justify-content: space-around;
     border-bottom: 2px solid white;
+}
+
+#episode-infos h2{
+    margin-left: 59vh;
+}
+
+#location-infos h2{
+    margin-left: -103vh;
+}
+
+ .no-found{
+    background: linear-gradient(120deg, #000000, #162831, #0c3024);
+    padding: 0.5rem;  
 }
 
 .input{
@@ -98,7 +114,7 @@ h1{
 #h2{
     text-align: center;
     margin-top: 1rem;
-    font-size: 1.3rem;
+    font-size: 1.8rem;
     border-bottom: 2px solid white;
     width: 70vh;
     margin: 1rem auto;
@@ -111,7 +127,9 @@ h1{
     flex-wrap: wrap;
 }
 
-.image-infos{
+
+.image-infos,
+.container-residents{
     margin: 1rem auto;
     padding-bottom: 0.5rem;
     font-size: 1.4rem;
@@ -129,6 +147,13 @@ h1{
 
 .character-img:hover{
     transform: scale(1.1);
+}
+
+#rick-img{
+    width: 80vh;
+    margin: 1rem auto;
+    padding-bottom: 3vh;
+    border-radius: 120px;
 }
 
 .ul-character{
@@ -159,5 +184,5 @@ h1{
 
 
 .hide{
-    display: none;
+    display: none !important;
 }
