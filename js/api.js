@@ -280,66 +280,62 @@ function cleanContainers(){
     imagesContainer.innerHTML = ""
 }
 
-async function consomeApi2(){
-    locationBtn.addEventListener("click", async () =>{
-    cleanContainers()
-    const ulInfos = createUl()
+locationBtn.addEventListener("click", handleLocationClick)
 
-      locationInfos.classList.remove("hide")
-       
-      const locationValue = inputLocation.value
+async function handleLocationClick() {
+  cleanContainers()
+  locationInfos.classList.remove("hide")
 
-      if(!validLocationInput()) return 
+  if (!validLocationInput()) return
 
-      const url = `https://rickandmortyapi.com/api/location/${locationValue}`
-        
-        try{          
-            const response = await fetch(url)
-            const data = await response.json()
-            const residents = data.residents
+  const locationValue = inputLocation.value
+  inputLocation.value = ""
 
-            inputLocation.value = ""
+  try {
+    const data = await fetchLocation(locationValue)
+    renderLocationInfo(data)
 
-            const lists = createLocationLis(data)
+    if (!validResidents(data.residents, createRickImage())) return
 
-            lists.forEach((li)=>{
-              ulInfos.appendChild(li)
-            })
-
-            locationInfos.appendChild(ulInfos)
-
-            imagesContainer.innerHTML = ""
-
-            const rickImg = createRickImage()
-            if(!validResidents(residents, rickImg)) return
-          
-            const residentsData = await Promise.all(
-              residents.map(url =>
-              fetch(url).then(response => response.json())))
-
-              imagesContainer.classList.remove("hide")
-              text.classList.remove("hide")
-              text.textContent = "Characters who belong to this place:"
-
-              residentsData.forEach((residentData) => {
-              const containerResidents = createContainerResidents()
-
-              const img = createImg()
-              img.src = residentData.image
-
-              const ulResidents = createUlResidents()
-
-              const listResidents = createResidentLis(residentData)
-              listResidents.forEach(li => ulResidents.appendChild(li))
-
-              containerResidents.append(img, ulResidents)
-              imagesContainer.appendChild(containerResidents)
-              })
-          } 
-            catch{
-              console.error("erro")
-        }
-    })
+    renderResidents(await fetchResidents(data.residents))
+  } catch {
+    console.error("erro")
+  }
 }
 
-consomeApi2()
+async function fetchLocation(id) {
+  const response = await fetch(`https://rickandmortyapi.com/api/location/${id}`)
+  return response.json()
+}
+
+async function fetchResidents(residents) {
+  return Promise.all(
+    residents.map(url => fetch(url).then(r => r.json()))
+  )
+}
+
+function renderLocationInfo(data) {
+  const ulInfos = createUl()
+  createLocationLis(data).forEach(li => ulInfos.appendChild(li))
+  locationInfos.appendChild(ulInfos)
+}
+
+function renderResidents(residentsData) {
+  imagesContainer.innerHTML = ""
+  text?.classList.remove("hide")
+  imagesContainer.classList.remove("hide")
+  text.textContent = "Characters who belong to this place:"
+
+  residentsData.forEach(resident => {
+    const container = createContainerResidents()
+    const img = createImg()
+    img.src = resident.image
+
+    const ul = createUlResidents()
+    createResidentLis(resident).forEach(li => ul.appendChild(li))
+
+    container.append(img, ul)
+    imagesContainer.appendChild(container)
+  })
+}
+
