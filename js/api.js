@@ -65,52 +65,24 @@ function createCharacterLis(data){
   ]
 }
 
-function validEpisodeInput() {
+function validLocationEpisode(value, infos, EpisodeLocation){
   const rickImg = createRickImage()
-  const value = inputEpisode.value
+  const inputValue = value.value
+  
 
-  if (!value) {
-    episodeInfos.textContent = "Search for an episode"
+  if(!inputValue){
+    infos.textContent = `Search for an ${EpisodeLocation}`
     infosContainer.classList.add("no-found")
     text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img2.jpg`
     imagesContainer.appendChild(rickImg)
-    return false
-  } else{
-    infosContainer.classList.remove("no-found")
-  }
-
-  if (value < 1 || value > 51) {
-    episodeInfos.textContent = "Not found episode"
-    infosContainer.classList.add("no-found")
-    text.classList.add("hide")
-    rickImg.src = `./img/rick-morty-img.jpg`
-    imagesContainer.appendChild(rickImg)
-    return false
+    return false 
   }
   else{
     infosContainer.classList.remove("no-found")
   }
-  return true
-}
-
-function validLocationInput() {
-  const rickImg = createRickImage()
-  const value = inputLocation.value
-
-  if (!value) {
-    locationInfos.textContent = "Search for an location"
-    infosContainer.classList.add("no-found")
-    text.classList.add("hide")
-    rickImg.src = `./img/rick-morty-img2.jpg`
-    imagesContainer.appendChild(rickImg)
-    return false
-  } else{
-    infosContainer.classList.remove("no-found")
-  }
-
-  if (value < 1 || value > 126) {
-    locationInfos.textContent = "Not found location"
+  if(inputValue < 1 || inputValue > 51 || inputValue > 126){
+    infos.textContent = `Not found ${EpisodeLocation}`
     infosContainer.classList.add("no-found")
     text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img.jpg`
@@ -119,8 +91,7 @@ function validLocationInput() {
   } else{
     infosContainer.classList.remove("no-found")
   }
-
-  return true
+  return true 
 }
 
 async function consomeApi() {
@@ -131,8 +102,9 @@ async function consomeApi() {
 
     cleanContainers()
 
-    if(!validEpisodeInput()) return 
- 
+    if(!validLocationEpisode(inputEpisode, episodeInfos, "episode")) return 
+
+
     const inputEpisodeValue = inputEpisode.value
 
     const url = `https://rickandmortyapi.com/api/episode/${inputEpisodeValue}`
@@ -286,7 +258,7 @@ async function handleLocationClick() {
   cleanContainers()
   locationInfos.classList.remove("hide")
 
-  if (!validLocationInput()) return
+  if(!validLocationEpisode(inputLocation, locationInfos, "location")) return 
 
   const locationValue = inputLocation.value
   inputLocation.value = ""
@@ -338,4 +310,7 @@ function renderResidents(residentsData) {
     imagesContainer.appendChild(container)
   })
 }
+
+
+
 
