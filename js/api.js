@@ -12,6 +12,10 @@ const imagesContainer = document.querySelector("#images")
 
 const text = document.querySelector("#h2")
 
+const loadingImg = document.createElement("img")
+loadingImg.id = "loading-img"
+loadingImg.src = "./img/loading.png" 
+
 // EPISODE API 
 function createLiEpisode(text, className, id) {
   const li = document.createElement("li")
@@ -238,7 +242,6 @@ function validResidents(residents, rickImg){
         imagesContainer.classList.remove("hide")
         text.classList.remove("hide")
         text.textContent = "No character belong to this place."
-        console.log(text)
         rickImg.src = `./img/rick-morty-img.jpg`
         imagesContainer.appendChild(rickImg)
         return false
@@ -270,8 +273,8 @@ async function handleLocationClick() {
     if (!validResidents(data.residents, createRickImage())) return
 
     renderResidents(await fetchResidents(data.residents))
-  } catch {
-    console.error("erro")
+  } catch (err){
+    console.error(err)
   }
 }
 
@@ -281,6 +284,7 @@ async function fetchLocation(id) {
 }
 
 async function fetchResidents(residents) {
+  imagesContainer.appendChild(loadingImg)
   return Promise.all(
     residents.map(url => fetch(url).then(r => r.json()))
   )
