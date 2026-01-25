@@ -17,7 +17,7 @@ loadingImg.id = "loading-img"
 loadingImg.src = "./img/loading.png" 
 
 // EPISODE API 
-function createLiEpisode(text, className, id) {
+function createLi(text, className, id) {
   const li = document.createElement("li")
   li.textContent = text
 
@@ -29,10 +29,10 @@ function createLiEpisode(text, className, id) {
 
 function createEpisodeLis(data){
   return [
-    createLiEpisode(`Name: ${data.name}`, "list", "name-episode"),
-    createLiEpisode(`Date release: ${data.air_date}`, "list", "date-release"),
-    createLiEpisode(`Season/Episode: ${data.episode}`, "list", "episode-season"),
-    createLiEpisode(`ID: ${data.id}`, "list", "id")
+    createLi(`Name: ${data.name}`, "list", "name-episode"),
+    createLi(`Date release: ${data.air_date}`, "list", "date-release"),
+    createLi(`Season/Episode: ${data.episode}`, "list", "episode-season"),
+    createLi(`ID: ${data.id}`, "list", "id")
   ]
 }
 
@@ -172,16 +172,6 @@ function createUl(){
     return ulInfos
 }
 
-function createLiLocation(text, className, id) {
-  const li = document.createElement("li")
-  li.textContent = text
-
-  if (className) li.classList.add(className)
-  if (id) li.id = id
-
-  return li
-}
-
 function createLiResidents(text, clasName, id){
     const li = document.createElement("li")
     li.textContent = text 
@@ -215,10 +205,10 @@ function createUlResidents(){
 
 function createLocationLis(data) {
   return [
-    createLiLocation(`Name: ${data.name}`, "list", "name-location"),
-    createLiLocation(`Dimension: ${data.dimension}`, "list", "dimension"),
-    createLiLocation(`Type: ${data.type}`, "list", "type"),
-    createLiLocation(`ID: ${data.id}`, "list", "id")
+    createLi(`Name: ${data.name}`, "list", "name-location"),
+    createLi(`Dimension: ${data.dimension}`, "list", "dimension"),
+    createLi(`Type: ${data.type}`, "list", "type"),
+    createLi(`ID: ${data.id}`, "list", "id")
   ]
 }
 
