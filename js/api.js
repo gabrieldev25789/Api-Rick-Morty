@@ -69,10 +69,10 @@ function createCharacterLis(data){
   ]
 }
 
-function validLocationEpisode(value, infos, EpisodeLocation){
+function validLocationEpisode(input, infos, EpisodeLocation, value){
   const rickImg = createRickImage()
-  const inputValue = value.value
-  
+  const inputValue = input.value
+  console.log(value)
 
   if(!inputValue){
     infos.textContent = `Search for an ${EpisodeLocation}`
@@ -85,7 +85,9 @@ function validLocationEpisode(value, infos, EpisodeLocation){
   else{
     infosContainer.classList.remove("no-found")
   }
-  if(inputValue < 1 || inputValue > 51 || inputValue > 126){
+
+  if(value.id === "search-episode-input" && value.value > 51 
+  || value.id === "search-location-input" && value.value > 126){
     infos.textContent = `Not found ${EpisodeLocation}`
     infosContainer.classList.add("no-found")
     text.classList.add("hide")
@@ -106,8 +108,7 @@ async function consomeApi() {
 
     cleanContainers()
 
-    if(!validLocationEpisode(inputEpisode, episodeInfos, "episode")) return 
-
+    if(!validLocationEpisode(inputEpisode, episodeInfos, "episode", inputEpisode)) return 
 
     const inputEpisodeValue = inputEpisode.value
 
@@ -261,7 +262,7 @@ async function handleLocationClick() {
   cleanContainers()
   locationInfos.classList.remove("hide")
 
-  if(!validLocationEpisode(inputLocation, locationInfos, "location")) return 
+  if(!validLocationEpisode(inputLocation, locationInfos, "location", inputLocation)) return 
 
   const locationValue = inputLocation.value
   inputLocation.value = ""
