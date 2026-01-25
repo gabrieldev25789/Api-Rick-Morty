@@ -100,6 +100,7 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
   return true 
 }
 
+/*
 async function consomeApi() {
 
   episodeBtn.addEventListener("click", async () => {
@@ -163,6 +164,73 @@ async function consomeApi() {
 }
 
 consomeApi()
+*/ 
+
+episodeBtn.addEventListener("click", handleEpisodeClick)
+
+async function handleEpisodeClick() {
+  cleanContainers()
+  locationInfos.classList.add("hide")
+
+  if (!validLocationEpisode(inputEpisode, episodeInfos, "episode", inputEpisode)) return
+
+  const episodeValue = inputEpisode.value
+  inputEpisode.value = ""
+
+  try {
+    const data = await fetchEpisode(episodeValue)
+    renderEpisodeInfo(data)
+
+    if (!validResidents(data.characters, createRickImage())) return
+
+    renderEpisodeCharacters(await fetchCharacters(data.characters))
+  } catch (err) {
+    console.error("Erro ao buscar episódio", err)
+  }
+}
+
+async function fetchEpisode(id) {
+  const response = await fetch(`https://rickandmortyapi.com/api/episode/${id}`)
+  return response.json()
+}
+
+async function fetchCharacters(characters) {
+  imagesContainer.appendChild(loadingImg)
+  return Promise.all(
+    characters.map(url => fetch(url).then(r => r.json()))
+  )
+}
+
+function renderEpisodeInfo(data) {
+  episodeInfos.innerHTML = ""
+  episodeInfos.classList.remove("hide")
+
+  const ulInfos = createUl()
+  createEpisodeLis(data).forEach(li => ulInfos.appendChild(li))
+  episodeInfos.appendChild(ulInfos)
+}
+
+function renderEpisodeCharacters(charactersData) {
+  imagesContainer.innerHTML = ""
+  text.classList.remove("hide")
+  imagesContainer.classList.remove("hide")
+
+  text.textContent = "Characters appearing in this episode:"
+
+  charactersData.forEach(character => {
+    const container = createDivImgInfos()
+
+    const img = createImg()
+    img.src = character.image
+
+    const ul = createUlInfosCharacter()
+    createCharacterLis(character).forEach(li => ul.appendChild(li))
+
+    container.append(img, ul)
+    imagesContainer.appendChild(container)
+  })
+}
+
 
 // LOCATION API 
 function createUl(){
@@ -247,6 +315,47 @@ function cleanContainers(){
 }
 
 locationBtn.addEventListener("click", handleLocationClick)
+let isLoading = false
+
+/*
+let isLoading = false
+
+async function handleLocationClick() {
+  if (isLoading) return
+  isLoading = true
+
+  cleanContainers()
+  locationInfos.classList.remove("hide")
+
+  if (!validLocationEpisode(inputLocation, locationInfos, "location", inputLocation)) {
+    isLoading = false
+    return
+  }
+
+  const locationValue = inputLocation.value
+  inputLocation.value = ""
+
+  try {
+    const data = await fetchLocation(locationValue)
+    renderLocationInfo(data)
+
+    if (!validResidents(data.residents, createRickImage())) return
+
+    imagesContainer.innerHTML = ""
+    imagesContainer.appendChild(loadingImg)
+
+    const residentsData = await fetchResidents(data.residents)
+    renderResidents(residentsData)
+
+  } catch (err) {
+    console.error(err)
+  } finally {
+    isLoading = false
+  }
+}
+*/
+
+/*V1..................................................*/ 
 
 async function handleLocationClick() {
   cleanContainers()
@@ -266,13 +375,29 @@ async function handleLocationClick() {
     renderResidents(await fetchResidents(data.residents))
   } catch (err){
     console.error(err)
+    showErrorMessage(err)
   }
 }
+
+
+/*V1...................................................*/
 
 async function fetchLocation(id) {
   const response = await fetch(`https://rickandmortyapi.com/api/location/${id}`)
   return response.json()
 }
+
+
+
+
+/*
+async function fetchResidents(residents) {
+  return Promise.all(
+    residents.map(url => fetch(url).then(r => r.json()))
+  )
+}
+*/
+
 
 async function fetchResidents(residents) {
   imagesContainer.appendChild(loadingImg)
@@ -280,12 +405,17 @@ async function fetchResidents(residents) {
     residents.map(url => fetch(url).then(r => r.json()))
   )
 }
+  
 
+/*
 function renderLocationInfo(data) {
   const ulInfos = createUl()
   createLocationLis(data).forEach(li => ulInfos.appendChild(li))
   locationInfos.appendChild(ulInfos)
 }
+*/ 
+
+/*V1..................................... */
 
 function renderResidents(residentsData) {
   imagesContainer.innerHTML = ""
@@ -307,5 +437,140 @@ function renderResidents(residentsData) {
 }
 
 
+// ... seu código anterior ...
 
+
+//V2.................................................
+/*
+async function handleLocationClick() {
+  if (isLoading) return;
+  isLoading = true;
+
+  cleanContainers();
+  locationInfos.classList.remove("hide");
+
+  if (!validLocationEpisode(inputLocation, locationInfos, "location", inputLocation)) {
+    isLoading = false;
+    return;
+  }
+
+  const locationValue = inputLocation.value.trim();
+  inputLocation.value = "";
+
+  try {
+    const locationData = await fetchLocation(locationValue);
+    renderLocationInfo(locationData);
+
+    if (!validResidents(locationData.residents, createRickImage())) {
+      isLoading = false;
+      return;
+    }
+
+    // Mostrar loading
+    imagesContainer.innerHTML = "";
+    imagesContainer.appendChild(loadingImg);
+
+    // Extrair IDs dos residentes (URL termina com /id)
+    const residentIds = locationData.residents
+      .map(url => url.split('/').pop())   // pega o número final
+      .filter(id => id);                   // evita vazios
+
+    let residentsData = [];
+
+    if (residentIds.length > 0) {
+      // Busca em BULK (múltiplos IDs de uma vez!)
+      const bulkUrl = `https://rickandmortyapi.com/api/character/${residentIds.join(',')}`;
+
+      const response = await fetch(bulkUrl);
+
+      if (!response.ok) {
+        throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      // A API retorna array se múltiplos IDs, ou objeto único se só 1
+      residentsData = Array.isArray(data) ? data : [data];
+    }
+
+    renderResidents(residentsData);
+
+  } catch (err) {
+    showErrorMessage(err)
+    console.error("Erro ao carregar localização/residentes:", err);
+    // Aqui você pode mostrar uma mensagem de erro no DOM, ex:
+    // locationInfos.innerHTML += `<p style="color:red;">Erro: ${err.message}</p>`;
+  } finally {
+    isLoading = false;
+  }
+}
+*/
+
+// fetchLocation continua igual (mas pode adicionar try/catch se quiser)
+
+
+
+/*V2.................................
+async function fetchLocation(id) {
+  const response = await fetch(`https://rickandmortyapi.com/api/location/${id}`);
+  if (!response.ok) {
+    throw new Error(`Location não encontrada: ${response.status}`);
+  }
+  return response.json();
+}
+*/
+
+// Pode remover ou comentar a fetchResidents antiga, não é mais usada
+// async function fetchResidents(residents) { ... }
+
+// renderResidents continua quase igual, só garanta que residentsData seja sempre array
+
+
+// V2......................................
+/*
+function renderResidents(residentsData) {
+  imagesContainer.innerHTML = "";
+  text?.classList.remove("hide");
+  imagesContainer.classList.remove("hide");
+  text.textContent = "Characters who belong to this place:";
+
+  if (residentsData.length === 0) {
+    imagesContainer.innerHTML = "<p>Nenhum residente encontrado.</p>";
+    return;
+  }
+
+  residentsData.forEach(resident => {
+    const container = createContainerResidents();
+    const img = createImg();
+    img.src = resident.image;
+
+    const ul = createUlResidents();
+    createResidentLis(resident).forEach(li => ul.appendChild(li));
+
+    container.append(img, ul);
+    imagesContainer.appendChild(container);
+  });
+}
+*/
+
+function renderLocationInfo(data) {
+  const ulInfos = createUl()
+  createLocationLis(data).forEach(li => ulInfos.appendChild(li))
+  locationInfos.appendChild(ulInfos)
+}
+
+
+function showErrorMessage(err) {
+  imagesContainer.innerHTML = ""
+  imagesContainer.classList.remove("hide")
+  text.classList.remove("hide")
+
+  if (err.status === 429) {
+    text.textContent =
+      "Muitas requisições de uma vez. Atualize a página e tente novamente."
+  } else {
+    text.textContent =
+      "Falha na busca. Verifique sua conexão e tente novamente."
+  }
+}
 
