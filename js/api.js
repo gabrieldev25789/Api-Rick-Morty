@@ -249,8 +249,6 @@ function cleanContainers(){
     imagesContainer.innerHTML = ""
 }
 
-locationBtn.addEventListener("click", handleLocationClick)
-let isLoading = false
 
 async function fetchResidents(residents) {
   imagesContainer.appendChild(loadingImg)
@@ -267,76 +265,134 @@ function chunkArray(arr, size = 20) {
   return chunks;
 }
 
+  let residentsController = null;
+
+  function renderLocationInfo(data) {
+  const ulInfos = createUl()
+  createLocationLis(data).forEach(li => ulInfos.appendChild(li))
+  locationInfos.appendChild(ulInfos)
+}
+
   
+function showErrorMessage(err) {
+  imagesContainer.innerHTML = ""
+  imagesContainer.classList.remove("hide")
+  text.classList.remove("hide")
+
+  if (err.status === 429 || err.message.includes("429")) {
+    text.textContent =
+      "Muitas requisições de uma vez. Atualize a página e tente novamente."
+  } else {
+    text.textContent =
+      "Falha na busca. Verifique sua conexão e tente novamente."
+  }
+}
+
+locationBtn.addEventListener("click", handleLocationClick)
+let isLoading = false
+
+
 async function handleLocationClick() {
   if (isLoading) return;
-  isLoading = true;
 
+  startLoading();
+
+  try {
+    const locationId = getAndValidateLocationId();
+console.log("CLICK", locationId, Date.now());
+
+    if (!locationId) return;
+
+    const locationData = await loadLocation(locationId);
+    const residentsData = await loadResidents(locationData.residents);
+
+    renderResidents(residentsData);
+
+  } catch (err) {
+    if (err.name === "AbortError") return;
+
+    showErrorMessage(err);
+    console.error("Erro ao carregar localização/residentes:", err);
+
+  } finally {
+    stopLoading();
+  }
+}
+
+function startLoading() {
+  isLoading = true;
   locationBtn.disabled = true;
   inputLocation.disabled = true;
 
   cleanContainers();
   locationInfos.classList.remove("hide");
 
+  imagesContainer.innerHTML = "";
+  imagesContainer.appendChild(loadingImg);
+}
+
+function stopLoading() {
+  isLoading = false;
+  locationBtn.disabled = false;
+  inputLocation.disabled = false;
+}
+
+function getAndValidateLocationId() {
   if (!validLocationEpisode(inputLocation, locationInfos, "location", inputLocation)) {
-    isLoading = false;
-    return;
+    return null;
   }
 
-  const locationValue = inputLocation.value.trim();
+  const value = inputLocation.value.trim();
   inputLocation.value = "";
 
-  try {
-    const locationData = await fetchLocation(locationValue);
-    renderLocationInfo(locationData);
+  return value;
+}
 
-    if (!validResidents(locationData.residents, createRickImage())) {
-      isLoading = false;
-      return;
-    }
+async function loadLocation(id) {
+  const locationData = await fetchLocation(id);
+  renderLocationInfo(locationData);
 
-    // Mostrar loading
-    imagesContainer.innerHTML = "";
-    imagesContainer.appendChild(loadingImg);
+  if (!validResidents(locationData.residents, createRickImage())) {
+    throw new Error("Localização sem residentes válidos");
+  }
 
-    const residentIds = locationData.residents
-      .map(url => url.split('/').pop())  
-      .filter(id => id); 
-      let residentsData = [];
+  return locationData;
+}
 
-    if (residentIds.length > 0) {
-      const chunks = chunkArray(residentIds, 20);
-    
-      for (const chunk of chunks) {
-      const bulkUrl = `https://rickandmortyapi.com/api/character/${chunk.join(",")}`;
-      
-        const response = await fetch(bulkUrl);
+async function loadResidents(residentsUrls) {
+  if (!residentsUrls?.length) return [];
 
-        if (!response.ok) {
-          throw Object.assign(
-          new Error("Too Many Requests"),
+  residentsController?.abort();
+  residentsController = new AbortController();
+
+  const residentIds = residentsUrls
+    .map(url => url.split("/").pop())
+    .filter(Boolean);
+
+  const chunks = chunkArray(residentIds, 20);
+  let residentsData = [];
+
+  for (const chunk of chunks) {
+    const bulkUrl = `https://rickandmortyapi.com/api/character/${chunk.join(",")}`;
+    /*const response = await fetch(bulkUrl);*/
+    const response = await fetch(bulkUrl, {
+    signal: residentsController.signal
+    });
+
+
+    if (!response.ok) {
+      throw Object.assign(
+        new Error("Too Many Requests"),
         { status: response.status }
-          )
-        }
+      );
+    }
 
     const data = await response.json();
     residentsData.push(...(Array.isArray(data) ? data : [data]));
-      };
-    }
-  
-    renderResidents(residentsData);
-
-  }
-  catch (err) {
-    showErrorMessage(err)
-    console.error("Erro ao carregar localização/residentes:", err);
-  } 
-  finally {
-      isLoading = false;
-      locationBtn.disabled = false;
-      inputLocation.disabled = false;
   }
 
+  return residentsData;
+}
 
 async function fetchLocation(id) {
   const response = await fetch(`https://rickandmortyapi.com/api/location/${id}`);
@@ -345,7 +401,6 @@ async function fetchLocation(id) {
   }
   return response.json();
 }
-
 
 function renderResidents(residentsData) {
   imagesContainer.innerHTML = "";
@@ -356,31 +411,28 @@ function renderResidents(residentsData) {
   if (residentsData.length === 0) {
     imagesContainer.innerHTML = "<p>Nenhum residente encontrado.</p>";
     return;
-}
+  }
 
- residentsData.forEach(resident => {
-  const container = createContainerResidents();
-  const img = createImg();
+  residentsData.forEach(resident => {
+    const container = createContainerResidents();
+    const img = createImg();
 
-  img.loading = "lazy";
-  img.decoding = "async";
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.dataset.src = resident.image;
 
-  img.dataset.src = resident.image;
+    img.onerror = () => {
+      img.src = "fallback.png";
+    };
 
-  img.onerror = () => {
-    img.src = "fallback.png";
-  };
+    imageObserver.observe(img);
 
-  imageObserver.observe(img);
+    const ul = createUlResidents();
+    createResidentLis(resident).forEach(li => ul.appendChild(li));
 
-  const ul = createUlResidents();
-  createResidentLis(resident).forEach(li => ul.appendChild(li));
-
-  container.append(img, ul);
-  imagesContainer.appendChild(container);
-});
-
-  };
+    container.append(img, ul);
+    imagesContainer.appendChild(container);
+  });
 }
 
 const imageObserver = new IntersectionObserver(
@@ -400,22 +452,6 @@ const imageObserver = new IntersectionObserver(
   }
 );
 
-function renderLocationInfo(data) {
-  const ulInfos = createUl()
-  createLocationLis(data).forEach(li => ulInfos.appendChild(li))
-  locationInfos.appendChild(ulInfos)
-}
 
-function showErrorMessage(err) {
-  imagesContainer.innerHTML = ""
-  imagesContainer.classList.remove("hide")
-  text.classList.remove("hide")
 
-  if (err.status === 429 || err.message.includes("429")) {
-    text.textContent =
-      "Muitas requisições de uma vez. Atualize a página e tente novamente."
-  } else {
-    text.textContent =
-      "Falha na busca. Verifique sua conexão e tente novamente."
-  }
-}
+
