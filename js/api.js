@@ -249,7 +249,6 @@ function cleanContainers(){
     imagesContainer.innerHTML = ""
 }
 
-
 async function fetchResidents(residents) {
   imagesContainer.appendChild(loadingImg)
   return Promise.all(
@@ -273,7 +272,6 @@ function chunkArray(arr, size = 20) {
   locationInfos.appendChild(ulInfos)
 }
 
-  
 function showErrorMessage(err) {
   imagesContainer.innerHTML = ""
   imagesContainer.classList.remove("hide")
@@ -291,7 +289,6 @@ function showErrorMessage(err) {
 locationBtn.addEventListener("click", handleLocationClick)
 let isLoading = false
 
-
 async function handleLocationClick() {
   if (isLoading) return;
 
@@ -299,7 +296,6 @@ async function handleLocationClick() {
 
   try {
     const locationId = getAndValidateLocationId();
-console.log("CLICK", locationId, Date.now());
 
     if (!locationId) return;
 
@@ -339,6 +335,7 @@ function stopLoading() {
 
 function getAndValidateLocationId() {
   if (!validLocationEpisode(inputLocation, locationInfos, "location", inputLocation)) {
+    loadingImg.classList.add("hide")
     return null;
   }
 
@@ -351,10 +348,6 @@ function getAndValidateLocationId() {
 async function loadLocation(id) {
   const locationData = await fetchLocation(id);
   renderLocationInfo(locationData);
-
-  if (!validResidents(locationData.residents, createRickImage())) {
-    throw new Error("Localização sem residentes válidos");
-  }
 
   return locationData;
 }
@@ -374,11 +367,9 @@ async function loadResidents(residentsUrls) {
 
   for (const chunk of chunks) {
     const bulkUrl = `https://rickandmortyapi.com/api/character/${chunk.join(",")}`;
-    /*const response = await fetch(bulkUrl);*/
     const response = await fetch(bulkUrl, {
     signal: residentsController.signal
     });
-
 
     if (!response.ok) {
       throw Object.assign(
@@ -409,7 +400,12 @@ function renderResidents(residentsData) {
   text.textContent = "Characters who belong to this place:";
 
   if (residentsData.length === 0) {
-    imagesContainer.innerHTML = "<p>Nenhum residente encontrado.</p>";
+    const rickImg = createImg()
+    rickImg.src = `./img/rick-morty-img.jpg`
+    rickImg.id = "rick-img"
+    rickImg.classList.remove("character-img")
+    text.textContent =  "No character belong to this place"
+    imagesContainer.appendChild(rickImg)
     return;
   }
 
