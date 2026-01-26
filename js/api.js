@@ -89,6 +89,7 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
   if(value.id === "search-episode-input" && value.value > 51 
   || value.id === "search-location-input" && value.value > 126){
     infos.textContent = `Not found ${EpisodeLocation}`
+      inputLocation.disabled = false;
     infosContainer.classList.add("no-found")
     text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img.jpg`
@@ -257,10 +258,22 @@ async function fetchResidents(residents) {
     residents.map(url => fetch(url).then(r => r.json()))
   )
 }
+
+function chunkArray(arr, size = 20) {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+}
+
   
 async function handleLocationClick() {
   if (isLoading) return;
   isLoading = true;
+
+  locationBtn.disabled = true;
+  inputLocation.disabled = true;
 
   cleanContainers();
   locationInfos.classList.remove("hide");
@@ -287,35 +300,43 @@ async function handleLocationClick() {
     imagesContainer.appendChild(loadingImg);
 
     const residentIds = locationData.residents
-      .map(url => url.split('/').pop())   // pega o número final
-      .filter(id => id);                   // evita vazios
-
-    let residentsData = [];
+      .map(url => url.split('/').pop())  
+      .filter(id => id); 
+      let residentsData = [];
 
     if (residentIds.length > 0) {
-      const bulkUrl = `https://rickandmortyapi.com/api/character/${residentIds.join(',')}`;
+      const chunks = chunkArray(residentIds, 20);
+    
+      for (const chunk of chunks) {
+      const bulkUrl = `https://rickandmortyapi.com/api/character/${chunk.join(",")}`;
+      
+        const response = await fetch(bulkUrl);
 
-      const response = await fetch(bulkUrl);
+        if (!response.ok) {
+          throw Object.assign(
+          new Error("Too Many Requests"),
+        { status: response.status }
+          )
+        }
 
-      if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      residentsData = Array.isArray(data) ? data : [data];
+    const data = await response.json();
+    residentsData.push(...(Array.isArray(data) ? data : [data]));
+      };
     }
-
+  
     renderResidents(residentsData);
 
-  } catch (err) {
+  }
+  catch (err) {
     showErrorMessage(err)
     console.error("Erro ao carregar localização/residentes:", err);
   } 
   finally {
-    isLoading = false;
+      isLoading = false;
+      locationBtn.disabled = false;
+      inputLocation.disabled = false;
   }
-}
+
 
 async function fetchLocation(id) {
   const response = await fetch(`https://rickandmortyapi.com/api/location/${id}`);
@@ -324,6 +345,7 @@ async function fetchLocation(id) {
   }
   return response.json();
 }
+
 
 function renderResidents(residentsData) {
   imagesContainer.innerHTML = "";
@@ -334,20 +356,49 @@ function renderResidents(residentsData) {
   if (residentsData.length === 0) {
     imagesContainer.innerHTML = "<p>Nenhum residente encontrado.</p>";
     return;
-  }
-
-  residentsData.forEach(resident => {
-    const container = createContainerResidents();
-    const img = createImg();
-    img.src = resident.image;
-
-    const ul = createUlResidents();
-    createResidentLis(resident).forEach(li => ul.appendChild(li));
-
-    container.append(img, ul);
-    imagesContainer.appendChild(container);
-  });
 }
+
+ residentsData.forEach(resident => {
+  const container = createContainerResidents();
+  const img = createImg();
+
+  img.loading = "lazy";
+  img.decoding = "async";
+
+  img.dataset.src = resident.image;
+
+  img.onerror = () => {
+    img.src = "fallback.png";
+  };
+
+  imageObserver.observe(img);
+
+  const ul = createUlResidents();
+  createResidentLis(resident).forEach(li => ul.appendChild(li));
+
+  container.append(img, ul);
+  imagesContainer.appendChild(container);
+});
+
+  };
+}
+
+const imageObserver = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+
+      const img = entry.target;
+      img.src = img.dataset.src;
+
+      imageObserver.unobserve(img);
+    });
+  },
+  {
+    rootMargin: "200px",
+    threshold: 0.01
+  }
+);
 
 function renderLocationInfo(data) {
   const ulInfos = createUl()
@@ -360,7 +411,7 @@ function showErrorMessage(err) {
   imagesContainer.classList.remove("hide")
   text.classList.remove("hide")
 
-  if (err.status === 429) {
+  if (err.status === 429 || err.message.includes("429")) {
     text.textContent =
       "Muitas requisições de uma vez. Atualize a página e tente novamente."
   } else {
@@ -368,4 +419,3 @@ function showErrorMessage(err) {
       "Falha na busca. Verifique sua conexão e tente novamente."
   }
 }
-
