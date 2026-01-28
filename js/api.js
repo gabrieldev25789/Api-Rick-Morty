@@ -101,7 +101,6 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
   return true 
 }
 
-
 episodeBtn.addEventListener("click", handleEpisodeClick)
 
 async function handleEpisodeClick() {
@@ -154,6 +153,7 @@ function renderEpisodeCharacters(charactersData) {
   text.textContent = "Characters appearing in this episode:"
 
   charactersData.forEach(character => {
+    console.log(character)
     const container = createDivImgInfos()
 
     const img = createImg()
@@ -167,7 +167,7 @@ function renderEpisodeCharacters(charactersData) {
   })
 }
 
-// LOCATION API 
+// LOCATION API.....................................................
 function createUl(){
     const ulInfos = document.createElement("ul")
     ulInfos.id = "ul-infos"
@@ -232,7 +232,7 @@ function createRickImage(){
 }
 
 function validResidents(residents, rickImg){
-      if (residents.length === 0) {
+      if(residents.length === 0) {
         imagesContainer.classList.remove("hide")
         text.classList.remove("hide")
         text.textContent = "No character belong to this place."
@@ -248,6 +248,11 @@ function cleanContainers(){
     locationInfos.innerHTML = ""
     imagesContainer.innerHTML = ""
 }
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 async function fetchResidents(residents) {
   imagesContainer.appendChild(loadingImg)
@@ -359,8 +364,8 @@ async function loadResidents(residentsUrls) {
   residentsController = new AbortController();
 
   const residentIds = residentsUrls
-    .map(url => url.split("/").pop())
-    .filter(Boolean);
+  .map(url => url.split("/").pop())
+  .filter(Boolean);
 
   const chunks = chunkArray(residentIds, 20);
   let residentsData = [];
@@ -380,6 +385,8 @@ async function loadResidents(residentsUrls) {
 
     const data = await response.json();
     residentsData.push(...(Array.isArray(data) ? data : [data]));
+
+    await sleep(400);
   }
 
   return residentsData;
@@ -418,7 +425,13 @@ function renderResidents(residentsData) {
     img.dataset.src = resident.image;
 
     img.onerror = () => {
-      img.src = "fallback.png";
+      /*img.src = "fallback.png";*/
+
+      imageObserver.unobserve(img); 
+      img.remove();                
+
+      const placeholder = createImageErrorPlaceholder();
+      container.prepend(placeholder);
     };
 
     imageObserver.observe(img);
@@ -437,16 +450,63 @@ const imageObserver = new IntersectionObserver(
       if (!entry.isIntersecting) return;
 
       const img = entry.target;
+      if (!img.dataset.src) return;
+
       img.src = img.dataset.src;
+      img.removeAttribute("data-src");
 
       imageObserver.unobserve(img);
     });
   },
   {
+    root: imagesContainer,
     rootMargin: "200px",
     threshold: 0.01
   }
 );
+
+function createImageErrorPlaceholder() {
+  const div = document.createElement("div");
+  div.className = "image-error";
+  div.textContent = "Imagens não carregadas";
+  return div;
+}
+
+
+/*
+function handle(){
+
+
+document.addEventListener("click", (e) =>{
+
+  if(target.id === "search-episode-input"){
+    let target = e.target
+    console.log("episode-input", target)
+    target = episodeBtn 
+    console.log(target)
+  }
+})
+
+return target 
+
+}
+
+function handle2(){
+document.addEventListener("keydown", (e) =>{
+
+  const target = handle()
+  if(e.code === "Enter"){
+    console.log(target)
+  }
+}
+)
+}
+
+
+handle2()
+*/
+
+
 
 
 
