@@ -101,26 +101,51 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
   return true 
 }
 
+let isEpisodeLoading = false;
+
+function lockEpisodeUI() {
+  isEpisodeLoading = true;
+  episodeBtn.disabled = true;
+  inputEpisode.disabled = true;
+}
+
+function unlockEpisodeUI() {
+  isEpisodeLoading = false;
+  episodeBtn.disabled = false;
+  inputEpisode.disabled = false;
+}
+
 episodeBtn.addEventListener("click", handleEpisodeClick)
 
 async function handleEpisodeClick() {
-  cleanContainers()
-  locationInfos.classList.add("hide")
+  if (isEpisodeLoading) return;
 
-  if (!validLocationEpisode(inputEpisode, episodeInfos, "episode", inputEpisode)) return
+  lockEpisodeUI();
 
-  const episodeValue = inputEpisode.value
-  inputEpisode.value = ""
+  cleanContainers();
+  locationInfos.classList.add("hide");
 
   try {
-    const data = await fetchEpisode(episodeValue)
-    renderEpisodeInfo(data)
+    if (!validLocationEpisode(inputEpisode, episodeInfos, "episode", inputEpisode)) {
+      return;
+    }
 
-    if (!validResidents(data.characters, createRickImage())) return
+    const episodeValue = inputEpisode.value;
+    inputEpisode.value = "";
 
-    renderEpisodeCharacters(await fetchCharacters(data.characters))
+    const data = await fetchEpisode(episodeValue);
+    renderEpisodeInfo(data);
+
+    if (!validResidents(data.characters, createRickImage())) return;
+
+    const characters = await fetchCharacters(data.characters);
+    renderEpisodeCharacters(characters);
+
   } catch (err) {
-    console.error("Erro ao buscar episódio", err)
+    console.error("Erro ao buscar episódio", err);
+
+  } finally {
+    unlockEpisodeUI(); // 🔥 SEMPRE libera
   }
 }
 
@@ -129,11 +154,40 @@ async function fetchEpisode(id) {
   return response.json()
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function fetchCharacters(characters) {
   imagesContainer.appendChild(loadingImg)
-  return Promise.all(
-    characters.map(url => fetch(url).then(r => r.json()))
-  )
+
+  const ids = characters
+    .map(url => url.split("/").pop())
+    .filter(Boolean);
+
+  const chunks = chunkArray(ids, 20);
+  const result = [];
+
+  for (const chunk of chunks) {
+    try {
+      const response = await fetch(
+        `https://rickandmortyapi.com/api/character/${chunk.join(",")}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Falha ao buscar personagens");
+      }
+
+      const data = await response.json();
+      result.push(...(Array.isArray(data) ? data : [data]));
+
+      await sleep(400); // anti-429
+    } catch (err) {
+      console.warn("Falha em um bloco de personagens", err);
+    }
+  }
+
+  return result;
 }
 
 function renderEpisodeInfo(data) {
@@ -144,6 +198,7 @@ function renderEpisodeInfo(data) {
   createEpisodeLis(data).forEach(li => ulInfos.appendChild(li))
   episodeInfos.appendChild(ulInfos)
 }
+ 
 
 function renderEpisodeCharacters(charactersData) {
   imagesContainer.innerHTML = ""
@@ -153,11 +208,15 @@ function renderEpisodeCharacters(charactersData) {
   text.textContent = "Characters appearing in this episode:"
 
   charactersData.forEach(character => {
-    console.log(character)
     const container = createDivImgInfos()
 
     const img = createImg()
     img.src = character.image
+
+    img.onerror = () => {
+      img.remove();
+      container.prepend(createImageErrorPlaceholder());
+    };
 
     const ul = createUlInfosCharacter()
     createCharacterLis(character).forEach(li => ul.appendChild(li))
@@ -166,6 +225,7 @@ function renderEpisodeCharacters(charactersData) {
     imagesContainer.appendChild(container)
   })
 }
+
 
 // LOCATION API.....................................................
 function createUl(){
@@ -252,7 +312,6 @@ function cleanContainers(){
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-
 
 async function fetchResidents(residents) {
   imagesContainer.appendChild(loadingImg)
