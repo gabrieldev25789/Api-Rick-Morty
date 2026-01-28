@@ -15,26 +15,88 @@
             <div id="inputs-container">
 
             <div id="search-episode">
-                <input type="number" class="input" id="search-episode-input" placeholder="search episode (Ex: 10)">
+                <input type="number" class="input input-wide" id="search-episode-input" placeholder="search episode (Ex: 1 - 51)">
                 <button id="episode-btn" class="search-btn">Search</button>
             </div>
             
             <div id="search-character">
+                <input type="text" class="input" placeholder="Choose a page (1- 42)" id="search-page-input">
+                <button id="page-btn" class="search-btn">Search page</button>
                 <input type="number" class="input" id="search-character-input" placeholder="search character">
                 <button id="character-btn" class="search-btn">Search</button>
             </div>
 
             <div id="search-location">
-                <input type="number" class="input" id="search-location-input" placeholder="search location">
+                <input type="number" class="input input-wide" id="search-location-input" placeholder="search location (1 - 126)">
                 <button id="location-btn" class="search-btn">Search</button>
             </div>
 
             </div>
 
+        <div class="filters-group" id="character-filters">
+
+            <select class="filter-select" id="status-select">
+                <option value="">Status</option>
+                <option value="alive">Alive</option>
+                <option value="dead">Dead</option>
+                <option value="unknown">Unknown</option>
+            </select>
+
+            <select class="filter-select" id="gender-select">
+                <option value="">Gender</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="genderless">Genderless</option>
+                <option value="unknown">Unknown</option>
+            </select>
+
+            <select class="filter-select" id="species-select">
+                <option value="">Species</option>
+                <option value="human">Human</option>
+                <option value="alien">Alien</option>
+                <option value="robot">Robot</option>
+                <option value="mythological creature">Mythological Creature</option>
+                <option value="humanoid">Humanoid</option>
+                <option value="animal">Animal</option>
+                <option value="disease">Disease</option>
+                <option value="cronenberg">Cronenberg</option>
+                <option value="poopybutthole">Poopybutthole</option>
+                <option value="unknown">Unknown</option>
+            </select>
+
+        </div>
+
+        <div class="filters-group" id="location-filters">
+
+            <select class="filter-select" id="location-type-select">
+                <option value="">Type</option>
+                <option value="planet">Planet</option>
+                <option value="space station">Space Station</option>
+                <option value="microverse">Microverse</option>
+                <option value="tv">TV</option>
+                <option value="resort">Resort</option>
+                <option value="fantasy town">Fantasy Town</option>
+                <option value="dream">Dream</option>
+                <option value="dimension">Dimension</option>
+                <option value="unknown">Unknown</option>
+            </select>
+
+            <select class="filter-select" id="dimension-select">
+                <option value="">Dimension</option>
+                <option value="dimension c-137">Dimension C-137</option>
+                <option value="replacement dimension">Replacement Dimension</option>
+                <option value="cronenberg dimension">Cronenberg Dimension</option>
+                <option value="unknown">Unknown</option>
+            </select>
+
+        </div>
+
+
+
             <div id="infos">
-                <div id="episode-infos"></div>
-                <div id="character-infos"></div>
-                <div id="location-infos"></div>
+                <div id="episode-infos"><h2></h2></div>
+                <div id="character-infos"><h2></h2></div>
+                <div id="location-infos"><h2></h2></div>
             </div>
 
             <div id="h2" class="hide">
