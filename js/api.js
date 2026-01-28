@@ -2,6 +2,13 @@ const inputEpisode = document.querySelector("#search-episode-input")
 const episodeBtn = document.querySelector("#episode-btn")
 const episodeInfos = document.querySelector("#episode-infos h2")
 
+const pageInput = document.querySelector("#search-page-input")
+const pageBtn = document.querySelector("#page-btn")
+
+const inputCharacter = document.querySelector("#seach-character-input")
+const characterBtn = document.querySelector("#character-btn")
+const characterInfos = document.querySelector("#character-infos")
+
 const inputLocation = document.querySelector("#search-location-input")
 const locationBtn = document.querySelector("#location-btn")
 const locationInfos = document.querySelector("#location-infos h2")
@@ -16,7 +23,7 @@ const loadingImg = document.createElement("img")
 loadingImg.id = "loading-img"
 loadingImg.src = "./img/loading.png" 
 
-// EPISODE API 
+// EPISODE API ...................................................
 function createLi(text, className, id) {
   const li = document.createElement("li")
   li.textContent = text
@@ -89,7 +96,7 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
   if(value.id === "search-episode-input" && value.value > 51 
   || value.id === "search-location-input" && value.value > 126){
     infos.textContent = `Not found ${EpisodeLocation}`
-      inputLocation.disabled = false;
+    inputLocation.disabled = false
     infosContainer.classList.add("no-found")
     text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img.jpg`
@@ -145,7 +152,7 @@ async function handleEpisodeClick() {
     console.error("Erro ao buscar episódio", err);
 
   } finally {
-    unlockEpisodeUI(); // 🔥 SEMPRE libera
+    unlockEpisodeUI(); 
   }
 }
 
@@ -199,7 +206,6 @@ function renderEpisodeInfo(data) {
   episodeInfos.appendChild(ulInfos)
 }
  
-
 function renderEpisodeCharacters(charactersData) {
   imagesContainer.innerHTML = ""
   text.classList.remove("hide")
@@ -226,6 +232,56 @@ function renderEpisodeCharacters(charactersData) {
   })
 }
 
+// CHARACTER API..................................................
+
+characterBtn.addEventListener("click", hanldeCharacterClick)
+
+async function hanldeCharacterClick(){
+  const pageUrl = await logPages()
+  console.log(pageUrl)
+
+    const url = `https://rickandmortyapi.com/api/character?page=${pageUrl}`
+
+    const responseUrl = await fetch(url)
+    const responsePage = await responseUrl.json()
+    console.log(responsePage)
+    console.log(url)
+
+    const response = await fetch(url)
+    const data = await response.json()
+    const results = data.results
+    results.forEach((result)=>{
+      console.log(result)
+    })
+
+    /*console.log(data)*/
+
+    const page = new URL(response.url).searchParams.get("page") || 1;
+    console.log("Página atual:", page);
+}
+
+
+async function logPages() {
+  const pageValue = pageInput.value
+  const page = `https://rickandmortyapi.com/api/character?page=${pageValue}`
+
+  const urlPage = await fetch(page)
+  const responseUrlPage = await urlPage.json()
+  const results = responseUrlPage.results
+
+  const pageTitle = document.createElement("h2")
+  pageTitle.id = "page-title"
+  pageTitle.textContent = `Pagina atual: ${pageValue}`
+  document.body.appendChild(pageTitle) 
+
+  results.forEach((el)=>{
+  /*console.log(el.name, el.origin)*/
+  })
+
+  return pageValue
+}
+
+pageBtn.addEventListener("click", logPages)
 
 // LOCATION API.....................................................
 function createUl(){
@@ -535,7 +591,6 @@ function createImageErrorPlaceholder() {
 /*
 function handle(){
 
-
 document.addEventListener("click", (e) =>{
 
   if(target.id === "search-episode-input"){
@@ -547,24 +602,8 @@ document.addEventListener("click", (e) =>{
 })
 
 return target 
-
 }
-
-function handle2(){
-document.addEventListener("keydown", (e) =>{
-
-  const target = handle()
-  if(e.code === "Enter"){
-    console.log(target)
-  }
-}
-)
-}
-
-
-handle2()
 */
-
 
 
 
