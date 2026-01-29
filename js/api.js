@@ -244,14 +244,36 @@ async function hanldeCharacterClick(){
 
     const responseUrl = await fetch(url)
     const responsePage = await responseUrl.json()
-    console.log(responsePage)
-    console.log(url)
+    const resultsPage = responsePage.results
+    const container = createDivImgInfos()
+
+    resultsPage.forEach((result)=>{
+      const ul = document.createElement("ul")
+      ul.id = "ul-page"
+
+      const name = document.createElement("li")
+      name.id = "name-page"
+      name.textContent = result.name 
+
+      const img = document.createElement("img")
+      img.src = `${result.image}`
+      img.id = "page-img"
+
+      imagesContainer.appendChild(img)
+      ul.appendChild(name)
+      imagesContainer.appendChild(ul)
+
+    })
+    console.log(responsePage.results)
+
+    /*console.log(responsePage)
+    console.log(url)*/
 
     const response = await fetch(url)
     const data = await response.json()
     const results = data.results
     results.forEach((result)=>{
-      console.log(result)
+      /*console.log(result)*/
     })
 
     /*console.log(data)*/
@@ -291,16 +313,6 @@ function createUl(){
     return ulInfos
 }
 
-function createLiResidents(text, clasName, id){
-    const li = document.createElement("li")
-    li.textContent = text 
-
-    if (clasName) li.classList.add(clasName)
-    if (id) li.id = id
-
-    return li 
-}
-
 function createContainerResidents(){
       const containerResidents = document.createElement("div")
       containerResidents.classList.add("container-residents")
@@ -333,10 +345,10 @@ function createLocationLis(data) {
 
 function createResidentLis(data){
   return [
-    createLiResidents(`Name: ${data.name}`, "info-character", "resident-name"),
-    createLiResidents(`🚹 Gender: ${data.gender}`, "info-character", "resident-gender"),
-    createLiResidents(`🧍‍♂️ Specie: ${data.species}`, "info-character", "resident-specie"),
-    createLiResidents(`🧬 Status: ${data.status}`, "info-character", "resident-status")
+    createLi(`Name: ${data.name}`, "info-character", "resident-name"),
+    createLi(`🚹 Gender: ${data.gender}`, "info-character", "resident-gender"),
+    createLi(`🧍‍♂️ Specie: ${data.species}`, "info-character", "resident-specie"),
+    createLi(`🧬 Status: ${data.status}`, "info-character", "resident-status")
   ]
 }
 
@@ -583,7 +595,10 @@ const imageObserver = new IntersectionObserver(
 function createImageErrorPlaceholder() {
   const div = document.createElement("div");
   div.className = "image-error";
-  div.textContent = "Imagens não carregadas";
+  div.innerHTML = `<p>Imagens não carregadas</p>
+                <br>
+                    Tente novamente.`;
+
   return div;
 }
 
