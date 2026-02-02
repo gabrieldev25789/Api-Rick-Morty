@@ -69,10 +69,10 @@ function createInfosCharacterLi(text, clasName, id){
 
 function createCharacterLis(data){
   return [
-    createInfosCharacterLi(`Name: ${data.name}`, "info-character", "name-character"),
-    createInfosCharacterLi(`🌍 Origin : ${data.origin.name}`, "info-character", "origin-character"),
-    createInfosCharacterLi(`🧬 Status: ${data.status}`, "info-character", "status-character"),
-    createInfosCharacterLi(`🚹 Gender: ${data.gender}`, "info-character", "gender-character")
+    createLi(`Name: ${data.name}`, "info-character", "name-character"),
+    createLi(`🌍 Origin : ${data.origin.name}`, "info-character", "origin-character"),
+    createLi(`🧬 Status: ${data.status}`, "info-character", "status-character"),
+    createLi(`🚹 Gender: ${data.gender}`, "info-character", "gender-character")
   ]
 }
 
@@ -207,9 +207,8 @@ function renderEpisodeInfo(data) {
 }
  
 function renderEpisodeCharacters(charactersData) {
+  [text, imagesContainer].forEach((el => el?.classList.remove("hide")))
   imagesContainer.innerHTML = ""
-  text.classList.remove("hide")
-  imagesContainer.classList.remove("hide")
 
   text.textContent = "Characters appearing in this episode:"
 
@@ -234,54 +233,43 @@ function renderEpisodeCharacters(charactersData) {
 
 // CHARACTER API..................................................
 
-characterBtn.addEventListener("click", hanldeCharacterClick)
+function createInfosLi(data){
+  return [
+    createLi(`Name: ${data.name}`, "info-character", "name"),
+    createLi(`Specie: ${data.species}`, "info-character", "specie"),
+    createLi(`Location: ${data.location.name}`, "info-character", "location"),
+    createLi(`Status: ${data.status}`, "info-character", "status")
+  ]
+}
 
-async function hanldeCharacterClick(){
+characterBtn.addEventListener("click", handleCharacterClick)
+
+async function handleCharacterClick(){
+
   const pageUrl = await logPages()
   console.log(pageUrl)
 
-    const url = `https://rickandmortyapi.com/api/character?page=${pageUrl}`
+  const url = `https://rickandmortyapi.com/api/character?page=${pageUrl}`
 
-    const responseUrl = await fetch(url)
-    const responsePage = await responseUrl.json()
-    const resultsPage = responsePage.results
-    const container = createDivImgInfos()
+  const urlCharacters = await fetch(url)
+  const responseCharacters = await urlCharacters.json()
+  const results = responseCharacters.results 
+  console.log(results)
+  results.forEach((result)=>{
+      const div = createDivImgInfos()
+      const ulInfos = createUl()
+      const img = createImg()
+  
+      img.src = result.image 
 
-    resultsPage.forEach((result)=>{
-      const ul = document.createElement("ul")
-      ul.id = "ul-page"
+      div.appendChild(img)
+      createInfosLi(result).forEach(li => ulInfos.appendChild(li))
+      div.appendChild(ulInfos)
+      imagesContainer.appendChild(div)
+      console.log(result.name)
+  })
 
-      const name = document.createElement("li")
-      name.id = "name-page"
-      name.textContent = result.name 
-
-      const img = document.createElement("img")
-      img.src = `${result.image}`
-      img.id = "page-img"
-
-      imagesContainer.appendChild(img)
-      ul.appendChild(name)
-      imagesContainer.appendChild(ul)
-
-    })
-    console.log(responsePage.results)
-
-    /*console.log(responsePage)
-    console.log(url)*/
-
-    const response = await fetch(url)
-    const data = await response.json()
-    const results = data.results
-    results.forEach((result)=>{
-      /*console.log(result)*/
-    })
-
-    /*console.log(data)*/
-
-    const page = new URL(response.url).searchParams.get("page") || 1;
-    console.log("Página atual:", page);
 }
-
 
 async function logPages() {
   const pageValue = pageInput.value
@@ -297,7 +285,7 @@ async function logPages() {
   document.body.appendChild(pageTitle) 
 
   results.forEach((el)=>{
-  /*console.log(el.name, el.origin)*/
+  console.log(page, el)
   })
 
   return pageValue
@@ -361,8 +349,7 @@ function createRickImage(){
 
 function validResidents(residents, rickImg){
       if(residents.length === 0) {
-        imagesContainer.classList.remove("hide")
-        text.classList.remove("hide")
+        [imagesContainer, text].forEach((el)=>{el.classList.remove("hide")})
         text.textContent = "No character belong to this place."
         rickImg.src = `./img/rick-morty-img.jpg`
         imagesContainer.appendChild(rickImg)
@@ -372,9 +359,7 @@ function validResidents(residents, rickImg){
 }
 
 function cleanContainers(){
-    episodeInfos.innerHTML = ""
-    locationInfos.innerHTML = ""
-    imagesContainer.innerHTML = ""
+  [episodeInfos, locationInfos, imagesContainer].forEach((el)=>{el.innerHTML = ""})
 }
 
 function sleep(ms) {
@@ -449,8 +434,7 @@ async function handleLocationClick() {
 
 function startLoading() {
   isLoading = true;
-  locationBtn.disabled = true;
-  inputLocation.disabled = true;
+  [locationBtn, inputLocation].forEach((el)=> el.disabled = true)
 
   cleanContainers();
   locationInfos.classList.remove("hide");
@@ -461,8 +445,7 @@ function startLoading() {
 
 function stopLoading() {
   isLoading = false;
-  locationBtn.disabled = false;
-  inputLocation.disabled = false;
+  [locationBtn, inputLocation].forEach((el) => el.disabled = false)
 }
 
 function getAndValidateLocationId() {
@@ -529,8 +512,8 @@ async function fetchLocation(id) {
 
 function renderResidents(residentsData) {
   imagesContainer.innerHTML = "";
-  text?.classList.remove("hide");
-  imagesContainer.classList.remove("hide");
+  [text, imagesContainer].forEach((el) => el.classList.remove("hide"))
+
   text.textContent = "Characters who belong to this place:";
 
   if (residentsData.length === 0) {
@@ -538,7 +521,7 @@ function renderResidents(residentsData) {
     rickImg.src = `./img/rick-morty-img.jpg`
     rickImg.id = "rick-img"
     rickImg.classList.remove("character-img")
-    text.textContent =  "No character belong to this place"
+    text.textContent = "No character belong to this place"
     imagesContainer.appendChild(rickImg)
     return;
   }
@@ -552,8 +535,6 @@ function renderResidents(residentsData) {
     img.dataset.src = resident.image;
 
     img.onerror = () => {
-      /*img.src = "fallback.png";*/
-
       imageObserver.unobserve(img); 
       img.remove();                
 
@@ -595,9 +576,7 @@ const imageObserver = new IntersectionObserver(
 function createImageErrorPlaceholder() {
   const div = document.createElement("div");
   div.className = "image-error";
-  div.innerHTML = `<p>Imagens não carregadas</p>
-                <br>
-                    Tente novamente.`;
+  div.textContent = "IMAGEM NÃO CARREGADA"
 
   return div;
 }
