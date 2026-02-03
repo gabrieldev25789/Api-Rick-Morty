@@ -10,31 +10,11 @@
 <body>
     <div id="intro">
         <h1>WELCOME TO RICK AND MORTY API</h1>
+        <button id="back">Back <<<</button>
     </div>
-        <section>
-            <div id="inputs-container">
 
-            <div id="search-episode">
-                <input type="number" class="input input-wide" id="search-episode-input" placeholder="search episode (Ex: 1 - 51)">
-                <button id="episode-btn" class="search-btn">Search</button>
-            </div>
-            
-            <div id="search-character">
-                <input type="text" class="input" placeholder="Choose a page (1- 42)" id="search-page-input">
-                <button id="page-btn" class="search-btn">Search page</button>
-                <input type="number" class="input" id="search-character-input" placeholder="search character">
-                <button id="character-btn" class="search-btn">Search</button>
-            </div>
-
-            <div id="search-location">
-                <input type="number" class="input input-wide" id="search-location-input" placeholder="search location (1 - 126)">
-                <button id="location-btn" class="search-btn">Search</button>
-            </div>
-
-            </div>
-
-        <div class="filters-group" id="character-filters">
-
+        <div id="selects-container">
+            <h2>Select Area</h2>
             <select class="filter-select" id="status-select">
                 <option value="">Status</option>
                 <option value="alive">Alive</option>
@@ -64,10 +44,6 @@
                 <option value="unknown">Unknown</option>
             </select>
 
-        </div>
-
-        <div class="filters-group" id="location-filters">
-
             <select class="filter-select" id="location-type-select">
                 <option value="">Type</option>
                 <option value="planet">Planet</option>
@@ -88,10 +64,33 @@
                 <option value="cronenberg dimension">Cronenberg Dimension</option>
                 <option value="unknown">Unknown</option>
             </select>
-
         </div>
 
 
+        <section>
+            <div id="inputs-container">
+
+            <div id="search-episode">
+                <input type="number" class="input input-wide" id="search-episode-input" placeholder="search episode (Ex: 1 - 51)">
+                <button id="episode-btn" class="search-btn">Search</button>
+            </div>
+            
+            <div id="search-character">
+                <input type="text" class="input" placeholder="Choose a page (1- 42)" id="search-page-input">
+                <button id="page-btn" class="search-btn">Search page</button>
+
+                <input type="number" class="input" id="search-character-input" placeholder="search character">
+                <button id="character-btn" class="search-btn">Search</button>
+            </div>
+
+            <div id="search-location">
+                <input type="number" class="input input-wide" id="search-location-input" placeholder="search location (1 - 126)">
+                <button id="location-btn" class="search-btn">Search</button>
+            </div>
+
+            </div>
+    </div>
+</div>
 
             <div id="infos">
                 <div id="episode-infos"><h2></h2></div>
