@@ -5,7 +5,7 @@ const episodeInfos = document.querySelector("#episode-infos h2")
 const pageInput = document.querySelector("#search-page-input")
 const pageBtn = document.querySelector("#page-btn")
 
-const inputCharacter = document.querySelector("#seach-character-input")
+const inputCharacter = document.querySelector("#search-character-input")
 const characterBtn = document.querySelector("#character-btn")
 const characterInfos = document.querySelector("#character-infos")
 
@@ -244,17 +244,47 @@ function createInfosLi(data){
 
 characterBtn.addEventListener("click", handleCharacterClick)
 
-async function handleCharacterClick(){
+async function handleCharacterClick() {
+      const div = createDivImgInfos()
+      infosContainer.innerHTML = ""
+  const characterValue = Number(inputCharacter.value)
+  const results = await logPages()
 
-  const pageUrl = await logPages()
-  console.log(pageUrl)
+  if (!characterValue || characterValue < 1 || characterValue > results.length) {
+    console.log("Número inválido")
+    return
+  }
 
-  const url = `https://rickandmortyapi.com/api/character?page=${pageUrl}`
+  const personagem = results[characterValue - 1]
 
-  const urlCharacters = await fetch(url)
-  const responseCharacters = await urlCharacters.json()
-  const results = responseCharacters.results 
+      const ulInfos = createUl()
+      const img = createImg()
+
+      img.src = personagem.image 
+      const name = document.createElement("p")
+      name.id = "character-name"
+      name.textContent = `Name: ${personagem.name}`
+
+      div.appendChild(img)
+      div.appendChild(name)
+      document.body.appendChild(div)
+}
+
+async function logPages() {
+  imagesContainer.innerHTML = ""
+  const pageValue = pageInput.value
+  const page = `https://rickandmortyapi.com/api/character?page=${pageValue}`
+
+  const urlPage = await fetch(page)
+  const responseUrlPage = await urlPage.json()
+  const results = responseUrlPage.results
   console.log(results)
+
+  const pageTitle = document.createElement("h2")
+  pageTitle.id = "page-title"
+  pageTitle.textContent = `Pagina atual: ${pageValue}`
+  document.body.appendChild(pageTitle) 
+
   results.forEach((result)=>{
       const div = createDivImgInfos()
       const ulInfos = createUl()
@@ -266,29 +296,10 @@ async function handleCharacterClick(){
       createInfosLi(result).forEach(li => ulInfos.appendChild(li))
       div.appendChild(ulInfos)
       imagesContainer.appendChild(div)
-      console.log(result.name)
+      pageInput.value = ""
   })
-
-}
-
-async function logPages() {
-  const pageValue = pageInput.value
-  const page = `https://rickandmortyapi.com/api/character?page=${pageValue}`
-
-  const urlPage = await fetch(page)
-  const responseUrlPage = await urlPage.json()
-  const results = responseUrlPage.results
-
-  const pageTitle = document.createElement("h2")
-  pageTitle.id = "page-title"
-  pageTitle.textContent = `Pagina atual: ${pageValue}`
-  document.body.appendChild(pageTitle) 
-
-  results.forEach((el)=>{
-  console.log(page, el)
-  })
-
-  return pageValue
+ 
+  return results
 }
 
 pageBtn.addEventListener("click", logPages)
