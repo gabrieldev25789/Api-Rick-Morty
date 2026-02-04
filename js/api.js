@@ -19,6 +19,20 @@ const imagesContainer = document.querySelector("#images")
 
 const text = document.querySelector("#h2")
 
+const inputsContainer = document.querySelector("#inputs-container")
+const selectsContainer = document.querySelector("#selects-container")
+const backBtn = document.querySelector("#back")
+
+backBtn.addEventListener("click", () =>{
+    selectsContainer.classList.remove("hide")
+    inputsContainer.classList.remove("hide")
+    imagesContainer.classList.add("hide")
+    infosContainer.classList.add("hide")
+    text.classList.add("hide")
+})
+
+
+
 const loadingImg = document.createElement("img")
 loadingImg.id = "loading-img"
 loadingImg.src = "./img/loading.png" 
@@ -81,12 +95,19 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
   const inputValue = input.value
   console.log(value)
 
+
+
   if(!inputValue){
     infos.textContent = `Search for an ${EpisodeLocation}`
     infosContainer.classList.add("no-found")
     text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img2.jpg`
+    imagesContainer.classList.remove("hide")
     imagesContainer.appendChild(rickImg)
+    imagesContainer.classList.remove("hide")
+    selectsContainer.classList.add("hide")
+    inputsContainer.classList.add("hide")
+    infosContainer.classList.remove("hide")
     return false 
   }
   else{
@@ -100,7 +121,11 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
     infosContainer.classList.add("no-found")
     text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img.jpg`
+    imagesContainer.classList.remove("hide")
     imagesContainer.appendChild(rickImg)
+    selectsContainer.classList.add("hide")
+    inputsContainer.classList.add("hide")
+    infosContainer.classList.remove("hide")
     return false
   } else{
     infosContainer.classList.remove("no-found")
@@ -154,6 +179,7 @@ async function handleEpisodeClick() {
   } finally {
     unlockEpisodeUI(); 
   }
+
 }
 
 async function fetchEpisode(id) {
@@ -204,6 +230,9 @@ function renderEpisodeInfo(data) {
   const ulInfos = createUl()
   createEpisodeLis(data).forEach(li => ulInfos.appendChild(li))
   episodeInfos.appendChild(ulInfos)
+    selectsContainer.classList.add("hide")
+    inputsContainer.classList.add("hide")
+    infosContainer.classList.remove("hide")
 }
  
 function renderEpisodeCharacters(charactersData) {
@@ -228,6 +257,7 @@ function renderEpisodeCharacters(charactersData) {
 
     container.append(img, ul)
     imagesContainer.appendChild(container)
+        
   })
 }
 
@@ -244,18 +274,24 @@ function createInfosLi(data){
 
 characterBtn.addEventListener("click", handleCharacterClick)
 
+/*
 async function handleCharacterClick() {
+
       const div = createDivImgInfos()
+      div.innerHTML = ""
       infosContainer.innerHTML = ""
-  const characterValue = Number(inputCharacter.value)
-  const results = await logPages()
+      imagesContainer.innerHTML = ""
+      const characterValue = inputCharacter.value
+
+      const results = await logPages()
 
   if (!characterValue || characterValue < 1 || characterValue > results.length) {
     console.log("Número inválido")
     return
   }
+      inputCharacter.value = ""
 
-  const personagem = results[characterValue - 1]
+      const personagem = results[characterValue - 1]
 
       const ulInfos = createUl()
       const img = createImg()
@@ -268,24 +304,27 @@ async function handleCharacterClick() {
       div.appendChild(img)
       div.appendChild(name)
       document.body.appendChild(div)
+      imagesContainer.innerHTML = ""
 }
 
 async function logPages() {
-  imagesContainer.innerHTML = ""
   const pageValue = pageInput.value
   const page = `https://rickandmortyapi.com/api/character?page=${pageValue}`
 
   const urlPage = await fetch(page)
   const responseUrlPage = await urlPage.json()
   const results = responseUrlPage.results
-  console.log(results)
 
   const pageTitle = document.createElement("h2")
   pageTitle.id = "page-title"
   pageTitle.textContent = `Pagina atual: ${pageValue}`
   document.body.appendChild(pageTitle) 
 
+  imagesContainer.innerHTML = ""
+
+  console.log(results)
   results.forEach((result)=>{
+
       const div = createDivImgInfos()
       const ulInfos = createUl()
       const img = createImg()
@@ -301,8 +340,93 @@ async function logPages() {
  
   return results
 }
+*/
 
-pageBtn.addEventListener("click", logPages)
+async function fetchCharactersByPage(pageValue) {
+  const url = `https://rickandmortyapi.com/api/character?page=${pageValue}`
+  const response = await fetch(url)
+  const data = await response.json()
+  return data.results
+}
+
+function renderPageTitle(pageValue) {
+  const oldTitle = document.querySelector("#page-title")
+  if (oldTitle) oldTitle.remove()
+
+  const pageTitle = document.createElement("h2")
+  pageTitle.id = "page-title"
+  pageTitle.textContent = `Página atual: ${pageValue}`
+  document.body.appendChild(pageTitle)
+}
+
+
+function renderCharactersList(results) {
+  imagesContainer.innerHTML = ""
+
+  results.forEach(result => {
+    const div = createDivImgInfos()
+    const ul = createUl()
+    const img = createImg()
+
+    img.src = result.image
+
+    div.appendChild(img)
+    createInfosLi(result).forEach(li => ul.appendChild(li))
+    div.appendChild(ul)
+
+    imagesContainer.appendChild(div)
+  })
+}
+
+function renderHighlightedCharacter(character) {
+  infosContainer.innerHTML = ""
+
+  const div = createDivImgInfos()
+  const img = createImg()
+  const name = document.createElement("p")
+
+  img.src = character.image
+  name.id = "character-name"
+  name.textContent = `Name: ${character.name}`
+
+  div.appendChild(img)
+  div.appendChild(name)
+
+  infosContainer.appendChild(div)
+}
+
+async function loadPage() {
+  const pageValue = pageInput.value
+  if (!pageValue) return
+
+  const results = await fetchCharactersByPage(pageValue)
+
+  renderPageTitle(pageValue)
+  renderCharactersList(results)
+
+  pageInput.value = ""
+  return results
+}
+
+async function handleCharacterClick() {
+  const characterValue = Number(inputCharacter.value)
+  if (!characterValue) return
+
+  const results = await loadPage()
+
+  if (characterValue < 1 || characterValue > results.length) {
+    console.log("Número inválido")
+    return
+  }
+
+  const character = results[characterValue - 1]
+  renderHighlightedCharacter(character)
+
+  inputCharacter.value = ""
+}
+
+
+pageBtn.addEventListener("click", loadPage)
 
 // LOCATION API.....................................................
 function createUl(){
