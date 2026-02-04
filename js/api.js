@@ -24,28 +24,17 @@ const selectsContainer = document.querySelector("#selects-container")
 const backBtn = document.querySelector("#back")
 backBtn.classList.add("hide")
 
-function removeClassList(p1, p2, p3 = null){
 
-  if(p3 !== null){
-      [p1, p2, p3].forEach((el)=> el.classList.remove("hide"))
-  } else{
-      [p1, p2].forEach((el)=> el.classList.remove("hide"))
-  }
-
-}
-
-function addClassList(p1, p2, p3 = null){
-  if(p3 !== null){
-    [p1, p2, p3].forEach((el)=> el.classList.add("hide"))
-  } else{
-    [p1, p2].forEach((el)=> el.classList.add("hide"))
-  }
+function toggleClassList(action, ...elements) {
+  elements
+    .filter(Boolean)
+    .forEach(el => el.classList[action]("hide"))
 }
 
 backBtn.addEventListener("click", () =>{
-      removeClassList(selectsContainer, inputsContainer)
-      addClassList(imagesContainer, infosContainer)
-      addClassList(backBtn, text)
+      toggleClassList("remove", selectsContainer, inputsContainer)
+      toggleClassList("add", imagesContainer, infosContainer) // add
+      toggleClassList("add", backBtn, text) // add
 })
 
 const loadingImg = document.createElement("img")
@@ -115,8 +104,8 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
     infosContainer.classList.add("no-found")
     rickImg.src = `./img/rick-morty-img2.jpg`
     imagesContainer.appendChild(rickImg)
-    addClassList(selectsContainer, inputsContainer, text)
-    removeClassList(infosContainer, backBtn, imagesContainer)
+    toggleClassList("add", selectsContainer, inputsContainer, text) // add
+    toggleClassList("remove", infosContainer, backBtn, imagesContainer)
     return false 
   }
   else{
@@ -130,8 +119,8 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
     infosContainer.classList.add("no-found")
     rickImg.src = `./img/rick-morty-img.jpg`
     imagesContainer.appendChild(rickImg)
-    removeClassList(imagesContainer, infosContainer, backBtn)
-    addClassList(text, selectsContainer, inputsContainer)
+    toggleClassList("remove", imagesContainer, infosContainer, backBtn)
+    toggleClassList("add", text, selectsContainer, inputsContainer) // add
     return false
   } else{
     infosContainer.classList.remove("no-found")
@@ -233,8 +222,8 @@ function renderEpisodeInfo(data) {
   const ulInfos = createUl()
   createEpisodeLis(data).forEach(li => ulInfos.appendChild(li))
   episodeInfos.appendChild(ulInfos)
-    addClassList(selectsContainer, inputsContainer)
-    removeClassList(episodeInfos, infosContainer)
+    toggleClassList("add", selectsContainer, inputsContainer) // add
+    toggleClassList("remove", episodeInfos, infosContainer)
 }
  
 function renderEpisodeCharacters(charactersData) {
@@ -449,7 +438,7 @@ function chunkArray(arr, size = 20) {
 
 function showErrorMessage(err) {
   imagesContainer.innerHTML = ""
-  removeClassList(imagesContainer, text)
+  toggleClassList("remove", imagesContainer, text)
  
   if (err.status === 429 || err.message.includes("429")) {
     text.textContent =
@@ -605,8 +594,8 @@ function renderResidents(residentsData) {
 
     container.append(img, ul);
     imagesContainer.appendChild(container);
-    removeClassList(infosContainer,backBtn)
-    addClassList(selectsContainer,inputsContainer)
+    toggleClassList("remove", infosContainer,backBtn)
+    toggleClassList("add", selectsContainer,inputsContainer) // add
   });
 }
 
@@ -638,7 +627,6 @@ function createImageErrorPlaceholder() {
 
   return div;
 }
-
 
 /*
 function handle(){
