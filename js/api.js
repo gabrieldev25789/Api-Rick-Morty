@@ -22,16 +22,31 @@ const text = document.querySelector("#h2")
 const inputsContainer = document.querySelector("#inputs-container")
 const selectsContainer = document.querySelector("#selects-container")
 const backBtn = document.querySelector("#back")
+backBtn.classList.add("hide")
+
+function removeClassList(p1, p2, p3 = null){
+
+  if(p3 !== null){
+      [p1, p2, p3].forEach((el)=> el.classList.remove("hide"))
+  } else{
+      [p1, p2].forEach((el)=> el.classList.remove("hide"))
+  }
+
+}
+
+function addClassList(p1, p2, p3 = null){
+  if(p3 !== null){
+    [p1, p2, p3].forEach((el)=> el.classList.add("hide"))
+  } else{
+    [p1, p2].forEach((el)=> el.classList.add("hide"))
+  }
+}
 
 backBtn.addEventListener("click", () =>{
-    selectsContainer.classList.remove("hide")
-    inputsContainer.classList.remove("hide")
-    imagesContainer.classList.add("hide")
-    infosContainer.classList.add("hide")
-    text.classList.add("hide")
+      removeClassList(selectsContainer, inputsContainer)
+      addClassList(imagesContainer, infosContainer)
+      addClassList(backBtn, text)
 })
-
-
 
 const loadingImg = document.createElement("img")
 loadingImg.id = "loading-img"
@@ -95,19 +110,13 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
   const inputValue = input.value
   console.log(value)
 
-
-
   if(!inputValue){
     infos.textContent = `Search for an ${EpisodeLocation}`
     infosContainer.classList.add("no-found")
-    text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img2.jpg`
-    imagesContainer.classList.remove("hide")
     imagesContainer.appendChild(rickImg)
-    imagesContainer.classList.remove("hide")
-    selectsContainer.classList.add("hide")
-    inputsContainer.classList.add("hide")
-    infosContainer.classList.remove("hide")
+    addClassList(selectsContainer, inputsContainer, text)
+    removeClassList(infosContainer, backBtn, imagesContainer)
     return false 
   }
   else{
@@ -119,13 +128,10 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
     infos.textContent = `Not found ${EpisodeLocation}`
     inputLocation.disabled = false
     infosContainer.classList.add("no-found")
-    text.classList.add("hide")
     rickImg.src = `./img/rick-morty-img.jpg`
-    imagesContainer.classList.remove("hide")
     imagesContainer.appendChild(rickImg)
-    selectsContainer.classList.add("hide")
-    inputsContainer.classList.add("hide")
-    infosContainer.classList.remove("hide")
+    removeClassList(imagesContainer, infosContainer, backBtn)
+    addClassList(text, selectsContainer, inputsContainer)
     return false
   } else{
     infosContainer.classList.remove("no-found")
@@ -158,9 +164,7 @@ async function handleEpisodeClick() {
   locationInfos.classList.add("hide");
 
   try {
-    if (!validLocationEpisode(inputEpisode, episodeInfos, "episode", inputEpisode)) {
-      return;
-    }
+  if (!validLocationEpisode(inputEpisode, episodeInfos, "episode", inputEpisode)) return
 
     const episodeValue = inputEpisode.value;
     inputEpisode.value = "";
@@ -168,7 +172,7 @@ async function handleEpisodeClick() {
     const data = await fetchEpisode(episodeValue);
     renderEpisodeInfo(data);
 
-    if (!validResidents(data.characters, createRickImage())) return;
+    if (!validResidents(data.characters, createRickImage())) return 
 
     const characters = await fetchCharacters(data.characters);
     renderEpisodeCharacters(characters);
@@ -225,14 +229,12 @@ async function fetchCharacters(characters) {
 
 function renderEpisodeInfo(data) {
   episodeInfos.innerHTML = ""
-  episodeInfos.classList.remove("hide")
 
   const ulInfos = createUl()
   createEpisodeLis(data).forEach(li => ulInfos.appendChild(li))
   episodeInfos.appendChild(ulInfos)
-    selectsContainer.classList.add("hide")
-    inputsContainer.classList.add("hide")
-    infosContainer.classList.remove("hide")
+    addClassList(selectsContainer, inputsContainer)
+    removeClassList(episodeInfos, infosContainer)
 }
  
 function renderEpisodeCharacters(charactersData) {
@@ -257,7 +259,7 @@ function renderEpisodeCharacters(charactersData) {
 
     container.append(img, ul)
     imagesContainer.appendChild(container)
-        
+    backBtn.classList.remove("hide")
   })
 }
 
@@ -272,7 +274,9 @@ function createInfosLi(data){
   ]
 }
 
+/*
 characterBtn.addEventListener("click", handleCharacterClick)
+*/ 
 
 /*
 async function handleCharacterClick() {
@@ -342,91 +346,9 @@ async function logPages() {
 }
 */
 
-async function fetchCharactersByPage(pageValue) {
-  const url = `https://rickandmortyapi.com/api/character?page=${pageValue}`
-  const response = await fetch(url)
-  const data = await response.json()
-  return data.results
-}
-
-function renderPageTitle(pageValue) {
-  const oldTitle = document.querySelector("#page-title")
-  if (oldTitle) oldTitle.remove()
-
-  const pageTitle = document.createElement("h2")
-  pageTitle.id = "page-title"
-  pageTitle.textContent = `Página atual: ${pageValue}`
-  document.body.appendChild(pageTitle)
-}
 
 
-function renderCharactersList(results) {
-  imagesContainer.innerHTML = ""
-
-  results.forEach(result => {
-    const div = createDivImgInfos()
-    const ul = createUl()
-    const img = createImg()
-
-    img.src = result.image
-
-    div.appendChild(img)
-    createInfosLi(result).forEach(li => ul.appendChild(li))
-    div.appendChild(ul)
-
-    imagesContainer.appendChild(div)
-  })
-}
-
-function renderHighlightedCharacter(character) {
-  infosContainer.innerHTML = ""
-
-  const div = createDivImgInfos()
-  const img = createImg()
-  const name = document.createElement("p")
-
-  img.src = character.image
-  name.id = "character-name"
-  name.textContent = `Name: ${character.name}`
-
-  div.appendChild(img)
-  div.appendChild(name)
-
-  infosContainer.appendChild(div)
-}
-
-async function loadPage() {
-  const pageValue = pageInput.value
-  if (!pageValue) return
-
-  const results = await fetchCharactersByPage(pageValue)
-
-  renderPageTitle(pageValue)
-  renderCharactersList(results)
-
-  pageInput.value = ""
-  return results
-}
-
-async function handleCharacterClick() {
-  const characterValue = Number(inputCharacter.value)
-  if (!characterValue) return
-
-  const results = await loadPage()
-
-  if (characterValue < 1 || characterValue > results.length) {
-    console.log("Número inválido")
-    return
-  }
-
-  const character = results[characterValue - 1]
-  renderHighlightedCharacter(character)
-
-  inputCharacter.value = ""
-}
-
-
-pageBtn.addEventListener("click", loadPage)
+/*pageBtn.addEventListener("click", loadPage)*/
 
 // LOCATION API.....................................................
 function createUl(){
@@ -488,6 +410,7 @@ function validResidents(residents, rickImg){
         text.textContent = "No character belong to this place."
         rickImg.src = `./img/rick-morty-img.jpg`
         imagesContainer.appendChild(rickImg)
+
         return false
       }
       return true 
@@ -526,15 +449,14 @@ function chunkArray(arr, size = 20) {
 
 function showErrorMessage(err) {
   imagesContainer.innerHTML = ""
-  imagesContainer.classList.remove("hide")
-  text.classList.remove("hide")
-
+  removeClassList(imagesContainer, text)
+ 
   if (err.status === 429 || err.message.includes("429")) {
     text.textContent =
-      "Muitas requisições de uma vez. Atualize a página e tente novamente."
+      "Too many requests at once. Refresh the page and try again."
   } else {
     text.textContent =
-      "Falha na busca. Verifique sua conexão e tente novamente."
+      "Search failed. Check your connection and try again."
   }
 }
 
@@ -573,7 +495,6 @@ function startLoading() {
 
   cleanContainers();
   locationInfos.classList.remove("hide");
-
   imagesContainer.innerHTML = "";
   imagesContainer.appendChild(loadingImg);
 }
@@ -680,10 +601,12 @@ function renderResidents(residentsData) {
     imageObserver.observe(img);
 
     const ul = createUlResidents();
-    createResidentLis(resident).forEach(li => ul.appendChild(li));
+    createResidentLis(resident).forEach(li => ul.appendChild(li))
 
     container.append(img, ul);
     imagesContainer.appendChild(container);
+    removeClassList(infosContainer,backBtn)
+    addClassList(selectsContainer,inputsContainer)
   });
 }
 
@@ -711,7 +634,7 @@ const imageObserver = new IntersectionObserver(
 function createImageErrorPlaceholder() {
   const div = document.createElement("div");
   div.className = "image-error";
-  div.textContent = "IMAGEM NÃO CARREGADA"
+  div.textContent = "IMAGE NOT LOADED"
 
   return div;
 }
