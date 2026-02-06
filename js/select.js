@@ -4,8 +4,6 @@ const specieSelect = document.querySelector("#species-select")
 const locationSelect = document.querySelector("#location-type-select")
 const dimensionSelect = document.querySelector("#dimension-select")
 
-const pageValue = Math.ceil(Math.random() * 42) 
-
 
 function createInfosCharactersSelect(data){
     return [
@@ -21,17 +19,21 @@ function createInfosCharactersSelect(data){
 let array = []
 
 async function handleSelects(){
-    const url = `https://rickandmortyapi.com/api/character?page=${pageValue}`
 
-    const responseApi = await fetch(url)
-    const data = await responseApi.json()
 
-    const characters = data.results
-
-    statusSelect.addEventListener("change", (e) =>{
-        const target = e.target.value 
+    statusSelect.addEventListener("change", async (e) =>{
+    const target = e.target.value 
 
     if(target === "alive"){
+        const pageValue = Math.ceil(Math.random() * 42) 
+
+        const url = `https://rickandmortyapi.com/api/character?page=${pageValue}`
+
+        const responseApi = await fetch(url)
+        const data = await responseApi.json()
+
+        const characters = data.results
+
         const characterAlive = characters.filter((character) => character.status === "Alive")
         console.log(characterAlive)
         characterAlive.forEach((character)=>{
@@ -55,11 +57,11 @@ async function handleSelects(){
 
         toggleClassList("add", selectsContainer, inputsContainer)
         backBtn.classList.remove("hide")
-        })
-    }
-})
-
+          })
+        
     console.log(data.results, pageValue)
-}
+    
+        }
+    })}
 
 handleSelects()
