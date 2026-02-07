@@ -265,14 +265,64 @@ function renderEpisodeCharacters(charactersData) {
 
 // CHARACTER API..................................................
 
-function createInfosLi(data){
+function createInfosLiCharacter(data){
   return [
-    createLi(`Name: ${data.name}`, "info-character", "name"),
-    createLi(`Specie: ${data.species}`, "info-character", "specie"),
-    createLi(`Location: ${data.location.name}`, "info-character", "location"),
-    createLi(`Status: ${data.status}`, "info-character", "status")
+    createLi(`🧬 Name: ${data.name}`, "list-select", "name"),
+    createLi(`👽 Specie: ${data.species}`, "list-select", "specie"),
+    createLi(`⚧ Gender: ${data.gender}`, "list-select", "gender"),
+    createLi(`📍 Location: ${data.location.name}`, "list-select", "location"),
+    createLi(`🌌 Status: ${data.status}`, "list-select", "status"),
+    createLi(`🆔 ID: ${data.id}`, "list-select", "id")
   ]
 }
+
+async function logPages(){
+  const pageValue = pageInput.value
+  const page = `https://rickandmortyapi.com/api/character?page=${pageValue}`
+
+  console.log(page)
+
+  return page 
+}
+
+pageBtn.addEventListener("click", logPages)
+
+async function handleCharacterClick() {
+ 
+    let value = await logPages()
+
+    const valueResponse = await fetch(value)
+    const data = await valueResponse.json()
+
+    const results = data.results 
+    results.forEach((result)=>{
+      
+      const div = createDivImgInfos()
+      div.classList.add("div-character-select")
+
+
+      const img = createImg()
+      img.classList.add("img-character-select")
+      img.classList.remove("character-img")
+      img.src = result.image 
+
+      const ul = createUl()
+      ul.classList.add("ul-character-select", "hide")
+
+      img.addEventListener("click", () => {
+          ul.classList.toggle("hide")
+        })
+
+      createInfosLiCharacter(result).forEach((li) => ul.appendChild(li))
+
+      div.appendChild(img)
+      div.appendChild(ul)
+      document.body.appendChild(div)
+      pageInput.value = ""
+    })
+}
+
+characterBtn.addEventListener("click", handleCharacterClick)
 
 /*
 characterBtn.addEventListener("click", handleCharacterClick)
