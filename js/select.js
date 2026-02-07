@@ -1,7 +1,6 @@
 const statusSelect = document.querySelector("#status-select")
 const genderSelect = document.querySelector("#gender-select")
 const specieSelect = document.querySelector("#species-select")
-const typeSelect = document.querySelector("#location-type-select")
 const dimensionSelect = document.querySelector("#dimension-select")
 
 
@@ -77,11 +76,28 @@ specieSelect.addEventListener("change", async (e) => {
      handleSelect("species", target)
 })
 
-typeSelect.addEventListener("change", async (e) => {
-     const target = e.target.value 
+function renderCharacter(character) {
+  const div = createDivImgInfos()
+  div.classList.add("div-character-select")
 
-     handleSelect("type", target)
-})
+  const img = createImg()
+  img.classList.add("img-character-select")
+  img.src = character.image
+
+  const ul = createUl()
+  ul.classList.add("ul-character-select")
+
+  createInfosCharactersSelect(character).forEach(li => ul.appendChild(li))
+
+  div.appendChild(img)
+  div.appendChild(ul)
+  document.body.appendChild(div)
+
+  array.push(div)
+
+  toggleClassList("add", selectsContainer, inputsContainer)
+  backBtn.classList.remove("hide")
+}
 
 async function handleDimensionSelect(dimension) {
   const response = await fetch(
