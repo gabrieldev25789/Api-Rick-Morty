@@ -32,6 +32,13 @@ function toggleClassList(action, ...elements) {
 }
 
 function back(){
+    imagesContainer.innerHTML = ""
+
+  if(!imagesContainer.classList.contains("hide")){
+    toggleClassList("remove", inputsContainer, selectsContainer)
+    return 
+  } 
+
   const selects = document.querySelectorAll(".filter-select")
   selects.forEach((select)=>{
     select.value = ""
@@ -295,11 +302,9 @@ async function handleCharacterClick() {
     const data = await valueResponse.json()
 
     const results = data.results 
-    results.forEach((result)=>{
-      
+    results.forEach((result)=>{      
       const div = createDivImgInfos()
       div.classList.add("div-character-select")
-
 
       const img = createImg()
       img.classList.add("img-character-select")
@@ -317,7 +322,10 @@ async function handleCharacterClick() {
 
       div.appendChild(img)
       div.appendChild(ul)
-      document.body.appendChild(div)
+      selectsContainer.classList.add("hide")
+      inputsContainer.classList.add("hide")
+      backBtn.classList.remove("hide")
+      imagesContainer.appendChild(div)
       pageInput.value = ""
     })
 }
