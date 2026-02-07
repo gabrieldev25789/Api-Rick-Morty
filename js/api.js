@@ -31,10 +31,21 @@ function toggleClassList(action, ...elements) {
     .forEach(el => el.classList[action]("hide"))
 }
 
-backBtn.addEventListener("click", () =>{
+function back(){
+  const selects = document.querySelectorAll(".filter-select")
+  selects.forEach((select)=>{
+    select.value = ""
+  })
       toggleClassList("remove", selectsContainer, inputsContainer)
       toggleClassList("add", imagesContainer, infosContainer) // add
       toggleClassList("add", backBtn, text) // add
+      array.forEach((el)=>{
+        el.remove()
+    })   
+}
+
+backBtn.addEventListener("click", () =>{
+  back()
 })
 
 const loadingImg = document.createElement("img")
