@@ -33,7 +33,7 @@ function toggleClassList(action, ...elements) {
 
 function back(){
     imagesContainer.innerHTML = ""
-
+    toggleClassList("add", infosContainer, text)
   if(!imagesContainer.classList.contains("hide")){
     toggleClassList("remove", inputsContainer, selectsContainer)
     return 
@@ -328,6 +328,8 @@ async function logPages(){
 pageBtn.addEventListener("click", logPages)
 
 async function handleCharacterClick() {
+  const characterValue = inputCharacter.value
+
 
   const page = `https://rickandmortyapi.com/api/character?page=${valueInput}`
  
@@ -336,121 +338,75 @@ async function handleCharacterClick() {
 
     const results = data.results
 
+  if(!characterValue){
+  
+
     results.forEach((character)=>{
-      console.log(character.name)
-    })
-  /*
-    let value = await logPages()
+      console.log(character)
 
-    const valueResponse = await fetch(value)
-    const data = await valueResponse.json()
-
-    const results = data.results 
-    results.forEach((result)=>{      
       const div = createDivImgInfos()
-      div.classList.add("div-character-select")
+
+      /*
+      div.classList.add("div-character-select") 
+      */
 
       const img = createImg()
-      img.classList.add("img-character-select")
-      img.classList.remove("character-img")
-      img.src = result.image 
+
+     /* img.classList.add("img-character-select")
+      img.classList.remove("character-img")*/
+
+      img.src = character.image 
 
       const ul = createUl()
       ul.classList.add("ul-character-select", "hide")
+      
 
       img.addEventListener("click", () => {
           ul.classList.toggle("hide")
-        })
+      })
 
-      createInfosLiCharacter(result).forEach((li) => ul.appendChild(li))
+      createInfosLiCharacter(character).forEach((li) => ul.appendChild(li))
 
       div.appendChild(img)
       div.appendChild(ul)
       toggleClassList("add", selectsContainer, inputsContainer)
       backBtn.classList.remove("hide")
       imagesContainer.appendChild(div)
-      pageInput.value = ""
-    }) 
-  */
-}
+    })
+  } else{
 
-characterBtn.addEventListener("click", handleCharacterClick)
+    const character = results[characterValue]
+    console.log(character)
 
-/*
-characterBtn.addEventListener("click", handleCharacterClick)
-*/ 
+    const div = createDivImgInfos()
+    div.classList.add("div-character-select") 
 
-/*
-async function handleCharacterClick() {
+    const img = createImg()
+    img.classList.add("img-character-select")
+    img.classList.remove("character-img")
+    img.src = character.image 
 
-      const div = createDivImgInfos()
-      div.innerHTML = ""
-      infosContainer.innerHTML = ""
-      imagesContainer.innerHTML = ""
-      const characterValue = inputCharacter.value
+    const ul = createUl()
+    ul.classList.add("ul-character-select", "hide")
 
-      const results = await logPages()
+    img.addEventListener("click", () => {
+      ul.classList.toggle("hide")
+    })
 
-  if (!characterValue || characterValue < 1 || characterValue > results.length) {
-    console.log("Número inválido")
-    return
-  }
-      inputCharacter.value = ""
+    const p = document.createElement("p")
+    p.textContent = character.name
 
-      const personagem = results[characterValue - 1]
-
-      const ulInfos = createUl()
-      const img = createImg()
-
-      img.src = personagem.image 
-      const name = document.createElement("p")
-      name.id = "character-name"
-      name.textContent = `Name: ${personagem.name}`
 
       div.appendChild(img)
-      div.appendChild(name)
-      document.body.appendChild(div)
-      imagesContainer.innerHTML = ""
-}
-
-async function logPages() {
-  const pageValue = pageInput.value
-  const page = `https://rickandmortyapi.com/api/character?page=${pageValue}`
-
-  const urlPage = await fetch(page)
-  const responseUrlPage = await urlPage.json()
-  const results = responseUrlPage.results
-
-  const pageTitle = document.createElement("h2")
-  pageTitle.id = "page-title"
-  pageTitle.textContent = `Pagina atual: ${pageValue}`
-  document.body.appendChild(pageTitle) 
-
-  imagesContainer.innerHTML = ""
-
-  console.log(results)
-  results.forEach((result)=>{
-
-      const div = createDivImgInfos()
-      const ulInfos = createUl()
-      const img = createImg()
-  
-      img.src = result.image 
-
-      div.appendChild(img)
-      createInfosLi(result).forEach(li => ulInfos.appendChild(li))
-      div.appendChild(ulInfos)
+      ul.appendChild(p)
+      div.appendChild(ul)
+      toggleClassList("add", selectsContainer, inputsContainer)
+      backBtn.classList.remove("hide")
       imagesContainer.appendChild(div)
-      pageInput.value = ""
-  })
- 
-  return results
+  }
 }
-*/
 
-
-
-/*pageBtn.addEventListener("click", loadPage)*/
+characterBtn.addEventListener("click", handleCharacterClick)
 
 // LOCATION API.....................................................
 function createUl(){
