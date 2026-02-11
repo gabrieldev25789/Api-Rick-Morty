@@ -327,9 +327,19 @@ async function logPages(){
 
 pageBtn.addEventListener("click", logPages)
 
+function createLiCharacterByPage(data){
+  return [
+    createLi(`🧬 Name: ${data.name}`, "list-select", "name-location"),
+    createLi(`👽 Specie: ${data.species}`, "list-select", "species"),
+    createLi(`⚧ Gender: ${data.gender}`, "list-select", "gender"),
+    createLi(`📍 Location: ${data.location.name}`, "list-select", "location"),
+    createLi(`🌌 Origin: ${data.origin.name}`, "list-select", "origin"),
+    createLi(`🆔 ID: ${data.id}`, "list-select", "id")
+    ]
+}
+
 async function handleCharacterClick() {
   const characterValue = inputCharacter.value
-
 
   const page = `https://rickandmortyapi.com/api/character?page=${valueInput}`
  
@@ -338,9 +348,8 @@ async function handleCharacterClick() {
 
     const results = data.results
 
-  if(!characterValue){
+    if(!characterValue){
   
-
     results.forEach((character)=>{
       console.log(character)
 
@@ -374,9 +383,15 @@ async function handleCharacterClick() {
       imagesContainer.appendChild(div)
     })
   } else{
+        const index = Number(characterValue) - 1
 
-    const character = results[characterValue]
-    console.log(character)
+        if(index < 0 || index >= results.length) {
+          alert("Personagem não encontrado nessa página")
+          return
+        }
+
+const character = results[index]
+
 
     const div = createDivImgInfos()
     div.classList.add("div-character-select") 
@@ -393,12 +408,9 @@ async function handleCharacterClick() {
       ul.classList.toggle("hide")
     })
 
-    const p = document.createElement("p")
-    p.textContent = character.name
-
+    createLiCharacterByPage(character).forEach((li) => ul.appendChild(li))
 
       div.appendChild(img)
-      ul.appendChild(p)
       div.appendChild(ul)
       toggleClassList("add", selectsContainer, inputsContainer)
       backBtn.classList.remove("hide")
@@ -696,6 +708,7 @@ function createImageErrorPlaceholder() {
 
   return div;
 }
+
 
 /*
 function handle(){
