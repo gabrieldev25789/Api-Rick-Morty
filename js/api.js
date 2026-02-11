@@ -338,38 +338,19 @@ function createLiCharacterByPage(data){
     ]
 }
 
-async function handleCharacterClick() {
-  const characterValue = inputCharacter.value
-
-  const page = `https://rickandmortyapi.com/api/character?page=${valueInput}`
- 
-    const valueResponse = await fetch(page)
-    const data = await valueResponse.json()
-
-    const results = data.results
-
-    if(!characterValue){
-  
-    results.forEach((character)=>{
+function createElemtntCharacterClick(results){
+results.forEach((character)=>{
       console.log(character)
 
       const div = createDivImgInfos()
 
-      /*
-      div.classList.add("div-character-select") 
-      */
-
       const img = createImg()
-
-     /* img.classList.add("img-character-select")
-      img.classList.remove("character-img")*/
 
       img.src = character.image 
 
       const ul = createUl()
       ul.classList.add("ul-character-select", "hide")
       
-
       img.addEventListener("click", () => {
           ul.classList.toggle("hide")
       })
@@ -382,18 +363,11 @@ async function handleCharacterClick() {
       backBtn.classList.remove("hide")
       imagesContainer.appendChild(div)
     })
-  } else{
-        const index = Number(characterValue) - 1
+}
 
-        if(index < 0 || index >= results.length) {
-          alert("Personagem não encontrado nessa página")
-          return
-        }
+function createListCharacters(character){
 
-const character = results[index]
-
-
-    const div = createDivImgInfos()
+  const div = createDivImgInfos()
     div.classList.add("div-character-select") 
 
     const img = createImg()
@@ -415,6 +389,32 @@ const character = results[index]
       toggleClassList("add", selectsContainer, inputsContainer)
       backBtn.classList.remove("hide")
       imagesContainer.appendChild(div)
+}
+
+async function handleCharacterClick() {
+  const characterValue = inputCharacter.value
+
+  const page = `https://rickandmortyapi.com/api/character?page=${valueInput}`
+ 
+    const valueResponse = await fetch(page)
+    const data = await valueResponse.json()
+
+    const results = data.results
+
+    if(!characterValue){
+      createElemtntCharacterClick(results)
+    }
+    else{
+        const index = Number(characterValue) - 1
+
+        if(index < 0 || index >= results.length) {
+          alert("Personagem não encontrado nessa página")
+          return
+        }
+
+      const character = results[index]
+
+      createListCharacters(character)
   }
 }
 
