@@ -3,6 +3,7 @@ const genderSelect = document.querySelector("#gender-select")
 const specieSelect = document.querySelector("#species-select")
 const dimensionSelect = document.querySelector("#dimension-select")
 
+const pageInput = document.querySelector("#search-page-input")
 
 function createInfosCharactersSelect(data){
     return [
@@ -15,12 +16,18 @@ function createInfosCharactersSelect(data){
     ]
 }
 
+
 let array = []
 
 async function handleSelect(prop, valor){
 
     if(valor){
-        const pageValue = Math.ceil(Math.random() * 42) 
+
+        const pageValue = pageInput.value 
+        if(!pageValue){
+        alert("DIGITE UM VALOR") 
+        return 
+      }
 
         const url = `https://rickandmortyapi.com/api/character?page=${pageValue}`
 
@@ -41,13 +48,17 @@ async function handleSelect(prop, valor){
         img.classList.remove("character-img")
 
         const ul = createUl() 
-        ul.classList.add("ul-character-select")
+        ul.classList.add("ul-character-select", "hide")
+
+        img.addEventListener("click", () => {
+          ul.classList.toggle("hide")
+        })
 
         img.src = character.image 
         createInfosCharactersSelect(character).forEach((li) => ul.appendChild(li))
         div.appendChild(img)
         div.appendChild(ul)
-        document.body.appendChild(div)
+        imagesContainer.appendChild(div)
         array.push(div)
 
         toggleClassList("add", selectsContainer, inputsContainer)
@@ -64,11 +75,19 @@ async function handleSelect(prop, valor){
     handleSelect("status", target)
 })
 
-genderSelect.addEventListener("change", async (e) => {
-     const target = e.target.value 
+genderSelect.addEventListener("change", (e) => {
 
-     handleSelect("gender", target)
+  const target = e.target.value
+
+  if (!target) {
+    genderSelect.value = ""
+    alert("No have No have")
+    return
+  }
+
+  handleSelect("gender", target)
 })
+
 
 specieSelect.addEventListener("change", async (e) => {
      const target = e.target.value 
@@ -119,3 +138,12 @@ dimensionSelect.addEventListener("change", (e) => {
   handleDimensionSelect(e.target.value)
 })
 
+import { createDivImgInfos } from "./api.js"
+import { createImg } from "./api.js"
+import { createUl } from "./api.js"
+import { createLi } from "./api.js"
+import { imagesContainer } from "./api.js"
+import { toggleClassList } from "./api.js"
+import { selectsContainer } from "./api.js"
+import { inputsContainer } from "./api.js"
+import { backBtn } from "./api.js"
