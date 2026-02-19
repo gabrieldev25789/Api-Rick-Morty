@@ -338,60 +338,52 @@ function createLiCharacterByPage(data){
     ]
 }
 
-function createElemtntCharacterClick(results){
-results.forEach((character)=>{
-      console.log(character)
 
-      const div = createDivImgInfos()
+function renderCharacter(character) {
+  
+  const div = createDivImgInfos()
+  div.classList.add("div-character-select")
 
-      const img = createImg()
+  const img = createImg()
+  img.classList.add("img-character-select")
+  img.src = character.image
 
-      img.src = character.image 
+  const ul = createUl()
+  ul.classList.add("ul-character-select")
 
-      const ul = createUl()
-      ul.classList.add("ul-character-select", "hide")
-      
-      img.addEventListener("click", () => {
-          ul.classList.toggle("hide")
-      })
+  createLiCharacterByPage(character).forEach(li => ul.appendChild(li))
 
-      createInfosLiCharacter(character).forEach((li) => ul.appendChild(li))
+  div.appendChild(img)
+  div.appendChild(ul)
+  imagesContainer.appendChild(div)
 
-      div.appendChild(img)
-      div.appendChild(ul)
-      toggleClassList("add", selectsContainer, inputsContainer)
-      backBtn.classList.remove("hide")
-      imagesContainer.appendChild(div)
-    })
+  toggleClassList("add", selectsContainer, inputsContainer)
+  backBtn.classList.remove("hide")
 }
 
-function createListCharacters(character){
+function handleCharacters(data) {
 
-  const div = createDivImgInfos()
-    div.classList.add("div-character-select") 
+  if (Array.isArray(data)) {
+    data.forEach(character => renderCharacter(character))
+  } else {
+    renderCharacter(data)
+  }
 
-    const img = createImg()
-    img.classList.add("img-character-select")
-    img.classList.remove("character-img")
-    img.src = character.image 
-
-    const ul = createUl()
-    ul.classList.add("ul-character-select", "hide")
-
-    img.addEventListener("click", () => {
-      ul.classList.toggle("hide")
-    })
-
-    createLiCharacterByPage(character).forEach((li) => ul.appendChild(li))
-
-      div.appendChild(img)
-      div.appendChild(ul)
-      toggleClassList("add", selectsContainer, inputsContainer)
-      backBtn.classList.remove("hide")
-      imagesContainer.appendChild(div)
+  toggleClassList("add", selectsContainer, inputsContainer)
+  backBtn.classList.remove("hide")
 }
 
 async function handleCharacterClick() {
+    if(pageInput.value === ""){
+      alert("Choose a page")
+      return
+  }  
+
+  if(inputCharacter.value === ""){
+    alert("Choose a number")
+    return 
+  }
+  
   const characterValue = inputCharacter.value
 
   const page = `https://rickandmortyapi.com/api/character?page=${valueInput}`
@@ -402,7 +394,9 @@ async function handleCharacterClick() {
     const results = data.results
 
     if(!characterValue){
-      createElemtntCharacterClick(results)
+      handleCharacters(results)
+
+      /*createElemtntCharacterClick(results)*/
     }
     else{
         const index = Number(characterValue) - 1
@@ -414,11 +408,14 @@ async function handleCharacterClick() {
 
       const character = results[index]
 
-      createListCharacters(character)
+      handleCharacters(character)
+
+      /*createListCharacters(character)*/
   }
 }
 
 characterBtn.addEventListener("click", handleCharacterClick)
+
 
 // LOCATION API.....................................................
 function createUl(){
@@ -488,10 +485,6 @@ function validResidents(residents, rickImg){
 
 function cleanContainers(){
   [episodeInfos, locationInfos, imagesContainer].forEach((el)=>{el.innerHTML = ""})
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function fetchResidents(residents) {
@@ -709,25 +702,13 @@ function createImageErrorPlaceholder() {
   return div;
 }
 
-
-/*
-function handle(){
-
-document.addEventListener("click", (e) =>{
-
-  if(target.id === "search-episode-input"){
-    let target = e.target
-    console.log("episode-input", target)
-    target = episodeBtn 
-    console.log(target)
-  }
-})
-
-return target 
-}
-*/
-
-
-
-
-
+export { createDivImgInfos }
+export { createImg }
+export { createUl }
+export { createLi }
+export { imagesContainer }
+export { toggleClassList }
+export { selectsContainer }
+export { inputsContainer }
+export { backBtn }
+export { createImageErrorPlaceholder }
