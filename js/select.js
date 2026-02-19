@@ -103,6 +103,8 @@ function renderCharacter(character) {
   img.classList.add("img-character-select")
   img.src = character.image
 
+  handleImageError(img)
+
   const ul = createUl()
   ul.classList.add("ul-character-select")
 
@@ -138,6 +140,15 @@ dimensionSelect.addEventListener("change", (e) => {
   handleDimensionSelect(e.target.value)
 })
 
+function handleImageError(imgElement) {
+  imgElement.addEventListener("error", () => {
+    const placeholder = createImageErrorPlaceholder()
+    
+    imgElement.replaceWith(placeholder)
+  })
+}
+
+
 import { createDivImgInfos } from "./api.js"
 import { createImg } from "./api.js"
 import { createUl } from "./api.js"
@@ -147,3 +158,4 @@ import { toggleClassList } from "./api.js"
 import { selectsContainer } from "./api.js"
 import { inputsContainer } from "./api.js"
 import { backBtn } from "./api.js"
+import { createImageErrorPlaceholder } from "./api.js"
