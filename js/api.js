@@ -24,6 +24,11 @@ const selectsContainer = document.querySelector("#selects-container")
 const backBtn = document.querySelector("#back")
 backBtn.classList.add("hide")
 
+const banner = document.querySelector("#banner")
+const inputsAreaText = document.querySelector("#inputs-h2") 
+const introH1 = document.querySelector("#intro h1") 
+
+const characterArea = document.querySelector("#character-area")
 
 function toggleClassList(action, ...elements) {
   elements
@@ -31,8 +36,22 @@ function toggleClassList(action, ...elements) {
     .forEach(el => el.classList[action]("hide"))
 }
 
+/*
+[pageBtn, characterBtn, locationBtn, episodeBtn].forEach((el)=>{
+  el.addEventListener("click", () =>{
+    introH1.classList.add("hide")
+    console.log("CLICOU")
+  })
+})
+*/ 
 function back(){
+  characterArea.classList.add("hide")
+  introH1.classList.remove("hide")
+  backBtn.classList.add("hide")
+  banner.classList.remove("hide")
+  inputsAreaText.classList.remove("hide")
     imagesContainer.innerHTML = ""
+    inputCharacter.value = ""
     toggleClassList("add", infosContainer, text)
   if(!imagesContainer.classList.contains("hide")){
     toggleClassList("remove", inputsContainer, selectsContainer)
@@ -93,6 +112,7 @@ function createUlInfosCharacter(){
       return ulCharacter
 }
 
+/*
 function createInfosCharacterLi(text, clasName, id){
     const li = document.createElement("li")
     li.textContent = text 
@@ -102,6 +122,7 @@ function createInfosCharacterLi(text, clasName, id){
 
     return li
 }
+*/
 
 function createCharacterLis(data){
   return [
@@ -163,9 +184,14 @@ function unlockEpisodeUI() {
 episodeBtn.addEventListener("click", handleEpisodeClick)
 
 async function handleEpisodeClick() {
+  banner.classList.add("hide")
+  inputsAreaText.classList.add("hide")
+  pageInput.value = ""
   if (isEpisodeLoading) return;
 
   lockEpisodeUI();
+
+
 
   cleanContainers();
   locationInfos.classList.add("hide");
@@ -190,7 +216,6 @@ async function handleEpisodeClick() {
   } finally {
     unlockEpisodeUI(); 
   }
-
 }
 
 async function fetchEpisode(id) {
@@ -267,10 +292,25 @@ function renderEpisodeCharacters(charactersData) {
     container.append(img, ul)
     imagesContainer.appendChild(container)
     backBtn.classList.remove("hide")
+    banner.classList.add("hide")
+
   })
 }
 
 // CHARACTER API..................................................
+
+function validPageCharacter(value){
+  banner.classList.add("hide")
+  inputsAreaText.classList.add("hide")
+  const rickImg = createRickImage()
+  infos.textContent = `Search for an ${value}`
+    infosContainer.classList.add("no-found")
+    rickImg.src = `./img/rick-morty-img2.jpg`
+    imagesContainer.appendChild(rickImg)
+    toggleClassList("add", selectsContainer, inputsContainer, text) // add
+    toggleClassList("remove", infosContainer, backBtn, imagesContainer)
+    return false 
+}
 
 function createInfosLiCharacter(data){
   return [
@@ -283,11 +323,16 @@ function createInfosLiCharacter(data){
   ]
 }
 
-
 let valueInput 
 
 async function logPages(){
+  characterArea.classList.remove("hide")
+  inputsAreaText.classList.add("hide")
   const pageValue = pageInput.value
+  if(!pageValue){
+    validPageCharacter("page")
+    return 
+  }
   const page = `https://rickandmortyapi.com/api/character?page=${pageValue}`
 
    const valueResponse = await fetch(page)
@@ -316,6 +361,7 @@ async function logPages(){
       div.appendChild(ul)
       toggleClassList("add", selectsContainer, inputsContainer)
       backBtn.classList.remove("hide")
+      banner.classList.add("hide")
       imagesContainer.appendChild(div)
     })
 
@@ -338,8 +384,8 @@ function createLiCharacterByPage(data){
     ]
 }
 
-
 function renderCharacter(character) {
+  inputsAreaText.classList.add("hide")
   
   const div = createDivImgInfos()
   div.classList.add("div-character-select")
@@ -359,6 +405,7 @@ function renderCharacter(character) {
 
   toggleClassList("add", selectsContainer, inputsContainer)
   backBtn.classList.remove("hide")
+  banner.classList.add("hide")
 }
 
 function handleCharacters(data) {
@@ -371,16 +418,18 @@ function handleCharacters(data) {
 
   toggleClassList("add", selectsContainer, inputsContainer)
   backBtn.classList.remove("hide")
+  banner.classList.add("hide")
 }
 
 async function handleCharacterClick() {
+  imagesContainer.innerHTML = ""
     if(pageInput.value === ""){
-      alert("Choose a page")
+      validPageCharacter("page")
       return
   }  
 
   if(inputCharacter.value === ""){
-    alert("Choose a number")
+    validPageCharacter("character")
     return 
   }
   
@@ -487,13 +536,14 @@ function cleanContainers(){
   [episodeInfos, locationInfos, imagesContainer].forEach((el)=>{el.innerHTML = ""})
 }
 
+/*
 async function fetchResidents(residents) {
   imagesContainer.appendChild(loadingImg)
   return Promise.all(
     residents.map(url => fetch(url).then(r => r.json()))
   )
 }
-
+*/
 function chunkArray(arr, size = 20) {
   const chunks = [];
   for (let i = 0; i < arr.length; i += size) {
@@ -527,6 +577,10 @@ locationBtn.addEventListener("click", handleLocationClick)
 let isLoading = false
 
 async function handleLocationClick() {
+  banner.classList.add("hide")
+  inputsAreaText.classList.add("hide")
+
+  pageInput.value = ""
   if (isLoading) return;
 
   startLoading();
