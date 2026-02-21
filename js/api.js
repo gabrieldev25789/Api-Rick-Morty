@@ -281,9 +281,9 @@ function renderEpisodeCharacters(charactersData) {
 // CHARACTER API..................................................
 
 function validPageCharacter(value, boolean, infos){
- 
-  banner.classList.add("hide")
-  inputsAreaText.classList.add("hide")
+
+  toggleClassList("add", banner, inputsAreaText)
+
   const rickImg = createRickImage()
   infos.textContent = `Search for an ${value}`
     infosContainer.classList.add("no-found")
@@ -296,10 +296,7 @@ function validPageCharacter(value, boolean, infos){
     rickImg.src = `./img/rick-morty-img.jpg`
     infos.textContent = `Not found ${value}`
     }
-
     return false 
-
-    
 }
 
 function createInfosLiCharacter(data){
@@ -320,6 +317,7 @@ async function logPages(){
   inputsAreaText.classList.add("hide")
   const pageValue = pageInput.value
   if(!pageValue){
+    characterArea.classList.add("hide")
     validPageCharacter("page", false, episodeInfos)
     return 
   }
@@ -330,6 +328,7 @@ async function logPages(){
    
     const results = data.results 
       if(!results){
+        characterArea.classList.add("hide")
         validPageCharacter("page", true, episodeInfos)
       }   
     results.forEach((result)=>{   
@@ -362,7 +361,6 @@ async function logPages(){
 
   valueInput = pageValue
 }
-
 
 pageBtn.addEventListener("click", logPages)
 
@@ -422,10 +420,11 @@ async function handleCharacterClick() {
   }  
 
   if(inputCharacter.value === ""){
-    validPageCharacter("character")
+    console.log("sfdsafdfd")
+    validPageCharacter("character", false, episodeInfos)
     return 
-  }
-  
+  } 
+
   const characterValue = inputCharacter.value
 
   const page = `https://rickandmortyapi.com/api/character?page=${valueInput}`
@@ -434,7 +433,7 @@ async function handleCharacterClick() {
     const data = await valueResponse.json()
 
     const results = data.results
-
+ 
     if(!characterValue){
       handleCharacters(results)
 
@@ -444,7 +443,7 @@ async function handleCharacterClick() {
         const index = Number(characterValue) - 1
 
         if(index < 0 || index >= results.length) {
-          alert("Personagem não encontrado nessa página")
+          validPageCharacter("character", true, episodeInfos)
           return
         }
 
