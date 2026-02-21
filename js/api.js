@@ -36,7 +36,6 @@ function toggleClassList(action, ...elements) {
     .forEach(el => el.classList[action]("hide"))
 }
 
-
 [pageBtn, characterBtn, locationBtn, episodeBtn].forEach((el)=>{
   el.addEventListener("click", () =>{
     introH1.classList.add("hide")
@@ -108,18 +107,6 @@ function createUlInfosCharacter(){
       return ulCharacter
 }
 
-/*
-function createInfosCharacterLi(text, clasName, id){
-    const li = document.createElement("li")
-    li.textContent = text 
-
-    if (clasName) li.classList.add(clasName)
-    if (id) li.id = id 
-
-    return li
-}
-*/
-
 function createCharacterLis(data){
   return [
     createLi(`Name: ${data.name}`, "info-character", "name-character"),
@@ -186,8 +173,6 @@ async function handleEpisodeClick() {
   if (isEpisodeLoading) return;
 
   lockEpisodeUI();
-
-
 
   cleanContainers();
   locationInfos.classList.add("hide");
@@ -295,7 +280,8 @@ function renderEpisodeCharacters(charactersData) {
 
 // CHARACTER API..................................................
 
-function validPageCharacter(value){
+function validPageCharacter(value, boolean, infos){
+ 
   banner.classList.add("hide")
   inputsAreaText.classList.add("hide")
   const rickImg = createRickImage()
@@ -305,7 +291,15 @@ function validPageCharacter(value){
     imagesContainer.appendChild(rickImg)
     toggleClassList("add", selectsContainer, inputsContainer, text) // add
     toggleClassList("remove", infosContainer, backBtn, imagesContainer)
+
+    if(boolean === true){
+    rickImg.src = `./img/rick-morty-img.jpg`
+    infos.textContent = `Not found ${value}`
+    }
+
     return false 
+
+    
 }
 
 function createInfosLiCharacter(data){
@@ -326,16 +320,19 @@ async function logPages(){
   inputsAreaText.classList.add("hide")
   const pageValue = pageInput.value
   if(!pageValue){
-    validPageCharacter("page")
+    validPageCharacter("page", false, episodeInfos)
     return 
   }
   const page = `https://rickandmortyapi.com/api/character?page=${pageValue}`
-
+ 
    const valueResponse = await fetch(page)
     const data = await valueResponse.json()
-
+   
     const results = data.results 
-    results.forEach((result)=>{      
+      if(!results){
+        validPageCharacter("page", true, episodeInfos)
+      }   
+    results.forEach((result)=>{   
       const div = createDivImgInfos()
       div.classList.add("div-character-select")
 
@@ -532,14 +529,6 @@ function cleanContainers(){
   [episodeInfos, locationInfos, imagesContainer].forEach((el)=>{el.innerHTML = ""})
 }
 
-/*
-async function fetchResidents(residents) {
-  imagesContainer.appendChild(loadingImg)
-  return Promise.all(
-    residents.map(url => fetch(url).then(r => r.json()))
-  )
-}
-*/
 function chunkArray(arr, size = 20) {
   const chunks = [];
   for (let i = 0; i < arr.length; i += size) {
