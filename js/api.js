@@ -36,14 +36,13 @@ function toggleClassList(action, ...elements) {
     .forEach(el => el.classList[action]("hide"))
 }
 
-/*
+
 [pageBtn, characterBtn, locationBtn, episodeBtn].forEach((el)=>{
   el.addEventListener("click", () =>{
     introH1.classList.add("hide")
-    console.log("CLICOU")
   })
 })
-*/ 
+
 function back(){
   characterArea.classList.add("hide")
   introH1.classList.remove("hide")
