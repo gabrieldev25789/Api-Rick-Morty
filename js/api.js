@@ -44,11 +44,8 @@ function toggleClassList(action, ...elements) {
 })
 
 function back(){
-  characterArea.classList.add("hide")
-  introH1.classList.remove("hide")
-  backBtn.classList.add("hide")
-  banner.classList.remove("hide")
-  inputsAreaText.classList.remove("hide")
+  toggleClassList("remove", introH1,  inputsAreaText, banner)
+  toggleClassList("add", characterArea, backBtn)
     imagesContainer.innerHTML = ""
     inputCharacter.value = ""
     toggleClassList("add", infosContainer, text)
