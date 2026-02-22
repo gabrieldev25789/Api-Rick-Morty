@@ -35,12 +35,20 @@ function validSelect(value, boolean, infos){
       return false 
 }
 
+function handleCharactersNotFound(characterSelect){
+        if (characterSelect.length === 0) {
+         validSelect("character", true, episodeInfos)
+         selectsContainer.classList.remove("hide")
+        } else{
+          infosContainer.classList.add("hide")
+        }  
+}
+
 let array = []
 
 async function handleSelect(prop, valor){
 
     if(valor){
-
         const pageValue = pageInput.value 
         if(!pageValue){
         validSelect("page", false, episodeInfos)
@@ -56,6 +64,7 @@ async function handleSelect(prop, valor){
 
         const characterSelect = characters.filter((character) => character[prop] === valor)
         console.log(characterSelect)
+        handleCharactersNotFound(characterSelect)
         characterSelect.forEach((character)=>{
 
         const div = createDivImgInfos()
@@ -82,15 +91,9 @@ async function handleSelect(prop, valor){
         toggleClassList("add",  inputsContainer)
         backBtn.classList.remove("hide")
     })
-
-    console.log(data.results, pageValue)
-    }
+      console.log(data.results, pageValue)
+  }
 }
-
-
-
-
-
 
 
 function renderCharacter(character) {
@@ -130,20 +133,29 @@ async function handleDimensionSelect(dimension) {
     for (let resident of location.residents) {
       const res = await fetch(resident)
       const character = await res.json()
-
+      if(character){
+      const rickImgIncovenient = imagesContainer.firstElementChild
+      rickImgIncovenient.classList.add("hide")
+      }
+      
       renderCharacter(character)
+      if(character){
+      infosContainer.classList.remove("no-found")
+      infosContainer.classList.add("hide")
+      } 
     }
   })
 }
+
 
 const selects = [
   { element: statusSelect, type: "status" },
   { element: genderSelect, type: "gender" },
   { element: specieSelect, type: "species" },
-  { element: dimensionSelect, type: "dimension" }
 ]
 
 selects.forEach(({ element, type }) => {
+
   element.addEventListener("change", (e) => {
     imagesContainer.innerHTML = ""
     inputCharacter.value = ""
@@ -160,16 +172,10 @@ selects.forEach(({ element, type }) => {
 })
 
 
+
 dimensionSelect.addEventListener("change", (e) => {
   imagesContainer.innerHTML = ""
   inputCharacter.value = ""
-  
-  selects.forEach((el)=>{
-    if(el){
-      el.value = ""
-    }
-  })
-
   handleSelect("dimension", handleDimensionSelect(e.target.value))
 })
 
@@ -186,7 +192,6 @@ backBtn.addEventListener("click", () =>{
   console.log("AQUI")
   imagesContainer.innerHTML = ""
 })
-
 
 
 import { createDivImgInfos } from "./api.js"
