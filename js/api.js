@@ -25,7 +25,7 @@ const backBtn = document.querySelector("#back")
 backBtn.classList.add("hide")
 
 const banner = document.querySelector("#banner")
-const inputsAreaText = document.querySelector("#inputs-h2") 
+
 const introH1 = document.querySelector("#intro h1") 
 
 const characterArea = document.querySelector("#character-area")
@@ -43,13 +43,14 @@ function toggleClassList(action, ...elements) {
 })
 
 function back(){
-  toggleClassList("remove", introH1,  inputsAreaText, banner)
+  selectsContainer.classList.add("hide")
+  toggleClassList("remove", introH1, banner)
   toggleClassList("add", characterArea, backBtn)
     imagesContainer.innerHTML = ""
     inputCharacter.value = ""
     toggleClassList("add", infosContainer, text)
   if(!imagesContainer.classList.contains("hide")){
-    toggleClassList("remove", inputsContainer, selectsContainer)
+    toggleClassList("remove", inputsContainer /*selectsContainer*/)
     return 
   } 
 
@@ -57,7 +58,7 @@ function back(){
   selects.forEach((select)=>{
     select.value = ""
   })
-      toggleClassList("remove", selectsContainer, inputsContainer)
+      toggleClassList("remove", /*selectsContainer*/ inputsContainer)
       toggleClassList("add", imagesContainer, infosContainer) // add
       toggleClassList("add", backBtn, text) // add
       array.forEach((el)=>{
@@ -126,7 +127,7 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
     infosContainer.classList.add("no-found")
     rickImg.src = `./img/rick-morty-img2.jpg`
     imagesContainer.appendChild(rickImg)
-    toggleClassList("add", selectsContainer, inputsContainer, text) // add
+    toggleClassList("add", /*selectsContainer*/ inputsContainer, text) // add
     toggleClassList("remove", infosContainer, backBtn, imagesContainer)
     return false 
   }
@@ -142,7 +143,7 @@ function validLocationEpisode(input, infos, EpisodeLocation, value){
     rickImg.src = `./img/rick-morty-img.jpg`
     imagesContainer.appendChild(rickImg)
     toggleClassList("remove", imagesContainer, infosContainer, backBtn)
-    toggleClassList("add", text, selectsContainer, inputsContainer) // add
+    toggleClassList("add", text, /*selectsContainer*/ inputsContainer) // add
     return false
   } else{
     infosContainer.classList.remove("no-found")
@@ -168,7 +169,6 @@ episodeBtn.addEventListener("click", handleEpisodeClick)
 
 async function handleEpisodeClick() {
   banner.classList.add("hide")
-  inputsAreaText.classList.add("hide")
   pageInput.value = ""
   if (isEpisodeLoading) return;
 
@@ -246,7 +246,7 @@ function renderEpisodeInfo(data) {
   const ulInfos = createUl()
   createEpisodeLis(data).forEach(li => ulInfos.appendChild(li))
   episodeInfos.appendChild(ulInfos)
-    toggleClassList("add", selectsContainer, inputsContainer) // add
+    toggleClassList("add", /*selectsContainer*/ inputsContainer) // add
     toggleClassList("remove", episodeInfos, infosContainer)
 }
  
@@ -281,15 +281,16 @@ function renderEpisodeCharacters(charactersData) {
 // CHARACTER API..................................................
 
 function validPageCharacter(value, boolean, infos){
+  locationInfos.innerHTML = ""
 
-  toggleClassList("add", banner, inputsAreaText)
+  toggleClassList("add", banner, /*inputsAreaText*/)
 
   const rickImg = createRickImage()
   infos.textContent = `Search for an ${value}`
     infosContainer.classList.add("no-found")
     rickImg.src = `./img/rick-morty-img2.jpg`
     imagesContainer.appendChild(rickImg)
-    toggleClassList("add", selectsContainer, inputsContainer, text) // add
+    toggleClassList("add", /*selectsContainer*/ inputsContainer, text) // add
     toggleClassList("remove", infosContainer, backBtn, imagesContainer)
 
     if(boolean === true){
@@ -313,8 +314,8 @@ function createInfosLiCharacter(data){
 let valueInput 
 
 async function logPages(){
+  selectsContainer.classList.remove("hide")
   characterArea.classList.remove("hide")
-  inputsAreaText.classList.add("hide")
   const pageValue = pageInput.value
   if(!pageValue){
     characterArea.classList.add("hide")
@@ -330,7 +331,9 @@ async function logPages(){
       if(!results){
         characterArea.classList.add("hide")
         validPageCharacter("page", true, episodeInfos)
-      }   
+      }
+      
+
     results.forEach((result)=>{   
       const div = createDivImgInfos()
       div.classList.add("div-character-select")
@@ -351,7 +354,7 @@ async function logPages(){
 
       div.appendChild(img)
       div.appendChild(ul)
-      toggleClassList("add", selectsContainer, inputsContainer)
+      toggleClassList("add", /*selectsContainer*/ inputsContainer)
       backBtn.classList.remove("hide")
       banner.classList.add("hide")
       imagesContainer.appendChild(div)
@@ -376,7 +379,6 @@ function createLiCharacterByPage(data){
 }
 
 function renderCharacter(character) {
-  inputsAreaText.classList.add("hide")
   
   const div = createDivImgInfos()
   div.classList.add("div-character-select")
@@ -394,7 +396,7 @@ function renderCharacter(character) {
   div.appendChild(ul)
   imagesContainer.appendChild(div)
 
-  toggleClassList("add", selectsContainer, inputsContainer)
+  toggleClassList("add", /*selectsContainer*/ inputsContainer)
   backBtn.classList.remove("hide")
   banner.classList.add("hide")
 }
@@ -407,7 +409,7 @@ function handleCharacters(data) {
     renderCharacter(data)
   }
 
-  toggleClassList("add", selectsContainer, inputsContainer)
+  toggleClassList("add", /*selectsContainer*/ inputsContainer)
   backBtn.classList.remove("hide")
   banner.classList.add("hide")
 }
@@ -456,7 +458,6 @@ async function handleCharacterClick() {
 }
 
 characterBtn.addEventListener("click", handleCharacterClick)
-
 
 // LOCATION API.....................................................
 function createUl(){
@@ -562,7 +563,7 @@ let isLoading = false
 
 async function handleLocationClick() {
   banner.classList.add("hide")
-  inputsAreaText.classList.add("hide")
+  /*inputsAreaText*/.classList.add("hide")
 
   pageInput.value = ""
   if (isLoading) return;
@@ -707,7 +708,7 @@ function renderResidents(residentsData) {
     container.append(img, ul);
     imagesContainer.appendChild(container);
     toggleClassList("remove", infosContainer,backBtn)
-    toggleClassList("add", selectsContainer,inputsContainer) // add
+    toggleClassList("add", /*selectsContainer*/ inputsContainer) // add
   });
 }
 
@@ -750,3 +751,7 @@ export { selectsContainer }
 export { inputsContainer }
 export { backBtn }
 export { createImageErrorPlaceholder }
+export { infosContainer }
+export { episodeInfos }
+export { createRickImage }
+export { text }
