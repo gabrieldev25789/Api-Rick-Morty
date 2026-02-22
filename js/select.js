@@ -17,6 +17,24 @@ function createInfosCharactersSelect(data){
 }
 
 
+function validSelect(value, boolean, infos){
+    toggleClassList("add", banner, inputsAreaText)
+  
+    const rickImg = createRickImage()
+    infos.textContent = `Search for an ${value}`
+      infosContainer.classList.add("no-found")
+      rickImg.src = `./img/rick-morty-img2.jpg`
+      imagesContainer.appendChild(rickImg)
+      toggleClassList("add", selectsContainer, inputsContainer, text) // add
+      toggleClassList("remove", infosContainer, backBtn, imagesContainer)
+  
+      if(boolean === true){
+      rickImg.src = `./img/rick-morty-img.jpg`
+      infos.textContent = `Not found ${value}`
+      }
+      return false 
+}
+
 let array = []
 
 async function handleSelect(prop, valor){
@@ -25,7 +43,7 @@ async function handleSelect(prop, valor){
 
         const pageValue = pageInput.value 
         if(!pageValue){
-        alert("DIGITE UM VALOR") 
+        validSelect("page", false, episodeInfos)
         return 
       }
 
@@ -61,7 +79,7 @@ async function handleSelect(prop, valor){
         imagesContainer.appendChild(div)
         array.push(div)
 
-        toggleClassList("add", selectsContainer, inputsContainer)
+        toggleClassList("add",  inputsContainer)
         backBtn.classList.remove("hide")
     })
 
@@ -70,6 +88,7 @@ async function handleSelect(prop, valor){
 }
 
  statusSelect.addEventListener("change", async (e) =>{
+  imagesContainer.innerHTML = ""
     const target = e.target.value 
 
     handleSelect("status", target)
@@ -112,9 +131,11 @@ function renderCharacter(character) {
 
   div.appendChild(img)
   div.appendChild(ul)
-  document.body.appendChild(div)
+  imagesContainer.appendChild(div)
 
-  array.push(div)
+  /*document.body.appendChild(div)
+
+  array.push(div) */
 
   toggleClassList("add", selectsContainer, inputsContainer)
   backBtn.classList.remove("hide")
@@ -137,17 +158,23 @@ async function handleDimensionSelect(dimension) {
 }
 
 dimensionSelect.addEventListener("change", (e) => {
-  handleDimensionSelect(e.target.value)
+  
+  handleSelect("dimension", handleDimensionSelect(e.target.value))
+
 })
 
 function handleImageError(imgElement) {
   imgElement.addEventListener("error", () => {
     const placeholder = createImageErrorPlaceholder()
-    
     imgElement.replaceWith(placeholder)
   })
 }
 
+backBtn.addEventListener("click", () =>{
+  [statusSelect, genderSelect, specieSelect, dimensionSelect].forEach((el)=> el.value = "")
+  console.log("AQUI")
+  imagesContainer.innerHTML = ""
+})
 
 import { createDivImgInfos } from "./api.js"
 import { createImg } from "./api.js"
@@ -159,3 +186,8 @@ import { selectsContainer } from "./api.js"
 import { inputsContainer } from "./api.js"
 import { backBtn } from "./api.js"
 import { createImageErrorPlaceholder } from "./api.js"
+import { infosContainer } from "./api.js"
+import { episodeInfos } from "./api.js"
+import { inputsAreaText } from "./api.js"
+import { createRickImage } from "./api.js"
+import { text } from "./api.js"
