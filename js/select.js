@@ -136,39 +136,29 @@ async function handleDimensionSelect(dimension) {
   })
 }
 
-let selects = [statusSelect, genderSelect, specieSelect]
+const selects = [
+  { element: statusSelect, type: "status" },
+  { element: genderSelect, type: "gender" },
+  { element: specieSelect, type: "species" },
+  { element: dimensionSelect, type: "dimension" }
+]
 
-statusSelect.addEventListener("change", async (e) =>{
-  imagesContainer.innerHTML = ""
-  inputCharacter.value = ""
+selects.forEach(({ element, type }) => {
+  element.addEventListener("change", (e) => {
+    imagesContainer.innerHTML = ""
+    inputCharacter.value = ""
 
-    const target = e.target.value 
+    // 🔥 resetar os outros selects
+    selects.forEach(({ element: otherElement }) => {
+      if (otherElement !== e.target) {
+        otherElement.value = ""
+      }
+    })
 
-    handleSelect("status", target)
+    handleSelect(type, e.target.value)
+  })
 })
 
-genderSelect.addEventListener("change", (e) => {
-  imagesContainer.innerHTML = ""
-  inputCharacter.value = ""
-
-  const target = e.target.value
-
-  if (!target) {
-    genderSelect.value = ""
-    alert("No have No have")
-    return
-  }
-
-  handleSelect("gender", target)
-})
-
-specieSelect.addEventListener("change", async (e) => {
-      imagesContainer.innerHTML = ""
-      inputCharacter.value = ""
-     const target = e.target.value 
-
-     handleSelect("species", target)
-})
 
 dimensionSelect.addEventListener("change", (e) => {
   imagesContainer.innerHTML = ""
@@ -181,8 +171,8 @@ dimensionSelect.addEventListener("change", (e) => {
   })
 
   handleSelect("dimension", handleDimensionSelect(e.target.value))
-
 })
+
 
 function handleImageError(imgElement) {
   imgElement.addEventListener("error", () => {
