@@ -760,25 +760,25 @@ function createImageErrorPlaceholder() {
 
 const btnTop = document.getElementById("btnTop")
 
-function verificarBotao() {
-  const scrollAtual = window.scrollY
-  const alturaTela = window.innerHeight
-  const alturaTotal = document.documentElement.scrollHeight
+function checkButtonVisibility() {
+  const currentScroll = window.scrollY
+  const viewportHeight = window.innerHeight
+  const documentHeight = document.documentElement.scrollHeight
 
-  const tamanhoDoScroll = alturaTotal - alturaTela
-  const scrollGrande = tamanhoDoScroll > 800 // ajuste esse valor
-  const chegouNoFinal = scrollAtual + alturaTela >= alturaTotal - 5
+  const totalScrollable = documentHeight - viewportHeight
+  const isLargeScroll = totalScrollable > 800 // adjust this value
+  const reachedBottom = currentScroll + viewportHeight >= documentHeight - 5
 
-  if (scrollGrande && chegouNoFinal) {
+  if (isLargeScroll && reachedBottom) {
     btnTop.style.display = "block"
   } else {
     btnTop.style.display = "none"
   }
 }
 
-window.addEventListener("scroll", verificarBotao)
-window.addEventListener("resize", verificarBotao)
-verificarBotao()
+window.addEventListener("scroll", checkButtonVisibility)
+window.addEventListener("resize", checkButtonVisibility)
+checkButtonVisibility()
 
 btnTop.addEventListener("click", () => {
   window.scrollTo({
