@@ -2,6 +2,7 @@ const statusSelect = document.querySelector("#status-select")
 const genderSelect = document.querySelector("#gender-select")
 const specieSelect = document.querySelector("#species-select")
 const dimensionSelect = document.querySelector("#dimension-select")
+const locationSelect = document.querySelector("#location-select")
 
 const pageInput = document.querySelector("#search-page-input")
 
@@ -149,7 +150,6 @@ selects.forEach(({ element, type }) => {
 })
 
 
-
 async function handleDimensionSelect(dimension) {
   try {
     imagesContainer.innerHTML = ""
@@ -189,6 +189,49 @@ dimensionSelect.addEventListener("change", (e) => {
   handleSelect("dimension", handleDimensionSelect(e.target.value))
 })
 
+
+async function handleLocationSelect(location) {
+  try {
+    imagesContainer.innerHTML = ""
+
+    const pageValue = pageInput.value
+
+    const response = await fetch(
+      `https://rickandmortyapi.com/api/character?page=${pageValue}`
+    )
+
+    const data = await response.json()
+
+    let found = false
+
+    for (const character of data.results) {
+      if (character.location.name === location) {
+        found = true
+        renderCharacter(character)
+        selectsContainer.classList.remove("hide")
+        infosContainer.classList.add("hide")
+      }
+    }
+
+    if(found === false){
+      validSelect("character", true, episodeInfos)
+      selectsContainer.classList.remove("hide")
+      infosContainer.classList.remove("hide")
+    }
+
+    console.log(found)
+
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+locationSelect.addEventListener("change", (e) =>{
+  imagesContainer.innerHTML = ""
+  inputCharacter.value = ""
+
+  handleLocationSelect(e.target.value)
+})
 
 function handleImageError(imgElement) {
   imgElement.addEventListener("error", () => {
