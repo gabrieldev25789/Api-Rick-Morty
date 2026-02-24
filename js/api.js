@@ -307,6 +307,7 @@ function validPageCharacter(value, boolean, infos){
     if(boolean === true){
     rickImg.src = `./img/rick-morty-img.jpg`
     infos.textContent = `Not found ${value}`
+    selectsContainer.classList.remove("hide")
     }
     return false 
 }
@@ -430,14 +431,10 @@ async function handleCharacterClick() {
   selectsContainer.classList.remove("hide")
   imagesContainer.innerHTML = ""
 
-    if(pageInput.value === ""){
-      validPageCharacter("page")
-      return
-  }  
-
   if(inputCharacter.value === ""){
     console.log("sfdsafdfd")
     validPageCharacter("character", false, episodeInfos)
+    selectsContainer.classList.remove("hide")
     return 
   } 
 
