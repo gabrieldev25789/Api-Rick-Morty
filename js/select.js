@@ -1,7 +1,6 @@
 const statusSelect = document.querySelector("#status-select")
 const genderSelect = document.querySelector("#gender-select")
 const specieSelect = document.querySelector("#species-select")
-const dimensionSelect = document.querySelector("#dimension-select")
 const locationSelect = document.querySelector("#location-select")
 
 const pageInput = document.querySelector("#search-page-input")
@@ -150,46 +149,6 @@ selects.forEach(({ element, type }) => {
 })
 
 
-async function handleDimensionSelect(dimension) {
-  try {
-    imagesContainer.innerHTML = ""
-
-    const pageValue = pageInput.value
-
-    const response = await fetch(
-      `https://rickandmortyapi.com/api/character?page=${pageValue}`
-    )
-
-    const data = await response.json()
-
-    for (const character of data.results) {
-
-      if (!character.location.url) continue
-
-      const locationResponse = await fetch(character.location.url)
-      const locationData = await locationResponse.json()
-
-      if (locationData.dimension === dimension) {
-      renderCharacter(character)
-     
-      const rickImgIncovenient = imagesContainer.firstElementChild
-      toggleClassList("add", rickImgIncovenient, infosContainer)
-        
-      }
-    }
-
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-dimensionSelect.addEventListener("change", (e) => {
-  imagesContainer.innerHTML = ""
-  inputCharacter.value = ""
-  handleSelect("dimension", handleDimensionSelect(e.target.value))
-})
-
-
 async function handleLocationSelect(location) {
   try {
     imagesContainer.innerHTML = ""
@@ -245,7 +204,6 @@ backBtn.addEventListener("click", () =>{
   console.log("AQUI")
   imagesContainer.innerHTML = ""
 })
-
 
 import { createDivImgInfos } from "./api.js"
 import { createImg } from "./api.js"
