@@ -758,6 +758,35 @@ function createImageErrorPlaceholder() {
   return div;
 }
 
+const btnTop = document.getElementById("btnTop")
+
+function verificarBotao() {
+  const scrollAtual = window.scrollY
+  const alturaTela = window.innerHeight
+  const alturaTotal = document.documentElement.scrollHeight
+
+  const tamanhoDoScroll = alturaTotal - alturaTela
+  const scrollGrande = tamanhoDoScroll > 800 // ajuste esse valor
+  const chegouNoFinal = scrollAtual + alturaTela >= alturaTotal - 5
+
+  if (scrollGrande && chegouNoFinal) {
+    btnTop.style.display = "block"
+  } else {
+    btnTop.style.display = "none"
+  }
+}
+
+window.addEventListener("scroll", verificarBotao)
+window.addEventListener("resize", verificarBotao)
+verificarBotao()
+
+btnTop.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  })
+})
+
 export { createDivImgInfos }
 export { createImg }
 export { createUl }
