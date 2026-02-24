@@ -31,6 +31,7 @@ const introH1 = document.querySelector("#intro h1")
 const characterArea = document.querySelector("#character-area")
 
 const searchBtns = document.querySelectorAll(".search-btn")
+const selects = document.querySelectorAll(".filter-select")
 
 searchBtns.forEach((el)=>{
   el.addEventListener("click", () =>{
@@ -291,6 +292,7 @@ function renderEpisodeCharacters(charactersData) {
 
 function validPageCharacter(value, boolean, infos){
   locationInfos.innerHTML = ""
+  selectsContainer.classList.add("hide")
 
   toggleClassList("add", banner, /*inputsAreaText*/)
 
@@ -424,7 +426,10 @@ function handleCharacters(data) {
 }
 
 async function handleCharacterClick() {
+  selects.forEach((el)=> el.value = "")
+  selectsContainer.classList.remove("hide")
   imagesContainer.innerHTML = ""
+
     if(pageInput.value === ""){
       validPageCharacter("page")
       return
@@ -434,9 +439,7 @@ async function handleCharacterClick() {
     console.log("sfdsafdfd")
     validPageCharacter("character", false, episodeInfos)
     return 
-  } else{
-    infosContainer.innerHTML = ""
-  }
+  } 
 
   const characterValue = inputCharacter.value
 
@@ -446,6 +449,9 @@ async function handleCharacterClick() {
     const data = await valueResponse.json()
 
     const results = data.results
+    if(data.results){
+      infosContainer.classList.add("hide")
+    }
  
     if(!characterValue){
       handleCharacters(results)
