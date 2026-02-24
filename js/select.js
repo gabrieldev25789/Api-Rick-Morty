@@ -82,6 +82,7 @@ async function handleSelect(prop, valor){
         })
 
         img.src = character.image 
+        console.log(character.origin.name)
         createInfosCharactersSelect(character).forEach((li) => ul.appendChild(li))
         div.appendChild(img)
         div.appendChild(ul)
@@ -123,30 +124,6 @@ function renderCharacter(character) {
   backBtn.classList.remove("hide")
 }
 
-async function handleDimensionSelect(dimension) {
-  const response = await fetch(
-    `https://rickandmortyapi.com/api/location?dimension=${dimension}`
-  )
-  const data = await response.json()
-
-  data.results.forEach(async (location) => {
-    for (let resident of location.residents) {
-      const res = await fetch(resident)
-      const character = await res.json()
-      if(character){
-      const rickImgIncovenient = imagesContainer.firstElementChild
-      rickImgIncovenient.classList.add("hide")
-      }
-      
-      renderCharacter(character)
-      if(character){
-      infosContainer.classList.remove("no-found")
-      infosContainer.classList.add("hide")
-      } 
-    }
-  })
-}
-
 
 const selects = [
   { element: statusSelect, type: "status" },
@@ -172,6 +149,39 @@ selects.forEach(({ element, type }) => {
 })
 
 
+
+async function handleDimensionSelect(dimension) {
+  try {
+    imagesContainer.innerHTML = ""
+
+    const pageValue = pageInput.value
+
+    const response = await fetch(
+      `https://rickandmortyapi.com/api/character?page=${pageValue}`
+    )
+
+    const data = await response.json()
+
+    for (const character of data.results) {
+
+      if (!character.location.url) continue
+
+      const locationResponse = await fetch(character.location.url)
+      const locationData = await locationResponse.json()
+
+      if (locationData.dimension === dimension) {
+      renderCharacter(character)
+     
+      const rickImgIncovenient = imagesContainer.firstElementChild
+      toggleClassList("add", rickImgIncovenient, infosContainer)
+        
+      }
+    }
+
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 dimensionSelect.addEventListener("change", (e) => {
   imagesContainer.innerHTML = ""
