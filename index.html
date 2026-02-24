@@ -5,26 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API-Rick-Morty</title>
     <link rel="stylesheet" href="./css/api.css">
-    <script src="./js/api.js" defer></script>
-    <script src="./js/select.js" defer></script>
+    <script type="module" src="./js/api.js" defer></script>
+    <script type="module" src="./js/select.js" defer></script>
 </head>
 <body>
+    <div id="banner">
+        <img src="./img/banner.jpg" alt="">
+    </div>
+
     <div id="intro">
         <h1>WELCOME TO RICK AND MORTY API</h1>
         <button id="back">Back <<<</button>
     </div>
 
-        <div id="selects-container">
+        <div id="selects-container" class="hide">
             <h2>Select Area</h2>
             <select class="filter-select" id="status-select">
-                <option value="">Status</option>
+                <option value="" disabled selected>Status</option>
                 <option value="Alive">Alive</option>
                 <option value="Dead">Dead</option>
                 <option value="unknown">Unknown</option>
             </select>
 
             <select class="filter-select" id="gender-select">
-                <option value="">Gender</option>
+                <option value="" disabled selected>Gender</option>
                 <option value="Female">Female</option>
                 <option value="Male">Male</option>
                 <option value="Genderless">Genderless</option>
@@ -32,7 +36,7 @@
             </select>
 
             <select class="filter-select" id="species-select">
-                <option value="">Species</option>
+                <option value="" disabled selected>Species</option>
                 <option value="Human">Human</option>
                 <option value="Alien">Alien</option>
                 <option value="Robot">Robot</option>
@@ -42,7 +46,7 @@
             </select>
 
             <select class="filter-select" id="dimension-select">
-                <option value="">Dimension</option>
+                <option value="" disabled selected>Dimension</option>
                 <option value="dimension c-137">Dimension C-137</option>
                 <option value="replacement dimension">Replacement Dimension</option>
                 <option value="cronenberg dimension">Cronenberg Dimension</option>
@@ -52,7 +56,7 @@
 
 
         <section>
-            <div id="inputs-container">
+        <div id="inputs-container"> 
 
             <div id="search-episode">
                 <input type="number" class="input input-wide" id="search-episode-input" placeholder="search episode (Ex: 1 - 51)">
@@ -61,20 +65,21 @@
             
             <div id="search-character">
                 <input type="text" class="input" placeholder="Choose a page (1- 42)" id="search-page-input">
-                <button id="page-btn" class="search-btn">Search page</button>
-
-                <input type="number" class="input" id="search-character-input" placeholder="search character">
-                <button id="character-btn" class="search-btn">Search</button>
+                <button id="page-btn" class="search-btn">Search characters from page</button>
             </div>
 
             <div id="search-location">
                 <input type="number" class="input input-wide" id="search-location-input" placeholder="search location (1 - 126)">
                 <button id="location-btn" class="search-btn">Search</button>
             </div>
-
             </div>
+        </div>
     </div>
-</div>
+
+            <div id="character-area" class="hide">
+                <input type="number" class="input" id="search-character-input" placeholder="search character">
+                <button id="character-btn" class="search-btn">Search</button>
+            </div>
 
             <div id="infos">
                 <div id="episode-infos"><h2></h2></div>
@@ -85,8 +90,7 @@
             <div id="h2" class="hide">
                 <h2 class="h2"></h2>
             </div>
-            <div id="images"></div>
-               
+            <div id="images"></div>               
         </section>
 </body>
 </html>
