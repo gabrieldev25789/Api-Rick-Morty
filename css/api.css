@@ -30,9 +30,57 @@ body {
     border-bottom: 2px solid white;
 }
 
+#back {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #a3e635; /* verde portal suave */
+  padding: 0.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(163, 230, 53, 0.3);
+  font-weight: 500;
+  font-size: 1.3rem;
+  width: 14vh;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  margin-bottom: 2rem;
+}
+
+#back:hover {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #38bdf8; /* azul sci-fi */
+  border-color: rgba(56, 189, 248, 0.5);
+  transform: translateY(-2px);
+}
+
 
 h1{
     padding: 1rem;
+}
+
+#ul-infos {
+  width: 60vh;
+  padding: 1rem;
+  background: linear-gradient(120deg, #16222a, #3a6073, #2ebf91);
+  border-radius: 16px;
+  list-style: none;
+  box-shadow: 4px 4px 4px #2ebf91;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.list {
+  color: #fff; /* verde portal mais suave */
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid rgb(19, 218, 85);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.list:hover {
+  color: #38bdf8; /* azul sci-fi discreto */
+  transform: translateX(4px);
 }
 
 #inputs-container {
@@ -138,12 +186,13 @@ h1{
     border-bottom: 2px solid white; 
   }
 
+
 #episode-infos h2{
     margin-left: 59vh;
 }
 
 #location-infos h2{
-    margin-left: -103vh;
+    margin-left: -105vh;
 }
 
 #character-area{
@@ -347,7 +396,6 @@ h1{
 }
 
 /* CARD */
-
 .div-character-select {
   min-height: 100vh;
   width: 100%;
@@ -413,10 +461,10 @@ h1{
 
 /* LISTA */
 .ul-character-select {
-  list-style: none;
-  padding: 1.8rem;
-  width: 50%;
-  background: rgba(5, 8, 12, 0.8);
+  list-style: none !important;
+  padding: 1.8rem !important;
+  width: 50% !important;
+  background: rgba(5, 8, 12, 0.8) !important;
   backdrop-filter: blur(0.6rem);
   border-radius: 1rem;
   border: 0.08rem solid rgba(0, 255, 156, 0.25);
@@ -479,6 +527,23 @@ h1{
   }
 }
 */
+
+.btn-top {
+  position: fixed;
+  bottom: 30px;
+  padding: 0.5rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: none;
+  background: linear-gradient(135deg, #77aa47, #2d916a);
+  color: #fff;
+}
+
+.btn-top:hover {
+  opacity: 0.9;
+}
 
 
 /* ================= RESPONSIVO ================= */
