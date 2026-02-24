@@ -425,7 +425,9 @@ async function handleCharacterClick() {
     console.log("sfdsafdfd")
     validPageCharacter("character", false, episodeInfos)
     return 
-  } 
+  } else{
+    infosContainer.innerHTML = ""
+  }
 
   const characterValue = inputCharacter.value
 
@@ -755,3 +757,4 @@ export { infosContainer }
 export { episodeInfos }
 export { createRickImage }
 export { text }
+export { inputCharacter }
