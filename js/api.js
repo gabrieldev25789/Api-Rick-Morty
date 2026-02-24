@@ -30,6 +30,14 @@ const introH1 = document.querySelector("#intro h1")
 
 const characterArea = document.querySelector("#character-area")
 
+const searchBtns = document.querySelectorAll(".search-btn")
+
+searchBtns.forEach((el)=>{
+  el.addEventListener("click", () =>{
+    inputsContainer.classList.add("hide")
+  })
+})
+
 function toggleClassList(action, ...elements) {
   elements
     .filter(Boolean)
@@ -43,6 +51,7 @@ function toggleClassList(action, ...elements) {
 })
 
 function back(){
+  pageInput.value = ""
   selectsContainer.classList.add("hide")
   toggleClassList("remove", introH1, banner)
   toggleClassList("add", characterArea, backBtn)
@@ -554,9 +563,12 @@ function showErrorMessage(err) {
   if (err.status === 429 || err.message.includes("429")) {
     text.textContent =
       "Too many requests at once. Refresh the page and try again."
+       inputsContainer.classList.remove("hide")
+
   } else {
     text.textContent =
       "Search failed. Check your connection and try again."
+       inputsContainer.classList.remove("hide")
   }
 }
 
@@ -565,7 +577,6 @@ let isLoading = false
 
 async function handleLocationClick() {
   banner.classList.add("hide")
-  /*inputsAreaText*/.classList.add("hide")
 
   pageInput.value = ""
   if (isLoading) return;
@@ -682,6 +693,7 @@ function renderResidents(residentsData) {
     rickImg.id = "rick-img"
     rickImg.classList.remove("character-img")
     text.textContent = "No character belong to this place"
+    backBtn.classList.remove("hide")
     imagesContainer.appendChild(rickImg)
     return;
   }
