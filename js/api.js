@@ -55,9 +55,8 @@ function toggleClassList(action, ...elements) {
 
 function back(){
   pageInput.value = ""
-  selectsContainer.classList.add("hide")
   toggleClassList("remove", introH1, banner)
-  toggleClassList("add", characterArea, backBtn)
+  toggleClassList("add", characterArea, backBtn, selectsContainer)
     imagesContainer.innerHTML = ""
     inputCharacter.value = ""
     toggleClassList("add", infosContainer, text)
@@ -330,7 +329,6 @@ let valueInput
 async function logPages(){
 selectAreaH2.innerHTML = `Search characters / specifications on this page </br> 
 (page ${pageInput.value})`
-  selectsContainer.classList.remove("hide")
   characterArea.classList.remove("hide")
   const pageValue = pageInput.value
   if(!pageValue){
@@ -347,10 +345,11 @@ selectAreaH2.innerHTML = `Search characters / specifications on this page </br>
       if(!results){
         characterArea.classList.add("hide")
         validPageCharacter("page", true, episodeInfos)
+        selectsContainer.classList.add("hide")
       }
       
-
     results.forEach((result)=>{   
+      selectsContainer.classList.remove("hide")
       const div = createDivImgInfos()
       div.classList.add("div-character-select")
 
