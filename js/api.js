@@ -7,7 +7,6 @@ const pageBtn = document.querySelector("#page-btn")
 
 const inputCharacter = document.querySelector("#search-character-input")
 const characterBtn = document.querySelector("#character-btn")
-const characterInfos = document.querySelector("#character-infos")
 
 const inputLocation = document.querySelector("#search-location-input")
 const locationBtn = document.querySelector("#location-btn")
@@ -55,24 +54,25 @@ function toggleClassList(action, ...elements) {
 })
 
 function back(){
-  pageInput.value = ""
+  [pageInput, inputCharacter].forEach((el)=> el.value = "")
   toggleClassList("remove", introH1, banner)
   toggleClassList("add", characterArea, backBtn, selectsContainer)
     imagesContainer.innerHTML = ""
-    inputCharacter.value = ""
     toggleClassList("add", infosContainer, text)
-  if(!imagesContainer.classList.contains("hide")){
-    toggleClassList("remove", inputsContainer /*selectsContainer*/)
-    return 
-  } 
+  if(!imagesContainer.classList.contains("hide")){ 
+  toggleClassList("remove",inputsContainer) 
+  return 
+  }
 
   const selects = document.querySelectorAll(".filter-select")
+
   selects.forEach((select)=>{
     select.value = ""
   })
-      toggleClassList("remove", /*selectsContainer*/ inputsContainer)
-      toggleClassList("add", imagesContainer, infosContainer) // add
-      toggleClassList("add", backBtn, text) // add
+      toggleClassList("remove", inputsContainer)
+      toggleClassList("add", imagesContainer, infosContainer) 
+      toggleClassList("add", backBtn, text)
+
       array.forEach((el)=>{
         el.remove()
     })   
@@ -132,39 +132,48 @@ function createCharacterLis(data) {
   ]
 }
 
-function validLocationEpisode(input, infos, EpisodeLocation, value){
+function validLocationEpisode(input, infos, EpisodeLocation, value) {
   const rickImg = createRickImage()
-  const inputValue = input.value
-  console.log(value)
+  const inputValue = Number(input.value)
 
-  if(!inputValue){
+  const limits = {
+    "search-episode-input": 51,
+    "search-location-input": 126
+  }
+
+  const maxLimit = limits[value.id]
+
+  if (!inputValue) {
     infos.textContent = `Search for an ${EpisodeLocation}`
     infosContainer.classList.add("no-found")
+
     rickImg.src = `./img/rick-morty-img2.jpg`
     imagesContainer.appendChild(rickImg)
-    toggleClassList("add", /*selectsContainer*/ inputsContainer, text) // add
+
+    toggleClassList("add", inputsContainer, text)
     toggleClassList("remove", infosContainer, backBtn, imagesContainer)
-    return false 
-  }
-  else{
-    infosContainer.classList.remove("no-found")
+
+    return false
   }
 
-  if(value.id === "search-episode-input" && value.value > 51 
-  || value.id === "search-location-input" && value.value > 126){
+  if (maxLimit && (inputValue <= 0 || inputValue > maxLimit)) {
     infos.textContent = `Not found ${EpisodeLocation}`
     inputLocation.disabled = false
     infosContainer.classList.add("no-found")
+
     rickImg.src = `./img/rick-morty-img.jpg`
     imagesContainer.appendChild(rickImg)
+
     toggleClassList("remove", imagesContainer, infosContainer, backBtn)
-    toggleClassList("add", text, /*selectsContainer*/ inputsContainer) // add
+    toggleClassList("add", text, inputsContainer)
+
     return false
-  } else{
-    infosContainer.classList.remove("no-found")
   }
-  return true 
+
+  infosContainer.classList.remove("no-found")
+  return true
 }
+
 
 let isEpisodeLoading = false;
 
@@ -623,6 +632,7 @@ function stopLoading() {
 
 function getAndValidateLocationId() {
   if (!validLocationEpisode(inputLocation, locationInfos, "location", inputLocation)) {
+    console.log("AQUI")
     loadingImg.classList.add("hide")
     return null;
   }
@@ -819,3 +829,4 @@ export { createRickImage }
 export { text }
 export { inputCharacter }
 export { createCharacterLisListClass }
+export { locationInfos }
