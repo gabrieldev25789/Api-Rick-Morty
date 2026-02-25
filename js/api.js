@@ -35,6 +35,7 @@ const selects = document.querySelectorAll(".filter-select")
 
 const selectAreaH2 = document.querySelector("#selects-container h2")
 
+
 searchBtns.forEach((el)=>{
   el.addEventListener("click", () =>{
     inputsContainer.classList.add("hide")
@@ -119,12 +120,15 @@ function createUlInfosCharacter(){
       return ulCharacter
 }
 
-function createCharacterLis(data){
+function createCharacterLis(data) {
   return [
-    createLi(`Name: ${data.name}`, "info-character", "name-character"),
-    createLi(`🌍 Origin : ${data.origin.name}`, "info-character", "origin-character"),
-    createLi(`🧬 Status: ${data.status}`, "info-character", "status-character"),
-    createLi(`🚹 Gender: ${data.gender}`, "info-character", "gender-character")
+    createLi(`🆔 ID: ${data.id}`, "info-character", "id-character"),
+    createLi(`🧬 Name: ${data.name}`, "info-character", "name-character"),
+    createLi(`👽 Species: ${data.species}`, "info-character", "species-character"),
+    createLi(`⚧ Gender: ${data.gender}`, "info-character", "gender-character"),
+    createLi(`🌌 Status: ${data.status}`, "info-character", "status-character"),
+    createLi(`🌍 Origin: ${data.origin?.name}`, "info-character", "origin-character"),
+    createLi(`📍 Location: ${data.location?.name}`, "info-character", "location-character")
   ]
 }
 
@@ -313,14 +317,15 @@ function validPageCharacter(value, boolean, infos){
     return false 
 }
 
-function createInfosLiCharacter(data){
+function createCharacterLisListClass(data) {
   return [
-    createLi(`🧬 Name: ${data.name}`, "list-select", "name"),
-    createLi(`👽 Specie: ${data.species}`, "list-select", "specie"),
-    createLi(`⚧ Gender: ${data.gender}`, "list-select", "gender"),
-    createLi(`📍 Location: ${data.location.name}`, "list-select", "location"),
-    createLi(`🌌 Status: ${data.status}`, "list-select", "status"),
-    createLi(`🆔 ID: ${data.id}`, "list-select", "id")
+    createLi(`🆔 ID: ${data.id}`, "list-select", "id-character"),
+    createLi(`🧬 Name: ${data.name}`, "list-select", "name-character"),
+    createLi(`👽 Species: ${data.species}`, "list-select", "species-character"),
+    createLi(`⚧ Gender: ${data.gender}`, "list-select", "gender-character"),
+    createLi(`🌌 Status: ${data.status}`, "list-select", "status-character"),
+    createLi(`🌍 Origin: ${data.origin?.name}`, "list-select", "origin-character"),
+    createLi(`📍 Location: ${data.location?.name}`, "list-select", "location-character")
   ]
 }
 
@@ -365,7 +370,7 @@ selectAreaH2.innerHTML = `Search characters / specifications on this page </br>
           ul.classList.toggle("hide")
       })
 
-      createInfosLiCharacter(result).forEach((li) => ul.appendChild(li))
+      createCharacterLisListClass(result).forEach((li) => ul.appendChild(li))
 
       div.appendChild(img)
       div.appendChild(ul)
@@ -382,17 +387,6 @@ selectAreaH2.innerHTML = `Search characters / specifications on this page </br>
 
 pageBtn.addEventListener("click", logPages)
 
-function createLiCharacterByPage(data){
-  return [
-    createLi(`🧬 Name: ${data.name}`, "list-select", "name-location"),
-    createLi(`👽 Specie: ${data.species}`, "list-select", "species"),
-    createLi(`⚧ Gender: ${data.gender}`, "list-select", "gender"),
-    createLi(`📍 Location: ${data.location.name}`, "list-select", "location"),
-    createLi(`🌌 Origin: ${data.origin.name}`, "list-select", "origin"),
-    createLi(`🆔 ID: ${data.id}`, "list-select", "id")
-    ]
-}
-
 function renderCharacter(character) {
   
   const div = createDivImgInfos()
@@ -405,7 +399,7 @@ function renderCharacter(character) {
   const ul = createUl()
   ul.classList.add("ul-character-select")
 
-  createLiCharacterByPage(character).forEach(li => ul.appendChild(li))
+  createCharacterLisListClass(character).forEach(li => ul.appendChild(li))
 
   div.appendChild(img)
   div.appendChild(ul)
@@ -534,6 +528,7 @@ function validResidents(residents, rickImg){
       if(residents.length === 0) {
         [imagesContainer, text].forEach((el)=>{el.classList.remove("hide")})
         text.textContent = "No character belong to this place."
+        console.log("AQUI N")
         rickImg.src = `./img/rick-morty-img.jpg`
         imagesContainer.appendChild(rickImg)
 
@@ -582,6 +577,7 @@ locationBtn.addEventListener("click", handleLocationClick)
 let isLoading = false
 
 async function handleLocationClick() {
+  infosContainer.classList.remove("hide")
   banner.classList.add("hide")
 
   pageInput.value = ""
@@ -724,7 +720,7 @@ function renderResidents(residentsData) {
     imageObserver.observe(img);
 
     const ul = createUlResidents();
-    createResidentLis(resident).forEach(li => ul.appendChild(li))
+    createCharacterLis(resident).forEach(li => ul.appendChild(li))
 
     container.append(img, ul);
     imagesContainer.appendChild(container);
@@ -822,3 +818,4 @@ export { episodeInfos }
 export { createRickImage }
 export { text }
 export { inputCharacter }
+export { createCharacterLisListClass }
