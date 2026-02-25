@@ -54,6 +54,7 @@ function toggleClassList(action, ...elements) {
 })
 
 function back(){
+
   [pageInput, inputCharacter].forEach((el)=> el.value = "")
   toggleClassList("remove", introH1, banner)
   toggleClassList("add", characterArea, backBtn, selectsContainer)
@@ -63,8 +64,6 @@ function back(){
   toggleClassList("remove",inputsContainer) 
   return 
   }
-
-  const selects = document.querySelectorAll(".filter-select")
 
   selects.forEach((select)=>{
     select.value = ""
