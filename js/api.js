@@ -33,6 +33,8 @@ const characterArea = document.querySelector("#character-area")
 const searchBtns = document.querySelectorAll(".search-btn")
 const selects = document.querySelectorAll(".filter-select")
 
+const selectAreaH2 = document.querySelector("#selects-container h2")
+
 searchBtns.forEach((el)=>{
   el.addEventListener("click", () =>{
     inputsContainer.classList.add("hide")
@@ -326,6 +328,8 @@ function createInfosLiCharacter(data){
 let valueInput 
 
 async function logPages(){
+selectAreaH2.innerHTML = `Search characters / specifications on this page </br> 
+(page ${pageInput.value})`
   selectsContainer.classList.remove("hide")
   characterArea.classList.remove("hide")
   const pageValue = pageInput.value
@@ -696,6 +700,7 @@ function renderResidents(residentsData) {
     rickImg.id = "rick-img"
     rickImg.classList.remove("character-img")
     text.textContent = "No character belong to this place"
+    locationInfos.classList.remove("hide")
     backBtn.classList.remove("hide")
     imagesContainer.appendChild(rickImg)
     return;
@@ -786,6 +791,22 @@ btnTop.addEventListener("click", () => {
     behavior: "smooth"
   })
 })
+
+function activateButtonOnEnter(inputId, buttonId) {
+  const input = document.getElementById(inputId)
+  const button = document.getElementById(buttonId)
+
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      button.click()
+    }
+  })
+}
+
+activateButtonOnEnter("search-episode-input", "episode-btn")
+activateButtonOnEnter("search-page-input", "page-btn")
+activateButtonOnEnter("search-location-input", "location-btn")
+activateButtonOnEnter("search-character-input", "character-btn")
 
 export { createDivImgInfos }
 export { createImg }
