@@ -492,17 +492,6 @@ function createLocationLis(data) {
   ]
 }
 
-/*
-function createResidentLis(data){
-  return [
-    createLi(`Name: ${data.name}`, "info-character", "resident-name"),
-    createLi(`🚹 Gender: ${data.gender}`, "info-character", "resident-gender"),
-    createLi(`🧍‍♂️ Specie: ${data.species}`, "info-character", "resident-specie"),
-    createLi(`🧬 Status: ${data.status}`, "info-character", "resident-status")
-  ]
-}
-*/ 
-
 function createRickImage(){
     const img = document.createElement("img")
     img.id = "rick-img"
