@@ -175,28 +175,11 @@ function validLocationEpisode(input, infos, EpisodeLocation, value) {
 }
 
 
-let isEpisodeLoading = false;
-
-function lockEpisodeUI() {
-  isEpisodeLoading = true;
-  episodeBtn.disabled = true;
-  inputEpisode.disabled = true;
-}
-
-function unlockEpisodeUI() {
-  isEpisodeLoading = false;
-  episodeBtn.disabled = false;
-  inputEpisode.disabled = false;
-}
-
 episodeBtn.addEventListener("click", handleEpisodeClick)
 
 async function handleEpisodeClick() {
   banner.classList.add("hide")
   pageInput.value = ""
-  if (isEpisodeLoading) return;
-
-  lockEpisodeUI();
 
   cleanContainers();
   locationInfos.classList.add("hide");
@@ -217,10 +200,7 @@ async function handleEpisodeClick() {
 
   } catch (err) {
     console.error("Erro ao buscar episódio", err);
-
-  } finally {
-    unlockEpisodeUI(); 
-  }
+  } 
 }
 
 async function fetchEpisode(id) {
