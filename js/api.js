@@ -1,3 +1,5 @@
+// Seleção de elementos 
+
 const inputEpisode = document.querySelector("#search-episode-input")
 const episodeBtn = document.querySelector("#episode-btn")
 const episodeInfos = document.querySelector("#episode-infos h2")
@@ -34,24 +36,23 @@ const selects = document.querySelectorAll(".filter-select")
 
 const selectAreaH2 = document.querySelector("#selects-container h2")
 
-
+// Remover o container de inputs ao clicar em qualquer btn
 searchBtns.forEach((el)=>{
   el.addEventListener("click", () =>{
-    inputsContainer.classList.add("hide")
+    toggleClassList("add", inputsContainer, introH1)
   })
 })
 
+// Adiciona ou remove a classe "hide" dinamicamente
 function toggleClassList(action, ...elements) {
   elements
     .filter(Boolean)
     .forEach(el => el.classList[action]("hide"))
 }
 
-[pageBtn, characterBtn, locationBtn, episodeBtn].forEach((el)=>{
-  el.addEventListener("click", () =>{
-    introH1.classList.add("hide")
-  })
-})
+// Restaura o estado inicial da aplicação.
+// Limpa inputs, reseta selects, ajusta visibilidade
+// dos elementos e remove conteúdos renderizados.
 
 function back(){
 
@@ -77,29 +78,19 @@ function back(){
     })   
 }
 
+// Chama função back 
 backBtn.addEventListener("click", () =>{
   back()
 })
 
+// Cria img de carregamento 
 const loadingImg = document.createElement("img")
 loadingImg.id = "loading-img"
 loadingImg.src = "./img/loading.png" 
 
-/*
-function showLoading() {
-  if (!document.querySelector("#loading-img")) {
-    imagesContainer.innerHTML = ""
-    imagesContainer.appendChild(loadingImg)
-  }
-}
-
-function hideLoading() {
-  const existing = document.querySelector("#loading-img")
-  if (existing) existing.remove()
-}
-  */
-
 // EPISODE API ...................................................
+
+// Cria li que será utilizado varias vezes durante o codigo 
 function createLi(text, className, id) {
   const li = document.createElement("li")
   li.textContent = text
@@ -110,6 +101,7 @@ function createLi(text, className, id) {
   return li
 }
 
+// Função que cria infos dos episodios 
 function createEpisodeLis(data){
   return [
     createLi(`Name: ${data.name}`, "list", "name-episode"),
@@ -119,6 +111,7 @@ function createEpisodeLis(data){
   ]
 }
 
+// Cria div de imagens para adicionar imagens e infos dos personagens 
 function createDivImgInfos(){
       const divImageInfos = document.createElement("div")
       divImageInfos.classList.add("image-infos")
@@ -126,6 +119,7 @@ function createDivImgInfos(){
       return divImageInfos
 }
 
+// Cria ul pra adicionar infos dos personagens 
 function createUlInfosCharacter(){
       const ulCharacter = document.createElement("ul")
       ulCharacter.classList.add("ul-character")
@@ -133,6 +127,7 @@ function createUlInfosCharacter(){
       return ulCharacter
 }
 
+// Cria li de personagens
 function createCharacterLis(data) {
   return [
     createLi(`🆔 ID: ${data.id}`, "info-character", "id-character"),
@@ -145,6 +140,9 @@ function createCharacterLis(data) {
   ]
 }
 
+// Valida o input de episódio ou localização.
+// Verifica se está vazio ou fora do limite permitido,
+// exibe mensagens/feedback visual e retorna false em caso de erro.
 
 function validLocationEpisode(input, infos, EpisodeLocation, value) {
   const rickImg = createRickImage()
@@ -190,7 +188,12 @@ function validLocationEpisode(input, infos, EpisodeLocation, value) {
   return true
 }
 
+// Chamar função que lida com os episodios 
 episodeBtn.addEventListener("click", handleEpisodeClick)
+
+// Manipula a busca de episódio.
+// Valida o input, busca dados do episódio,
+// carrega seus personagens e renderiza tudo na interface.
 
 async function handleEpisodeClick() {
   pageInput.value = ""
@@ -217,14 +220,22 @@ async function handleEpisodeClick() {
   } 
 }
 
+// Função que faz o fetch dos episodios 
 async function fetchEpisode(id) {
   const response = await fetch(`https://rickandmortyapi.com/api/episode/${id}`)
   return response.json()
 }
 
+// Delay assíncrono para controlar tempo entre requisições
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+
+// Busca múltiplos personagens da API em blocos (chunks)
+// Divide os IDs para evitar erro 429 (Too Many Requests)
+// Implementa delay entre requisições
+// Retorna array final unificado com todos os personagens
 
 async function fetchCharacters(characters) {
   imagesContainer.appendChild(loadingImg)
@@ -238,7 +249,6 @@ async function fetchCharacters(characters) {
 
   for (const chunk of chunks) {
     try {
-      /*showLoading()*/
       const response = await fetch(
         `https://rickandmortyapi.com/api/character/${chunk.join(",")}`
       );
@@ -252,13 +262,16 @@ async function fetchCharacters(characters) {
 
       await sleep(400); // anti-429
     } catch (err) {
-      /*hideLoading()*/
       console.warn("Falha em um bloco de personagens", err);
     }
   }
 
   return result;
 }
+
+// Renderiza as informações principais do episódio na interface
+// Limpa conteúdo anterior e insere nova lista com dados formatados
+// Atualiza estado visual da UI (mostra infos e esconde inputs)
 
 function renderEpisodeInfo(data) {
   episodeInfos.innerHTML = ""
@@ -270,6 +283,11 @@ function renderEpisodeInfo(data) {
     toggleClassList("remove", episodeInfos, infosContainer)
 }
  
+// Renderiza todos os personagens de um episódio
+// Exibe imagem + informações detalhadas de cada personagem
+// Trata erro de carregamento de imagem com placeholder
+// Atualiza estado visual da interface
+
 function renderEpisodeCharacters(charactersData) {
   [text, imagesContainer].forEach((el => el?.classList.remove("hide")))
   imagesContainer.innerHTML = ""
@@ -299,6 +317,10 @@ function renderEpisodeCharacters(charactersData) {
 
 // CHARACTER API..................................................
 
+// Controla estado de erro na busca por página ou personagem
+// Atualiza mensagens, imagem de feedback e estado visual da interface
+// Retorna false para interromper fluxo de execução
+
 function validPageCharacter(value, boolean, infos){
   locationInfos.innerHTML = ""
   selectsContainer.classList.add("hide")
@@ -321,6 +343,10 @@ function validPageCharacter(value, boolean, infos){
     return false 
 }
 
+// Cria lista de <li> com informações do personagem
+// Utiliza classe específica para versão de exibição com filtros/select
+// Retorna array de elementos já prontos para inserção no DOM
+
 function createCharacterLisListClass(data) {
   return [
     createLi(`🆔 ID: ${data.id}`, "list-select", "id-character"),
@@ -332,6 +358,10 @@ function createCharacterLisListClass(data) {
     createLi(`📍 Location: ${data.location?.name}`, "list-select", "location-character")
   ]
 }
+
+// Fluxo principal da busca por personagens por página
+// Valida entrada, busca dados da API, trata resultados inválidos,
+// renderiza personagens e atualiza estado da interface
 
 let valueInput 
 
@@ -353,6 +383,7 @@ async function logPages() {
   valueInput = pageValue
 }
 
+// Atualiza o titulo da pagina 
 function updatePageTitle(pageValue){
   selectAreaH2.innerHTML = `
     Search characters / specifications on this page <br>
@@ -360,6 +391,7 @@ function updatePageTitle(pageValue){
   `
 }
 
+// Valida se input da pagina tem algum valor digitado 
 function validatePage(pageValue) {
   if (!pageValue) {
     characterArea.classList.add("hide")
@@ -369,6 +401,7 @@ function validatePage(pageValue) {
   return true
 }
 
+// Faz o fetch nos personagens com base no valor da pagina 
 async function fetchCharactersByPage(pageValue) {
   const response = await fetch(
     `https://rickandmortyapi.com/api/character?page=${pageValue}`
@@ -376,6 +409,11 @@ async function fetchCharactersByPage(pageValue) {
   const data = await response.json()
   return data.results
 }
+
+
+// Valida o resultado da requisição.
+// Se não houver dados, oculta elementos da interface e retorna false.
+// Caso contrário, retorna true.
 
 function handleInvalidResults(results) {
   if (!results) {
@@ -386,6 +424,10 @@ function handleInvalidResults(results) {
   }
   return true
 }
+
+// Renderiza a lista de personagens na tela.
+// Para cada personagem, cria a estrutura (imagem + infos),
+// adiciona evento de toggle e insere no container.
 
 function renderCharacters(results) {
   results.forEach((result) => {
@@ -416,13 +458,20 @@ function renderCharacters(results) {
   })
 }
 
+// Atualiza o estado da interface,
+// exibindo botão de voltar e ajustando visibilidade dos elementos principais.
+
 function updateUIState() {
   toggleClassList("add", inputsContainer)
   backBtn.classList.remove("hide")
   banner.classList.add("hide")
 }
 
+// Chama a função de logPages 
 pageBtn.addEventListener("click", logPages)
+
+// Renderiza um único personagem na tela,
+// criando sua estrutura (imagem + infos) e atualizando o estado da interface.
 
 function renderCharacter(character) {
   
@@ -447,6 +496,9 @@ function renderCharacter(character) {
   banner.classList.add("hide")
 }
 
+// Trata os dados recebidos (array ou objeto único)
+// e renderiza os personagens na tela, atualizando a interface.
+
 function handleCharacters(data) {
 
   if (Array.isArray(data)) {
@@ -459,6 +511,10 @@ function handleCharacters(data) {
   backBtn.classList.remove("hide")
   banner.classList.add("hide")
 }
+
+// Manipula a busca de personagem.
+// Valida o input, busca os dados da API,
+// trata erro de índice inválido e renderiza um ou vários personagens.
 
 async function handleCharacterClick() {
   selects.forEach((el)=> el.value = "")
@@ -497,19 +553,23 @@ async function handleCharacterClick() {
       const character = results[index]
 
       handleCharacters(character)
-
   }
 }
 
+// Chama a função de handleCharacterClick 
 characterBtn.addEventListener("click", handleCharacterClick)
 
 // LOCATION API.....................................................
+// Cria Ul que será usado durante o codigo 
+
 function createUl(){
     const ulInfos = document.createElement("ul")
     ulInfos.id = "ul-infos"
 
     return ulInfos
 }
+
+// Cria container de residents 
 
 function createContainerResidents(){
       const containerResidents = document.createElement("div")
@@ -518,6 +578,8 @@ function createContainerResidents(){
       return containerResidents
   }
 
+// Cria e retorna um elemento <img> com a classe padrão de personagem.
+
 function createImg(){
       const img = document.createElement("img")
       img.classList.add("character-img")
@@ -525,12 +587,16 @@ function createImg(){
       return img 
 }
 
+// Cria ul para adicionar infos dos residents 
+
 function createUlResidents(){
       const ulResidents = document.createElement("ul")
       ulResidents.classList.add("ul-residents")
 
       return ulResidents
 }
+
+// Cria li para adicionar infos da localização 
 
 function createLocationLis(data) {
   return [
@@ -541,12 +607,18 @@ function createLocationLis(data) {
   ]
 }
 
+// Cria img de rick para ser adicionada quando não tiver infos / quando o user não digitar nada nas buscas 
+
 function createRickImage(){
     const img = document.createElement("img")
     img.id = "rick-img"
 
     return img 
 }
+
+// Valida se a localização possui residentes.
+// Caso não tenha, exibe mensagem e imagem padrão.
+// Retorna false se estiver vazio, ou true se houver dados.
 
 function validResidents(residents, rickImg){
       if(residents.length === 0) {
@@ -560,9 +632,13 @@ function validResidents(residents, rickImg){
       return true 
 }
 
+// Limpa os containers 
 function cleanContainers(){
   [episodeInfos, locationInfos, imagesContainer].forEach((el)=>{el.innerHTML = ""})
 }
+
+// Divide um array em vários subarrays menores
+// com base no tamanho definido (padrão: 20 itens por bloco).
 
 function chunkArray(arr, size = 20) {
   const chunks = [];
@@ -572,13 +648,20 @@ function chunkArray(arr, size = 20) {
   return chunks;
 }
 
-  let residentsController = null;
+let residentsController = null;
 
-  function renderLocationInfo(data) {
+// Renderiza as informações da localização,
+// criando a lista e adicionando ao container.
+
+function renderLocationInfo(data) {
   const ulInfos = createUl()
   createLocationLis(data).forEach(li => ulInfos.appendChild(li))
   locationInfos.appendChild(ulInfos)
 }
+
+// Trata erros da aplicação.
+// Exibe mensagem específica para erro 429 (muitas requisições)
+// ou mensagem genérica para outras falhas.
 
 function showErrorMessage(err) {
   imagesContainer.innerHTML = ""
@@ -598,7 +681,15 @@ function showErrorMessage(err) {
   }
 }
 
+// Chama a função de handleLocationClick 
+
 locationBtn.addEventListener("click", handleLocationClick)
+
+// Manipula a busca de localização.
+// Controla estado de loading, valida o ID,
+// busca dados da localização e seus residentes,
+// trata erros e finaliza o carregamento.
+
 let isLoading = false
 
 async function handleLocationClick() {
@@ -621,7 +712,6 @@ async function handleLocationClick() {
     renderResidents(residentsData);
 
   } catch (err) {
-    /*hideLoading()*/
     if (err.name === "AbortError") return;
 
     showErrorMessage(err);
@@ -631,6 +721,10 @@ async function handleLocationClick() {
     stopLoading();
   }
 }
+
+// Inicia o estado de loading.
+// Desativa inputs, limpa containers
+// e exibe a imagem de carregamento.
 
 function startLoading() {
   isLoading = true;
@@ -642,10 +736,18 @@ function startLoading() {
   imagesContainer.appendChild(loadingImg);
 }
 
+// Finaliza o estado de loading,
+// reativando os elementos desabilitados.
+
 function stopLoading() {
   isLoading = false;
   [locationBtn, inputLocation].forEach((el) => el.disabled = false)
 }
+
+
+// Valida o input da localização.
+// Se for inválido, interrompe o fluxo.
+// Caso válido, limpa o campo e retorna o ID informado.
 
 function getAndValidateLocationId() {
   if (!validLocationEpisode(inputLocation, locationInfos, "location", inputLocation)) {
@@ -660,12 +762,20 @@ function getAndValidateLocationId() {
   return value;
 }
 
+// Busca os dados da localização pelo ID,
+// renderiza suas informações e retorna os dados obtidos.
+
 async function loadLocation(id) {
   const locationData = await fetchLocation(id);
   renderLocationInfo(locationData);
 
   return locationData;
 }
+
+// Carrega os residentes de uma localização.
+// Divide os IDs em blocos, faz requisições em lote,
+// controla cancelamento com AbortController
+// e retorna todos os residentes carregados.
 
 async function loadResidents(residentsUrls) {
   if (!residentsUrls?.length) return [];
@@ -702,21 +812,12 @@ async function loadResidents(residentsUrls) {
   return residentsData;
 }
 
-async function fetchLocation(id) {
-  const response = await fetch(`https://rickandmortyapi.com/api/location/${id}`);
-  if (!response.ok) {
-    throw new Error(`Location não encontrada: ${response.status}`);
-  }
-  return response.json();
-}
+// Verifica se há residentes carregados.
+// Caso esteja vazio, exibe mensagem e imagem padrão,
+// ajustando a interface.
 
-function renderResidents(residentsData) {
-  imagesContainer.innerHTML = "";
-  [text, imagesContainer].forEach((el) => el.classList.remove("hide"))
-
-  text.textContent = "Characters who belong to this place:";
-
-  if (residentsData.length === 0) {
+function validResidentsData(residentsData){
+    if (residentsData.length === 0) {
     const rickImg = createImg()
     rickImg.src = `./img/rick-morty-img.jpg`
     rickImg.id = "rick-img"
@@ -726,6 +827,31 @@ function renderResidents(residentsData) {
     imagesContainer.appendChild(rickImg)
     return;
   }
+}
+
+// Faz a requisição da localização pelo ID.
+// Lança erro caso a resposta não seja válida
+// e retorna os dados em formato JSON.
+
+async function fetchLocation(id) {
+  const response = await fetch(`https://rickandmortyapi.com/api/location/${id}`);
+  if (!response.ok) {
+    throw new Error(`Location não encontrada: ${response.status}`);
+  }
+  return response.json();
+}
+
+// Renderiza os residentes da localização.
+// Trata estado vazio, aplica lazy loading nas imagens
+// e monta a estrutura de cada personagem na interface.
+
+function renderResidents(residentsData) {
+  imagesContainer.innerHTML = "";
+  [text, imagesContainer].forEach((el) => el.classList.remove("hide"))
+
+  text.textContent = "Characters who belong to this place:";
+
+  validResidentsData(residentsData)
 
   residentsData.forEach(resident => {
     const container = createContainerResidents();
@@ -755,6 +881,10 @@ function renderResidents(residentsData) {
   });
 }
 
+// Observer para lazy loading de imagens.
+// Carrega a imagem apenas quando ela entra na área visível,
+// melhora performance e remove a observação após carregar.
+
 const imageObserver = new IntersectionObserver(
   entries => {
     entries.forEach(entry => {
@@ -776,6 +906,9 @@ const imageObserver = new IntersectionObserver(
   }
 );
 
+// Cria e retorna um placeholder exibido
+// quando a imagem do personagem falha ao carregar.
+
 function createImageErrorPlaceholder() {
   const div = document.createElement("div");
   div.className = "image-error";
@@ -783,6 +916,10 @@ function createImageErrorPlaceholder() {
 
   return div;
 }
+
+// Controla a exibição do botão "voltar ao topo".
+// Mostra o botão apenas quando há rolagem suficiente
+// e o usuário atinge o final da página.
 
 const btnTop = document.getElementById("btnTop")
 
@@ -813,6 +950,9 @@ btnTop.addEventListener("click", () => {
   })
 })
 
+// Permite acionar um botão ao pressionar "Enter" no input.
+// Vincula dinamicamente input e botão pelos seus IDs.
+
 function activateButtonOnEnter(inputId, buttonId) {
   const input = document.getElementById(inputId)
   const button = document.getElementById(buttonId)
@@ -828,6 +968,9 @@ activateButtonOnEnter("search-episode-input", "episode-btn")
 activateButtonOnEnter("search-page-input", "page-btn")
 activateButtonOnEnter("search-location-input", "location-btn")
 activateButtonOnEnter("search-character-input", "character-btn")
+
+// Exporta funções utilitárias e referências de elementos da interface,
+// permitindo reutilização e organização modular da aplicação.
 
 export { createDivImgInfos }
 export { createImg }
