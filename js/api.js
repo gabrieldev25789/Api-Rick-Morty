@@ -318,58 +318,91 @@ function createCharacterLisListClass(data) {
 
 let valueInput 
 
-async function logPages(){
-
-  selectAreaH2.innerHTML = `Search characters / specifications on this page </br> 
-  (page ${pageInput.value})`
-
-  characterArea.classList.remove("hide")
+async function logPages() {
   const pageValue = pageInput.value
-  if(!pageValue){
-    characterArea.classList.add("hide")
-    validPageCharacter("page", false, episodeInfos)
-    return 
-  }
-  const page = `https://rickandmortyapi.com/api/character?page=${pageValue}`
- 
-   const valueResponse = await fetch(page)
-    const data = await valueResponse.json()
-   
-    const results = data.results 
-      if(!results){
-        characterArea.classList.add("hide")
-        validPageCharacter("page", true, episodeInfos)
-        selectsContainer.classList.add("hide")
-      }
-      
-    results.forEach((result)=>{   
-      selectsContainer.classList.remove("hide")
-      const div = createDivImgInfos()
-      div.classList.add("div-character-select")
 
-      const img = createImg()
-      img.classList.add("img-character-select")
-      img.classList.remove("character-img")
-      img.src = result.image 
+  updatePageTitle(pageValue)
+  characterArea.classList.remove("hide")
 
-      const ul = createUl()
-      ul.classList.add("ul-character-select", "hide")
+  if (!validatePage(pageValue)) return
 
-      img.addEventListener("click", () => {
-          ul.classList.toggle("hide")
-      })
+  const results = await fetchCharactersByPage(pageValue)
 
-      createCharacterLisListClass(result).forEach((li) => ul.appendChild(li))
+  if (!handleInvalidResults(results)) return
 
-      div.appendChild(img)
-      div.appendChild(ul)
-      toggleClassList("add", inputsContainer)
-      backBtn.classList.remove("hide")
-      banner.classList.add("hide")
-      imagesContainer.appendChild(div)
-    })
+  renderCharacters(results)
+  updateUIState()
 
   valueInput = pageValue
+}
+
+function updatePageTitle(pageValue){
+  selectAreaH2.innerHTML = `
+    Search characters / specifications on this page <br>
+    (page ${pageValue})
+  `
+}
+
+function validatePage(pageValue) {
+  if (!pageValue) {
+    characterArea.classList.add("hide")
+    validPageCharacter("page", false, episodeInfos)
+    return false
+  }
+  return true
+}
+
+async function fetchCharactersByPage(pageValue) {
+  const response = await fetch(
+    `https://rickandmortyapi.com/api/character?page=${pageValue}`
+  )
+  const data = await response.json()
+  return data.results
+}
+
+function handleInvalidResults(results) {
+  if (!results) {
+    characterArea.classList.add("hide")
+    validPageCharacter("page", true, episodeInfos)
+    selectsContainer.classList.add("hide")
+    return false
+  }
+  return true
+}
+
+function renderCharacters(results) {
+  results.forEach((result) => {
+    selectsContainer.classList.remove("hide")
+
+    const div = createDivImgInfos()
+    div.classList.add("div-character-select")
+
+    const img = createImg()
+    img.classList.add("img-character-select")
+    img.classList.remove("character-img")
+    img.src = result.image
+
+    const ul = createUl()
+    ul.classList.add("ul-character-select", "hide")
+
+    img.addEventListener("click", () => {
+      ul.classList.toggle("hide")
+    })
+
+    createCharacterLisListClass(result).forEach((li) =>
+      ul.appendChild(li)
+    )
+
+    div.appendChild(img)
+    div.appendChild(ul)
+    imagesContainer.appendChild(div)
+  })
+}
+
+function updateUIState() {
+  toggleClassList("add", inputsContainer)
+  backBtn.classList.remove("hide")
+  banner.classList.add("hide")
 }
 
 pageBtn.addEventListener("click", logPages)
