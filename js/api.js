@@ -58,10 +58,10 @@ function back(){
   [pageInput, inputCharacter].forEach((el)=> el.value = "")
   toggleClassList("remove", introH1, banner)
   toggleClassList("add", characterArea, backBtn, selectsContainer)
-    imagesContainer.innerHTML = ""
-    toggleClassList("add", infosContainer, text)
+  imagesContainer.innerHTML = ""
+  toggleClassList("add", infosContainer, text)
   if(!imagesContainer.classList.contains("hide")){ 
-  toggleClassList("remove",inputsContainer) 
+  inputsContainer.classList.remove("hide")
   return 
   }
 
@@ -84,6 +84,20 @@ backBtn.addEventListener("click", () =>{
 const loadingImg = document.createElement("img")
 loadingImg.id = "loading-img"
 loadingImg.src = "./img/loading.png" 
+
+/*
+function showLoading() {
+  if (!document.querySelector("#loading-img")) {
+    imagesContainer.innerHTML = ""
+    imagesContainer.appendChild(loadingImg)
+  }
+}
+
+function hideLoading() {
+  const existing = document.querySelector("#loading-img")
+  if (existing) existing.remove()
+}
+  */
 
 // EPISODE API ...................................................
 function createLi(text, className, id) {
@@ -131,6 +145,7 @@ function createCharacterLis(data) {
   ]
 }
 
+
 function validLocationEpisode(input, infos, EpisodeLocation, value) {
   const rickImg = createRickImage()
   const inputValue = Number(input.value)
@@ -142,7 +157,7 @@ function validLocationEpisode(input, infos, EpisodeLocation, value) {
 
   const maxLimit = limits[value.id]
 
-  if (!inputValue) {
+   if (!inputValue) {
     infos.textContent = `Search for an ${EpisodeLocation}`
     infosContainer.classList.add("no-found")
 
@@ -157,6 +172,8 @@ function validLocationEpisode(input, infos, EpisodeLocation, value) {
 
   if (maxLimit && (inputValue <= 0 || inputValue > maxLimit)) {
     infos.textContent = `Not found ${EpisodeLocation}`
+    inputEpisode.value = ""
+    inputLocation.value = ""
     inputLocation.disabled = false
     infosContainer.classList.add("no-found")
 
@@ -176,11 +193,9 @@ function validLocationEpisode(input, infos, EpisodeLocation, value) {
 episodeBtn.addEventListener("click", handleEpisodeClick)
 
 async function handleEpisodeClick() {
-  /*banner.classList.add("hide")*/
   pageInput.value = ""
 
   cleanContainers();
-  /*locationInfos.classList.add("hide");*/
   toggleClassList("add", banner, locationInfos)
 
   try {
@@ -223,6 +238,7 @@ async function fetchCharacters(characters) {
 
   for (const chunk of chunks) {
     try {
+      /*showLoading()*/
       const response = await fetch(
         `https://rickandmortyapi.com/api/character/${chunk.join(",")}`
       );
@@ -236,6 +252,7 @@ async function fetchCharacters(characters) {
 
       await sleep(400); // anti-429
     } catch (err) {
+      /*hideLoading()*/
       console.warn("Falha em um bloco de personagens", err);
     }
   }
@@ -249,7 +266,7 @@ function renderEpisodeInfo(data) {
   const ulInfos = createUl()
   createEpisodeLis(data).forEach(li => ulInfos.appendChild(li))
   episodeInfos.appendChild(ulInfos)
-    toggleClassList("add", /*selectsContainer*/ inputsContainer) // add
+    toggleClassList("add", inputsContainer) 
     toggleClassList("remove", episodeInfos, infosContainer)
 }
  
@@ -570,12 +587,14 @@ function showErrorMessage(err) {
   if (err.status === 429 || err.message.includes("429")) {
     text.textContent =
       "Too many requests at once. Refresh the page and try again."
-       inputsContainer.classList.remove("hide")
+      toggleClassList("add", banner, inputsContainer, introH1)
+       backBtn.classList.remove("hide")
 
   } else {
     text.textContent =
       "Search failed. Check your connection and try again."
-       inputsContainer.classList.remove("hide")
+      toggleClassList("add", banner, inputsContainer, introH1)
+       backBtn.classList.remove("hide")
   }
 }
 
@@ -602,6 +621,7 @@ async function handleLocationClick() {
     renderResidents(residentsData);
 
   } catch (err) {
+    /*hideLoading()*/
     if (err.name === "AbortError") return;
 
     showErrorMessage(err);
@@ -630,9 +650,10 @@ function stopLoading() {
 function getAndValidateLocationId() {
   if (!validLocationEpisode(inputLocation, locationInfos, "location", inputLocation)) {
     loadingImg.classList.add("hide")
-    return null;
+    return 
   }
 
+  loadingImg.classList.remove("hide")
   const value = inputLocation.value.trim();
   inputLocation.value = "";
 
@@ -701,8 +722,7 @@ function renderResidents(residentsData) {
     rickImg.id = "rick-img"
     rickImg.classList.remove("character-img")
     text.textContent = "No character belong to this place"
-    locationInfos.classList.remove("hide")
-    backBtn.classList.remove("hide")
+    toggleClassList("remove", locationInfos, backBtn)
     imagesContainer.appendChild(rickImg)
     return;
   }
