@@ -13,14 +13,14 @@ body {
 
 #banner {
   width: 100%;
-  height: 400px; /* controla a altura aqui */
+  height: 400px; 
   overflow: hidden;
 }
 
 #banner img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* mantém proporção e corta o excesso */
+  object-fit: cover; 
 }
 
 #intro{
@@ -32,7 +32,7 @@ body {
 
 #back {
   background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: #a3e635; /* verde portal suave */
+  color: #a3e635; 
   padding: 0.5rem;
   border-radius: 12px;
   border: 1px solid rgba(163, 230, 53, 0.3);
@@ -47,7 +47,7 @@ body {
 
 #back:hover {
   background: linear-gradient(135deg, #1e293b, #0f172a);
-  color: #38bdf8; /* azul sci-fi */
+  color: #38bdf8; 
   border-color: rgba(56, 189, 248, 0.5);
   transform: translateY(-2px);
 }
@@ -69,7 +69,7 @@ h1{
 }
 
 .list {
-  color: #fff; /* verde portal mais suave */
+  color: #fff; 
   font-size: 2.5rem;
   font-weight: 500;
   margin-bottom: 16px;
@@ -79,7 +79,7 @@ h1{
 }
 
 .list:hover {
-  color: #38bdf8; /* azul sci-fi discreto */
+  color: #38bdf8; 
   transform: translateX(4px);
 }
 
@@ -146,12 +146,12 @@ h1{
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-/* Placeholder (primeira opção) */
+
 .filter-select option[value=""] {
   color: #d0d0d0;
 }
 
-/* Hover & focus */
+
 .filter-select:hover {
   background: rgba(0, 0, 0, 0.35);
 }
@@ -161,13 +161,12 @@ h1{
   background: rgba(0, 0, 0, 0.45);
 }
 
-/* Options */
 .filter-select option {
   background: #1e2a33;
   color: #ffffff;
 }
 
-/* Opcional: deixa o grupo do meio mais destacado */
+
 #character-filters {
   padding: 1rem;
   border-radius: 1rem;
@@ -184,7 +183,7 @@ h1{
     display: flex; 
     justify-content: space-around; 
     border-bottom: 2px solid white; 
-  }
+}
 
 
 #episode-infos h2{
@@ -200,9 +199,9 @@ h1{
   display: flex;
   margin-bottom: 2rem;
   padding: 1rem;
-  justify-content: center; /* centraliza horizontalmente */
-  align-items: center;     /* centraliza verticalmente */
-  gap: 10px;               /* espaço entre input e botão */
+  justify-content: center; 
+  align-items: center;     
+  gap: 10px;             
 }
 
 #search-character-input{
@@ -306,6 +305,7 @@ h1{
 
 .image-infos,
 .container-residents{
+  text-align: center;
     margin: 1rem auto;
     padding-bottom: 0.5rem;
     font-size: 1.4rem;
@@ -318,7 +318,7 @@ h1{
     margin: 1rem;
     border-radius: 12px;
     cursor: pointer;
-    transition: transform 0.3s ease; /* suaviza */
+    transition: transform 0.3s ease; 
 }
 
 .character-img:hover{
@@ -360,7 +360,7 @@ h1{
 
 .image-error {
   width: 100%;
-  aspect-ratio: 1 / 1;   /* quadrado responsivo */
+  aspect-ratio: 1 / 1;   
   background: #1f1f1f;
   color: #aaa;
 
@@ -465,14 +465,14 @@ h1{
   padding: 1.8rem !important;
   width: 50% !important;
   background: rgba(5, 8, 12, 0.8) !important;
-  backdrop-filter: blur(0.6rem);
-  border-radius: 1rem;
-  border: 0.08rem solid rgba(0, 255, 156, 0.25);
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  position: relative;
-  z-index: 1;
+  backdrop-filter: blur(0.6rem) !important;
+  border-radius: 1rem !important; 
+  border: 0.08rem solid rgba(0, 255, 156, 0.25) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.8rem !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 /* ITENS */
@@ -505,33 +505,12 @@ h1{
     display: none !important;
 }
 
-/*
-@media (max-width: 768px) {
-  #inputs-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  #selects-container {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  #infos {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .input {
-    max-width: 100%;
-  }
-}
-*/
 
 .btn-top {
   position: fixed;
-  bottom: 30px;
-  padding: 0.5rem;
+  bottom: 10px;
+  left: 20px; 
+  padding: 0.5rem 1rem;
   font-size: 1.1rem;
   border: none;
   border-radius: 8px;
@@ -539,7 +518,9 @@ h1{
   display: none;
   background: linear-gradient(135deg, #77aa47, #2d916a);
   color: #fff;
+  z-index: 999; 
 }
+
 
 .btn-top:hover {
   opacity: 0.9;
@@ -549,10 +530,37 @@ h1{
 /* ================= RESPONSIVO ================= */
 
 /* Tablets */
+@media ( width: 2560px ){
+  #episode-infos h2{
+    margin-left: 60vh;
+  }
+
+  #location-infos h2{
+    margin-left: -100vh;
+  }
+
+  .filter-select{
+    font-size: 1.5rem;  
+  }
+
+  .search-btn{
+    padding: 1rem;
+    font-size: 1.6rem;
+  }
+
+  .input{
+    font-size: 1.5rem;
+  }
+}
+
 @media (max-width: 1024px) {
 
   #intro {
     width: 90%;
+  }
+
+  #ul-infos{
+    width: 100% !important;
   }
 
   #selects-container {
@@ -566,7 +574,6 @@ h1{
 
   #infos {
     flex-direction: column;
-    gap: 1rem;
     text-align: center;
   }
 
@@ -585,7 +592,7 @@ h1{
   }
 
   .ul-character-select {
-    width: 90%;
+    width: 100%;
   }
 
   .ul-character{
@@ -594,7 +601,9 @@ h1{
 
   #rick-img {
     width: 90%;
+    border-radius: 10px;
   }
+
 }
 
 
@@ -607,6 +616,10 @@ h1{
 
   #intro {
     width: 95%;
+  }
+
+  #ul-infos{
+    width: 100%;
   }
 
   #h2{
@@ -659,3 +672,4 @@ h1{
     display: block;
   }
 }
+
