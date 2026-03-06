@@ -122,8 +122,6 @@ Todo o projeto foi desenvolvido **100% em inglês**, incluindo:
 * estrutura do código
 * mensagens exibidas na interface
 
-Isso foi feito para simular um ambiente de desenvolvimento mais próximo do mercado internacional.
-
 ---
 
 ## 🎯 Objetivo do Projeto
