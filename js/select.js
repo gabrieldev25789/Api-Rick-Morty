@@ -13,7 +13,7 @@ function validSelect(value, boolean, infos){
       infosContainer.classList.add("no-found")
       rickImg.src = `./img/rick-morty-img2.jpg`
       imagesContainer.appendChild(rickImg)
-      toggleClassList("add", selectsContainer, inputsContainer, text) // add
+      toggleClassList("add", selectsContainer, inputsContainer, text) 
       toggleClassList("remove", infosContainer, backBtn, imagesContainer)
   
       if(boolean === true){
@@ -26,7 +26,6 @@ function validSelect(value, boolean, infos){
 function handleCharactersNotFound(characterSelect){
         if (characterSelect.length === 0) {
          validSelect("character", true, episodeInfos)
-         console.log("CAIU AQUI2")
          selectsContainer.classList.remove("hide")
         } else{
           infosContainer.classList.add("hide")
@@ -114,7 +113,6 @@ selects.forEach(({ element, type }) => {
     imagesContainer.innerHTML = ""
     inputCharacter.value = ""
 
-    // 🔥 resetar os outros selects
     selects.forEach(({ element: otherElement }) => {
       if (otherElement !== e.target) {
         otherElement.value = ""
