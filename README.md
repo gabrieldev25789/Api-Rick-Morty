@@ -1,8 +1,45 @@
 # 🛸 Rick and Morty Explorer
 
+![Tech](https://img.shields.io/badge/tech-HTML%20%7C%20CSS%20%7C%20JS-blue)  
+![API](https://img.shields.io/badge/api-Rick%20and%20Morty-green)  
+
 Aplicação web que consome a API pública da série **Rick and Morty**, permitindo explorar episódios, personagens e localizações do universo da série.
 
 O sistema oferece múltiplas formas de busca e filtragem de dados, além de tratamento completo de erros e feedback visual para melhorar a experiência do usuário.
+
+---
+
+## 🌍 Sobre o projeto
+
+Este projeto foi desenvolvido com foco em consumo de API e experiência do usuário, permitindo navegar por diferentes partes do universo da série de forma dinâmica.
+
+A aplicação simula um ambiente real de consulta de dados, com **buscas inteligentes, filtros e tratamento de estados da interface**.
+
+---
+
+## 🖼️ Preview
+
+<div align="center">
+  <img src="./imgs/print1.jpg" alt="Preview 1" width="45%" height="250px" style="object-fit: cover;" />
+  <img src="./imgs/print2.jpg" alt="Preview 2" width="45%" height="250px" style="object-fit: cover;" />
+</div>
+
+<div align="center">
+  <img src="./imgs/print3.jpg" alt="Preview 3" width="45%" height="250px" style="object-fit: cover;" />
+  <img src="./imgs/print4.jpg" alt="Preview 4" width="45%" height="250px" style="object-fit: cover;" />
+</div>
+
+
+<div align="center">
+  <img src="./imgs/print5.jpg" alt="Preview 3" width="45%" height="250px" style="object-fit: cover;" />
+  <img src="./imgs/print6.jpg" alt="Preview 4" width="45%" height="250px" style="object-fit: cover;" />
+</div>
+
+
+<div align="center">
+  <img src="./imgs/print7.jpg" alt="Preview 3" width="45%" height="250px" style="object-fit: cover;" />
+  <img src="./imgs/print8.jpg" alt="Preview 4" width="45%" height="250px" style="object-fit: cover;" />
+</div>
 
 ---
 
@@ -94,8 +131,7 @@ Quando o usuário não digita nada nos campos de busca, o sistema exibe uma **im
 
 ## 🌐 API Utilizada
 
-Rick and Morty API:
-
+Rick and Morty API:  
 https://rickandmortyapi.com/
 
 A API fornece informações completas sobre:
@@ -106,11 +142,10 @@ A API fornece informações completas sobre:
 
 ---
 
-## 🌍 Deploy
+## 🌐 Deploy
 
-A aplicação está disponível online no link abaixo:
-
-**🔗 Deploy:** *(https://api-rick-morty.vercel.app/)*
+Acesse o projeto online:  
+👉 https://api-rick-morty.vercel.app/
 
 ---
 
@@ -138,3 +173,17 @@ Este projeto foi desenvolvido para praticar:
 ---
 
 Projeto criado com foco em aprendizado e evolução no desenvolvimento front-end.
+
+---
+
+## ▶️ Como rodar o projeto
+
+```bash
+# Clone o repositório
+git clone https://github.com/gabrieldev25789/api-rick-morty.git
+
+# Acesse a pasta
+cd api-rick-morty
+
+# Abra no navegador
+index.html
